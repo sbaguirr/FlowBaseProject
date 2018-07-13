@@ -12,11 +12,13 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
@@ -72,14 +74,17 @@ public class PaneInventarioSucursal {
         buscar = new Button("Buscar");
         aplicar = new Button("Aplicar");
         aplicar.setDisable(true);
-
+        
+         ToggleGroup grupo= new ToggleGroup();
         si = new RadioButton("Si    ");
+        si.setToggleGroup(grupo);
         no = new RadioButton("No");
+        no.setToggleGroup(grupo);
         tablaProductosSucursal = new TableView();
 
         cantidad = new TextField();
         cantidad.setDisable(true);
-
+        
     }
 
     private void seccionTop() {
@@ -159,7 +164,8 @@ public class PaneInventarioSucursal {
         back.setContentDisplay(ContentDisplay.TOP);
         back.setGraphic(w);
         back.setOnAction(e -> {
-            PaneMenuPrincipal p = new PaneMenuPrincipal();
+          //  PaneMenuPrincipal p = new PaneMenuPrincipal();
+           PaneMenuPrincipalSucursal p = new PaneMenuPrincipalSucursal();
              Proyecto.scene.setRoot(p.getRoot());
         });
         f.getChildren().add(back);

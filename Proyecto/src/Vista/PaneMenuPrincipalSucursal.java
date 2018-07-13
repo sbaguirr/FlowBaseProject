@@ -31,12 +31,12 @@ import javafx.scene.text.Font;
  *
  * @author Tiffy
  */
-public class PaneMenuPrincipal {
+public class PaneMenuPrincipalSucursal {
 
     private BorderPane root;
-    private Button productos, pedidos, productoSucursal, verPedidos, cerrarSesion, inventario;
+    private Button pedidos, verPedidos, cerrarSesion, inventario,verClientes;
 
-    public PaneMenuPrincipal() {
+    public PaneMenuPrincipalSucursal() {
         root = new BorderPane();
         BackgroundFill fondo = new BackgroundFill(Color.SEASHELL, new CornerRadii(1),
                 new Insets(0.0, 0.0, 0.0, 0.0));
@@ -56,17 +56,17 @@ public class PaneMenuPrincipal {
         hbox.setPadding(new Insets(50, 10, 0, 10));
         root.setTop(hbox);
     }
-
+    
     private void menu() {
         VBox j = new VBox();
         HBox h1 = new HBox();
-        h1.getChildren().addAll(botonProductos(), botonProductosSuc(), botonPedidos());
+        h1.getChildren().addAll(botonPedidos(), verPedidos(), verClientes());
         h1.setSpacing(14);
         h1.setAlignment(Pos.CENTER);
         HBox h2 = new HBox();
         h2.setSpacing(14);
+        h2.getChildren().addAll(inventarioS(), cerrarSesion());
         h2.setAlignment(Pos.CENTER);
-        h2.getChildren().addAll(verPedidos(), inventarioS(), cerrarSesion());
         j.setSpacing(14);
         j.getChildren().addAll(h1, h2);
         j.setAlignment(Pos.CENTER);
@@ -74,24 +74,8 @@ public class PaneMenuPrincipal {
         root.setCenter(j);
 
     }
-
-    private Button botonProductos() {
-        Image imagePlay = new Image(getClass().getResource(CONSTANTES.path_image + "/producto.png").toExternalForm());
-        ImageView w = new ImageView();
-        w.setImage(imagePlay);
-        productos = new Button("Agregar Productos");
-        productos.setPrefSize(250, 150);
-        productos.setStyle("-fx-font: 16 Verdana; -fx-base: #FFC0CB; -fx-text-fill: white;");
-        productos.setContentDisplay(ContentDisplay.TOP);
-        productos.setGraphic(w);
-        productos.setOnAction(e -> {
-            PaneArticulos p = new PaneArticulos();
-            Proyecto.scene.setRoot(p.getRoot());
-        });
-        return productos;
-    }
-
-    private Button botonPedidos() {
+    
+     private Button botonPedidos() {
         Image imagePlay = new Image(getClass().getResource(CONSTANTES.path_image + "/nuevo.png").toExternalForm());
         ImageView w = new ImageView();
         w.setImage(imagePlay);
@@ -106,24 +90,7 @@ public class PaneMenuPrincipal {
         });
         return pedidos;
     }
-
-    private Button botonProductosSuc() {
-        Image imagePlay = new Image(getClass().getResource(CONSTANTES.path_image + "/sucursal.png").toExternalForm());
-        ImageView w = new ImageView();
-        w.setImage(imagePlay);
-        productoSucursal = new Button("Agregar productos en Sucursal");
-        productoSucursal.setPrefSize(250, 150);
-        productoSucursal.setStyle("-fx-font: 14 Verdana; -fx-base: #B0C4DE; -fx-text-fill: white;");
-        productoSucursal.setContentDisplay(ContentDisplay.TOP);
-        productoSucursal.setGraphic(w);
-        productoSucursal.setOnAction(e -> {
-            PaneIngresoProductoSucursal p = new PaneIngresoProductoSucursal();
-            Proyecto.scene.setRoot(p.getRoot());
-        });
-        return productoSucursal;
-    }
-
-    private Button verPedidos() {
+      private Button verPedidos() {
         Image imagePlay = new Image(getClass().getResource(CONSTANTES.path_image + "/eyeglasses.png").toExternalForm());
         ImageView w = new ImageView();
         w.setImage(imagePlay);
@@ -133,7 +100,7 @@ public class PaneMenuPrincipal {
         verPedidos.setContentDisplay(ContentDisplay.TOP);
         verPedidos.setGraphic(w);
         verPedidos.setOnAction(e -> {
-            PaneVerPedidos p = new PaneVerPedidos();
+            PaneVerPedidos p= new PaneVerPedidos();
             Proyecto.scene.setRoot(p.getRoot());
         });
         return verPedidos;
@@ -170,14 +137,29 @@ public class PaneMenuPrincipal {
         inventario.setContentDisplay(ContentDisplay.TOP);
         inventario.setGraphic(w);
         inventario.setOnAction(e -> {
-            PaneInventarioSucursal p = new PaneInventarioSucursal();
+            PaneInventarioSucursal p= new PaneInventarioSucursal();
             Proyecto.scene.setRoot(p.getRoot());
         });
         return inventario;
     }
-
-    public Pane getRoot() {
+     
+    private Button verClientes(){
+    Image imagePlay = new Image(getClass().getResource(CONSTANTES.path_image + "/users.png").toExternalForm());
+        ImageView w = new ImageView();
+        w.setImage(imagePlay);
+        verClientes = new Button("Ver clientes", w);
+        verClientes.setPrefSize(250, 150);
+        verClientes.setStyle("-fx-font: 16 Verdana; -fx-base: #B0C4DE; -fx-text-fill: white;");
+        verClientes.setContentDisplay(ContentDisplay.TOP);
+        verClientes.setGraphic(w);
+        verClientes.setOnAction(e -> {
+            PaneVerClientes p= new PaneVerClientes();
+            Proyecto.scene.setRoot(p.getRoot());
+        });
+        return verClientes;
+    
+    }
+     public Pane getRoot() {
         return root;
     }
-
 }

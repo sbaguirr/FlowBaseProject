@@ -12,6 +12,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -39,6 +40,7 @@ public class PaneIngresoProductoSucursal {
     private ComboBox<String> sucursal;
     private TextField cantidad, codigo;
     private Button showMore, agregar, eliminar;
+     private DatePicker fecha;
     
     //private ObservableList<String> listaProductos;
     private TableView tablaProductosSucursal;
@@ -73,18 +75,20 @@ public class PaneIngresoProductoSucursal {
         
         Label Lsucursal = new Label("Seleccione sucursal");
         Label Lproducto = new Label("Seleccione producto");
+        Label Lfecha = new Label("Fecha de entrega");
         Label Lcantidad = new Label("cantidad");
         sucursal = new ComboBox();
         sucursal.setPrefWidth(200);
         cantidad = new TextField();
         codigo = new TextField();
+        fecha= new DatePicker();
         
        
         showMore = new Button("Seleccionar");
         agregar = new Button("Agregar");
        // agregar.setStyle("-fx-background-color: #FF69B4; -fx-text-fill: white;");
-        gp.addColumn(0, Lsucursal, Lproducto, Lcantidad);
-        gp.addColumn(1, sucursal, codigo, cantidad, agregar);
+        gp.addColumn(0, Lsucursal, Lproducto, Lcantidad,Lfecha);
+        gp.addColumn(1, sucursal, codigo, cantidad, fecha,agregar);
         gp.add(showMore, 2, 1);
         
         gp.setVgap(10);
@@ -104,6 +108,7 @@ public class PaneIngresoProductoSucursal {
         TableColumn Tsucursal = new TableColumn<>("Sucursal");
         TableColumn Tcodigo = new TableColumn<>("Codigo del producto");
         TableColumn Tcantidad = new TableColumn<>("Cantidad");
+         TableColumn Tfecha = new TableColumn<>("Fecha");
         Tsucursal.setPrefWidth(190);
         //Tsucursal.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
         propertiesTableView(Tsucursal);
@@ -113,7 +118,10 @@ public class PaneIngresoProductoSucursal {
         Tcantidad.setPrefWidth(200);
         //Tcantidad.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
         propertiesTableView(Tcantidad);
-        tablaProductosSucursal.getColumns().addAll(Tsucursal,Tcodigo, Tcantidad);
+        Tfecha.setPrefWidth(190);
+        //Tfecha.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
+        propertiesTableView(Tfecha);
+        tablaProductosSucursal.getColumns().addAll(Tsucursal,Tcodigo, Tcantidad,Tfecha);
         tablaProductosSucursal.setPrefSize(40, 300);
         vb.setPadding(new Insets(0, 25, 10, 50)); //top, derecha,abajo,izquierda
        

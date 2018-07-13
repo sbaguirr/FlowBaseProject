@@ -6,6 +6,7 @@
 package Main;
 
 import Vista.PaneMenuPrincipal;
+import Vista.PaneMenuPrincipalSucursal;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -26,8 +27,9 @@ public class Proyecto extends Application {
 
          
         
-        PaneMenuPrincipal p = new PaneMenuPrincipal();
-        scene = new Scene(new Group(), 860, 600);
+   //    PaneMenuPrincipal p = new PaneMenuPrincipal(); //descomentar si se quiere ver el menu de matriz
+      PaneMenuPrincipalSucursal p = new PaneMenuPrincipalSucursal();
+        scene = new Scene(new Group(), 1100, 610);
         scene.setRoot(p.getRoot());
         primaryStage.setTitle("Detalles en flores");
         primaryStage.setScene(scene);

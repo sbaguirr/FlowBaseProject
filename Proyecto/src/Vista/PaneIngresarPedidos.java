@@ -15,8 +15,8 @@ import java.util.Date;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Separator;
@@ -24,6 +24,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
@@ -44,13 +45,13 @@ public class PaneIngresarPedidos {
 
     private BorderPane root;
     private TextField cedula, nombres, dnombres, dapellidos, ddir, rdir, dtlf, cantidad, codigo,
-            horario, estado, sub, tot;
+            horario, estado, sub, tot, color, cobro;
     private TextArea mensaje, descrip;
-    private Button buscar, realizar, verCliente, agregar, nuevo;
-    private Label fechaActual, numPedido,vendedor;
-    private ComboBox dia, mes, anio;
+    private Button buscar, realizar, verCliente, agregar;
+    private Label fechaActual, numPedido, vendedor;
+    private DatePicker fpedido;
     //private ObservableList<String> listaProductos;
-    private RadioButton si, no, efectivo, credito, debito;
+    private RadioButton si, no, efectivo, credito, debito, transferencia, paypal;
     private TableView tablaPedido;
 
     public PaneIngresarPedidos() {
@@ -84,15 +85,14 @@ public class PaneIngresarPedidos {
         //   b.getChildren().addAll(nuevo, verCliente);
         HBox hb = new HBox();
         Label Lentrega = new Label("Entrega");
-        si = new RadioButton();
-        si.setText("Si       ");
-        no = new RadioButton();
-        no.setText("No");
+        ToggleGroup grupo = new ToggleGroup();
+        si = new RadioButton("Si       ");
+        si.setToggleGroup(grupo);
+        no = new RadioButton("No");
+        no.setToggleGroup(grupo);
         hb.getChildren().addAll(si, no);
 
         VBox vb = new VBox();
-        HBox fecha = new HBox();
-        fecha.getChildren().addAll(dia, mes, anio);
         HBox comb = new HBox();
         comb.getChildren().addAll(dtlf, hEntrega, horario);
         comb.setSpacing(10);
@@ -111,15 +111,15 @@ public class PaneIngresarPedidos {
         gp.add(fEntrega, 2, 6);
         gp.add(dapellidos, 3, 4);
         gp.add(rdir, 3, 5);
-        gp.add(fecha, 3, 6);
+        gp.add(fpedido, 3, 6);
 
         Separator l = new Separator();
         l.setMaxWidth(850);
-        gp.setVgap(5);
+        gp.setVgap(4);
         gp.setHgap(10);
         vb.setSpacing(10);
         vb.getChildren().addAll(gp, l);
-        vb.setPadding(new Insets(10, 10, 5, 10));
+        vb.setPadding(new Insets(0, 10, 5, 10));
         root.setTop(vb);
     }
 
@@ -148,6 +148,7 @@ public class PaneIngresarPedidos {
         horario = new TextField();
         horario.setDisable(true);
         horario.setPrefWidth(100);
+        cobro = new TextField();
 
         verCliente = new Button("Ver Cliente");
         Image imagePlay = new Image(getClass().getResource(CONSTANTES.path_image + "/search.png").toExternalForm());
@@ -157,15 +158,8 @@ public class PaneIngresarPedidos {
         buscar.setContentDisplay(ContentDisplay.TOP);
         buscar.setGraphic(w);
         buscar.setPrefSize(20, 20);
-        // nuevo = new Button("Nuevo Cliente");
-        realizar = new Button("Realizar");
 
-        dia = new ComboBox();
-        dia.setDisable(true);
-        mes = new ComboBox();
-        mes.setDisable(true);
-        anio = new ComboBox();
-        anio.setDisable(true);
+        realizar = new Button("Realizar");
 
         descrip = new TextArea();
         descrip.setPrefWidth(100);
@@ -179,17 +173,26 @@ public class PaneIngresarPedidos {
         sub.setDisable(true);
         tot = new TextField();
         tot.setDisable(true);
+        color = new TextField();
 
-        efectivo = new RadioButton();
-        efectivo.setText("Efectivo     ");
-        debito = new RadioButton();
-        debito.setText("Débito     ");
-        credito = new RadioButton();
-        credito.setText("Crédito");
-        
-        vendedor= new Label("Nom usuario");
+        ToggleGroup grupo = new ToggleGroup();
+        efectivo = new RadioButton("Efectivo     ");
+        efectivo.setToggleGroup(grupo);
+        debito = new RadioButton("Débito     ");
+        debito.setToggleGroup(grupo);
+        credito = new RadioButton("Crédito");
+        credito.setToggleGroup(grupo);
+        transferencia = new RadioButton("Transferencia");
+        transferencia.setToggleGroup(grupo);
+        paypal = new RadioButton("PayPal");
+        paypal.setToggleGroup(grupo);
+
+        vendedor = new Label("Nom usuario");
         fechaActual = new Label();
-         numPedido = new Label();
+        numPedido = new Label();
+
+        fpedido = new DatePicker();
+        fpedido.setDisable(true);
     }
 
     private void seccionPedido() {
@@ -204,15 +207,16 @@ public class PaneIngresarPedidos {
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         fechaActual.setText(dateFormat.format(r));///
         hb.getChildren().addAll(l, fechaActual);
-         hb2.getChildren().addAll(ve, vendedor);
+        hb2.getChildren().addAll(ve, vendedor);
         numPedido.setText("N pedido 000N");
         Label LcodigoProducto = new Label("Código Producto");
         Label Lcantidad = new Label("Cantidad");
+        Label Lcolor = new Label("Color rosas");
         codigo = new TextField();
         agregar = new Button("Agregar");
         cantidad = new TextField();
-        gp.addRow(0, hb, numPedido,hb2);
-        gp.addRow(1, LcodigoProducto, codigo, Lcantidad, cantidad, agregar);
+        gp.addRow(0, hb, numPedido, hb2);
+        gp.addRow(1, LcodigoProducto, codigo, Lcantidad, cantidad, Lcolor, color, agregar);
         gp.setVgap(10);
         gp.setHgap(10);
         v.getChildren().addAll(gp, tablaArticulo(), seccionCentro());
@@ -266,16 +270,20 @@ public class PaneIngresarPedidos {
         Label descripcion = new Label("Descripción/Observaciones");
         Label stado = new Label("Estado del pedido");
         Label forma = new Label("Forma de Pago");
+        Label hcobro = new Label("Hora de cobro");
         Label subtotal = new Label("Subtotal");
         Label total = new Label("Total");
         HBox g = new HBox();
         g.setSpacing(10);
-        g.getChildren().addAll(efectivo, debito, credito);
+        g.setPadding(new Insets(0.5, 0, 0, 0));
+        g.getChildren().addAll(efectivo, debito, credito, transferencia, paypal);
         GridPane gp = new GridPane();
         gp.add(stado, 0, 0); // stado, estado, forma, g
         gp.add(estado, 1, 0);
         gp.add(forma, 0, 1);
+        gp.add(hcobro, 0, 2);
         gp.add(g, 1, 1);
+        gp.add(cobro, 1, 2);
         gp.add(subtotal, 5, 0);
         gp.add(total, 5, 1);
         gp.add(sub, 6, 0);
@@ -292,9 +300,42 @@ public class PaneIngresarPedidos {
     private void llamarBotones() {
         //  buscarCliente();
         VerCliente();
+        habilitarDestinatario();
+        deshabilitarDestinatario();
         //  agregarProducto();
         // realizarPedido();
         back();
+    }
+
+    private void habilitarDestinatario() {
+        si.setOnAction(e ->{
+            habilitarCasillas();
+        });
+    } 
+     private void deshabilitarDestinatario() {
+        no.setOnAction(e ->{
+            deshabilitarCasillas();
+        });
+    }
+
+    private void habilitarCasillas() {
+        dnombres.setDisable(false);
+        dapellidos.setDisable(false);
+        ddir.setDisable(false);
+        rdir.setDisable(false);
+        dtlf.setDisable(false);
+        fpedido.setDisable(false);
+        horario.setDisable(false);
+    }
+
+    private void deshabilitarCasillas() {
+        dnombres.setDisable(true);
+        dapellidos.setDisable(true);
+        ddir.setDisable(true);
+        rdir.setDisable(true);
+        dtlf.setDisable(true);
+        fpedido.setDisable(true);
+        horario.setDisable(true);
     }
 
     /**
@@ -359,7 +400,8 @@ public class PaneIngresarPedidos {
         back.setContentDisplay(ContentDisplay.TOP);
         back.setGraphic(w);
         back.setOnAction(e -> {
-            PaneMenuPrincipal p = new PaneMenuPrincipal();
+            // PaneMenuPrincipal p = new PaneMenuPrincipal();
+            PaneMenuPrincipalSucursal p = new PaneMenuPrincipalSucursal();
             Proyecto.scene.setRoot(p.getRoot());
         });
         f.getChildren().add(back);
