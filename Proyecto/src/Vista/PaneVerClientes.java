@@ -236,8 +236,8 @@ public class PaneVerClientes {
         back.setContentDisplay(ContentDisplay.TOP);
         back.setGraphic(w);
         back.setOnAction(e -> {
-            // PaneMenuPrincipal p = new PaneMenuPrincipal();
-            PaneMenuPrincipalSucursal p = new PaneMenuPrincipalSucursal();
+             PaneMenuPrincipal p = new PaneMenuPrincipal();
+ 
             Proyecto.scene.setRoot(p.getRoot());
         });
         f.getChildren().add(back);

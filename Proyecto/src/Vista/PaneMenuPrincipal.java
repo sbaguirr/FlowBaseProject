@@ -35,6 +35,7 @@ public class PaneMenuPrincipal {
 
     private BorderPane root;
     private Button productos, pedidos, productoSucursal, verPedidos, cerrarSesion, inventario;
+    public static Label nombreUsuario = new Label();
 
     public PaneMenuPrincipal() {
         root = new BorderPane();
@@ -43,6 +44,7 @@ public class PaneMenuPrincipal {
         root.setBackground(new Background(fondo));
         crearSeccionTitulo();
         menu();
+        label();
     }
 
     private void crearSeccionTitulo() {
@@ -154,7 +156,8 @@ public class PaneMenuPrincipal {
             alert.setHeaderText("¿Está seguro que desea Cerrar Sesión?");
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == ButtonType.OK) {
-//se debe mostrar el login
+                PaneLogin p = new PaneLogin();
+                Proyecto.scene.setRoot(p.getRoot1());
             }
         });
         return cerrarSesion;
@@ -178,6 +181,12 @@ public class PaneMenuPrincipal {
 
     public Pane getRoot() {
         return root;
+    }
+
+    private void label() {
+        nombreUsuario.setStyle("-fx-font: 12 Verdana;");
+        nombreUsuario.setAlignment(Pos.BOTTOM_LEFT);
+        root.setBottom(nombreUsuario);
     }
 
 }

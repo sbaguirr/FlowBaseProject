@@ -6,6 +6,7 @@
 package Vista;
 
 import Main.Proyecto;
+import static Vista.PaneMenuPrincipal.nombreUsuario;
 import controlador.CONSTANTES;
 import java.util.Optional;
 import javafx.geometry.Insets;
@@ -34,7 +35,8 @@ import javafx.scene.text.Font;
 public class PaneMenuPrincipalSucursal {
 
     private BorderPane root;
-    private Button pedidos, verPedidos, cerrarSesion, inventario,verClientes;
+    private Button pedidos, verPedidos, cerrarSesion, inventario, verClientes;
+    public static Label nombreUsuario = new Label();
 
     public PaneMenuPrincipalSucursal() {
         root = new BorderPane();
@@ -43,6 +45,7 @@ public class PaneMenuPrincipalSucursal {
         root.setBackground(new Background(fondo));
         crearSeccionTitulo();
         menu();
+        label();
     }
 
     private void crearSeccionTitulo() {
@@ -56,7 +59,7 @@ public class PaneMenuPrincipalSucursal {
         hbox.setPadding(new Insets(50, 10, 0, 10));
         root.setTop(hbox);
     }
-    
+
     private void menu() {
         VBox j = new VBox();
         HBox h1 = new HBox();
@@ -74,8 +77,8 @@ public class PaneMenuPrincipalSucursal {
         root.setCenter(j);
 
     }
-    
-     private Button botonPedidos() {
+
+    private Button botonPedidos() {
         Image imagePlay = new Image(getClass().getResource(CONSTANTES.path_image + "/nuevo.png").toExternalForm());
         ImageView w = new ImageView();
         w.setImage(imagePlay);
@@ -85,12 +88,13 @@ public class PaneMenuPrincipalSucursal {
         pedidos.setContentDisplay(ContentDisplay.TOP);
         pedidos.setGraphic(w);
         pedidos.setOnAction(e -> {
-            PaneIngresarPedidos p = new PaneIngresarPedidos();
+            PaneIngresarPedidosSucursal p = new PaneIngresarPedidosSucursal();
             Proyecto.scene.setRoot(p.getRoot());
         });
         return pedidos;
     }
-      private Button verPedidos() {
+
+    private Button verPedidos() {
         Image imagePlay = new Image(getClass().getResource(CONSTANTES.path_image + "/eyeglasses.png").toExternalForm());
         ImageView w = new ImageView();
         w.setImage(imagePlay);
@@ -100,7 +104,7 @@ public class PaneMenuPrincipalSucursal {
         verPedidos.setContentDisplay(ContentDisplay.TOP);
         verPedidos.setGraphic(w);
         verPedidos.setOnAction(e -> {
-            PaneVerPedidos p= new PaneVerPedidos();
+            PaneVerPedidosSucursal p = new PaneVerPedidosSucursal();
             Proyecto.scene.setRoot(p.getRoot());
         });
         return verPedidos;
@@ -121,7 +125,8 @@ public class PaneMenuPrincipalSucursal {
             alert.setHeaderText("¿Está seguro que desea Cerrar Sesión?");
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == ButtonType.OK) {
-//se debe mostrar el login
+                PaneLogin p = new PaneLogin();
+                Proyecto.scene.setRoot(p.getRoot1());
             }
         });
         return cerrarSesion;
@@ -137,14 +142,14 @@ public class PaneMenuPrincipalSucursal {
         inventario.setContentDisplay(ContentDisplay.TOP);
         inventario.setGraphic(w);
         inventario.setOnAction(e -> {
-            PaneInventarioSucursal p= new PaneInventarioSucursal();
+            PaneInventarioSucursal p = new PaneInventarioSucursal();
             Proyecto.scene.setRoot(p.getRoot());
         });
         return inventario;
     }
-     
-    private Button verClientes(){
-    Image imagePlay = new Image(getClass().getResource(CONSTANTES.path_image + "/users.png").toExternalForm());
+
+    private Button verClientes() {
+        Image imagePlay = new Image(getClass().getResource(CONSTANTES.path_image + "/users.png").toExternalForm());
         ImageView w = new ImageView();
         w.setImage(imagePlay);
         verClientes = new Button("Ver clientes", w);
@@ -153,13 +158,20 @@ public class PaneMenuPrincipalSucursal {
         verClientes.setContentDisplay(ContentDisplay.TOP);
         verClientes.setGraphic(w);
         verClientes.setOnAction(e -> {
-            PaneVerClientes p= new PaneVerClientes();
+            PaneVerClientesSucursal p = new PaneVerClientesSucursal();
             Proyecto.scene.setRoot(p.getRoot());
         });
         return verClientes;
-    
+
     }
-     public Pane getRoot() {
+
+    public Pane getRoot() {
         return root;
+    }
+
+    private void label() {
+        nombreUsuario.setStyle("-fx-font: 12 Verdana;");
+        nombreUsuario.setAlignment(Pos.BOTTOM_LEFT);
+        root.setBottom(nombreUsuario);
     }
 }

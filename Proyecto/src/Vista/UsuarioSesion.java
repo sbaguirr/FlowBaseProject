@@ -26,9 +26,10 @@ public class UsuarioSesion {
     
     public static LinkedList<UsuarioSesion> Usuarios(){
         LinkedList<UsuarioSesion> listaUsuarios = new LinkedList<>();
-        listaUsuarios.add(new UsuarioSesion("Rog", "rog"));
-        listaUsuarios.add(new UsuarioSesion("Rosa", "1234"));
-        listaUsuarios.add(new UsuarioSesion("Stef", "stef"));
+        listaUsuarios.add(new UsuarioSesion("admin", "admin"));
+        listaUsuarios.add(new UsuarioSesion("rog", "rog"));
+        listaUsuarios.add(new UsuarioSesion("rosa", "1234"));
+        listaUsuarios.add(new UsuarioSesion("stef", "stef"));
         return listaUsuarios;
     }
     

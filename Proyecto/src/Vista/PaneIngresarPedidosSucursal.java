@@ -41,7 +41,7 @@ import javafx.scene.paint.Color;
  *
  * @author Tiffy
  */
-public class PaneIngresarPedidos {
+public class PaneIngresarPedidosSucursal {
 
     private BorderPane root;
     private TextField cedula, nombres, dnombres, dapellidos, ddir, rdir, dtlf, cantidad, codigo,
@@ -54,7 +54,7 @@ public class PaneIngresarPedidos {
     private RadioButton si, no, efectivo, credito, debito, transferencia, paypal;
     private TableView tablaPedido;
 
-    public PaneIngresarPedidos() {
+    public PaneIngresarPedidosSucursal() {
         root = new BorderPane();
         BackgroundFill fondo = new BackgroundFill(Color.LINEN, new CornerRadii(1),
                 new Insets(0.0, 0.0, 0.0, 0.0));
@@ -400,7 +400,7 @@ public class PaneIngresarPedidos {
         back.setContentDisplay(ContentDisplay.TOP);
         back.setGraphic(w);
         back.setOnAction(e -> {
-            PaneMenuPrincipal p = new PaneMenuPrincipal();
+            PaneMenuPrincipalSucursal p = new PaneMenuPrincipalSucursal();
             Proyecto.scene.setRoot(p.getRoot());
         });
         f.getChildren().add(back);

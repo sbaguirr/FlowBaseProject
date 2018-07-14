@@ -34,7 +34,7 @@ import javafx.scene.text.Font;
  *
  * @author Tiffy
  */
-public class PaneVerPedidos {
+public class PaneVerPedidosSucursal {
 
     private BorderPane root;
     private TableView tablaPedidos;
@@ -43,7 +43,7 @@ public class PaneVerPedidos {
     private Button filtrar;
     private DatePicker desde, hasta, entrega;
 
-    public PaneVerPedidos() {
+    public PaneVerPedidosSucursal() {
         root = new BorderPane();
         BackgroundFill fondo = new BackgroundFill(Color.LINEN, new CornerRadii(1),
                 new Insets(0.0, 0.0, 0.0, 0.0));
@@ -187,8 +187,7 @@ public class PaneVerPedidos {
         back.setContentDisplay(ContentDisplay.TOP);
         back.setGraphic(w);
         back.setOnAction(e -> {
-            PaneMenuPrincipal p = new PaneMenuPrincipal();
-      //      PaneMenuPrincipalSucursal p = new PaneMenuPrincipalSucursal();
+            PaneMenuPrincipalSucursal p = new PaneMenuPrincipalSucursal();
             Proyecto.scene.setRoot(p.getRoot());
         });
         f.getChildren().add(back);
