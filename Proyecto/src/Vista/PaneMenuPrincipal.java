@@ -34,7 +34,7 @@ import javafx.scene.text.Font;
 public class PaneMenuPrincipal {
 
     private BorderPane root;
-    private Button productos, pedidos, productoSucursal, verPedidos, cerrarSesion, inventario;
+    private Button productos, pedidos, productoSucursal, verPedidos, cerrarSesion, clientes;
     public static Label nombreUsuario = new Label();
 
     public PaneMenuPrincipal() {
@@ -68,7 +68,7 @@ public class PaneMenuPrincipal {
         HBox h2 = new HBox();
         h2.setSpacing(14);
         h2.setAlignment(Pos.CENTER);
-        h2.getChildren().addAll(verPedidos(), inventarioS(), cerrarSesion());
+        h2.getChildren().addAll(verPedidos(), clientes(), cerrarSesion());
         j.setSpacing(14);
         j.getChildren().addAll(h1, h2);
         j.setAlignment(Pos.CENTER);
@@ -163,20 +163,20 @@ public class PaneMenuPrincipal {
         return cerrarSesion;
     }
 
-    private Button inventarioS() {
-        Image imagePlay = new Image(getClass().getResource(CONSTANTES.path_image + "/inventario.png").toExternalForm());
+    private Button clientes() {
+        Image imagePlay = new Image(getClass().getResource(CONSTANTES.path_image + "/users.png").toExternalForm());
         ImageView w = new ImageView();
         w.setImage(imagePlay);
-        inventario = new Button("Inventario", w);
-        inventario.setPrefSize(250, 150);
-        inventario.setStyle("-fx-font: 16 Verdana; -fx-base: #00CED1; -fx-text-fill: white;");
-        inventario.setContentDisplay(ContentDisplay.TOP);
-        inventario.setGraphic(w);
-        inventario.setOnAction(e -> {
-            PaneInventarioSucursal p = new PaneInventarioSucursal();
+        clientes = new Button("Ver clientes", w);
+        clientes.setPrefSize(250, 150);
+        clientes.setStyle("-fx-font: 16 Verdana; -fx-base: #00CED1; -fx-text-fill: white;");
+        clientes.setContentDisplay(ContentDisplay.TOP);
+        clientes.setGraphic(w);
+        clientes.setOnAction(e -> {
+            PaneVerClientes p = new PaneVerClientes();
             Proyecto.scene.setRoot(p.getRoot());
         });
-        return inventario;
+        return clientes;
     }
 
     public Pane getRoot() {

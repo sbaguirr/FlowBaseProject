@@ -236,9 +236,13 @@ public class PaneVerClientes {
         back.setContentDisplay(ContentDisplay.TOP);
         back.setGraphic(w);
         back.setOnAction(e -> {
-             PaneMenuPrincipal p = new PaneMenuPrincipal();
- 
-            Proyecto.scene.setRoot(p.getRoot());
+            if (PaneMenuPrincipal.nombreUsuario.getText().equals("") && !PaneMenuPrincipalSucursal.nombreUsuario.getText().equals("")) {
+                PaneMenuPrincipalSucursal p = new PaneMenuPrincipalSucursal();
+                Proyecto.scene.setRoot(p.getRoot());
+            } else {
+                PaneMenuPrincipal p = new PaneMenuPrincipal();
+                Proyecto.scene.setRoot(p.getRoot());
+            }
         });
         f.getChildren().add(back);
         f.setAlignment(Pos.BOTTOM_LEFT);

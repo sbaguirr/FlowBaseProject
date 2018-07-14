@@ -88,7 +88,7 @@ public class PaneMenuPrincipalSucursal {
         pedidos.setContentDisplay(ContentDisplay.TOP);
         pedidos.setGraphic(w);
         pedidos.setOnAction(e -> {
-            PaneIngresarPedidosSucursal p = new PaneIngresarPedidosSucursal();
+            PaneIngresarPedidos p = new PaneIngresarPedidos();
             Proyecto.scene.setRoot(p.getRoot());
         });
         return pedidos;
@@ -104,7 +104,7 @@ public class PaneMenuPrincipalSucursal {
         verPedidos.setContentDisplay(ContentDisplay.TOP);
         verPedidos.setGraphic(w);
         verPedidos.setOnAction(e -> {
-            PaneVerPedidosSucursal p = new PaneVerPedidosSucursal();
+            PaneVerPedidos p = new PaneVerPedidos();
             Proyecto.scene.setRoot(p.getRoot());
         });
         return verPedidos;
@@ -158,7 +158,7 @@ public class PaneMenuPrincipalSucursal {
         verClientes.setContentDisplay(ContentDisplay.TOP);
         verClientes.setGraphic(w);
         verClientes.setOnAction(e -> {
-            PaneVerClientesSucursal p = new PaneVerClientesSucursal();
+            PaneVerClientes p = new PaneVerClientes();
             Proyecto.scene.setRoot(p.getRoot());
         });
         return verClientes;
