@@ -7,6 +7,7 @@ package Vista;
 
 import Main.Proyecto;
 import controlador.CONSTANTES;
+import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -38,7 +39,7 @@ public class PaneVerPedidos {
 
     private BorderPane root;
     private TableView tablaPedidos;
-    private ComboBox combo;
+    private ComboBox<String> combo;
     private TextField campo;
     private Button filtrar;
     private DatePicker desde, hasta, entrega;
@@ -175,6 +176,24 @@ public class PaneVerPedidos {
         c.setResizable(true);
         c.setEditable(false);
     }
+    
+    /**
+     * De acuerdo a lo seleccionado en el combo, se aplicarán los filtros
+     */
+    private void cargarCombo(){
+     String se[] = {"Todos", "Destinatario"}; //agregar los otros
+     combo.setItems(FXCollections.observableArrayList(se));
+     
+    }
+    /**
+     * Método que al seleccionar un comboBox devuelve un String
+     *
+     * @return g, String
+     */
+    private String sexo() {
+        return combo.getSelectionModel().getSelectedItem();
+    }
+
 
     private void back() {
         HBox f = new HBox();
