@@ -206,7 +206,7 @@ public class PaneVerPedidos {
         back.setContentDisplay(ContentDisplay.TOP);
         back.setGraphic(w);
         back.setOnAction(e -> {
-           if (PaneMenuPrincipal.nombreUsuario.getText().equals("") && !PaneMenuPrincipalSucursal.nombreUsuario.getText().equals("")) {
+           if (PaneMenuPrincipal.nombreUsuario.getText().equals("") && !PaneMenuPrincipalSucursal.nombreUsuarioSucursal.getText().equals("")) {
                 PaneMenuPrincipalSucursal p = new PaneMenuPrincipalSucursal();
                 Proyecto.scene.setRoot(p.getRoot());
             } else {

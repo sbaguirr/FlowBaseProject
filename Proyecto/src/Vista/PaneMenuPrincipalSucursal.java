@@ -6,7 +6,6 @@
 package Vista;
 
 import Main.Proyecto;
-import static Vista.PaneMenuPrincipal.nombreUsuario;
 import controlador.CONSTANTES;
 import java.util.Optional;
 import javafx.geometry.Insets;
@@ -36,7 +35,7 @@ public class PaneMenuPrincipalSucursal {
 
     private BorderPane root;
     private Button pedidos, verPedidos, cerrarSesion, inventario, verClientes;
-    public static Label nombreUsuario = new Label();
+    public static Label nombreUsuarioSucursal = new Label();
 
     public PaneMenuPrincipalSucursal() {
         root = new BorderPane();
@@ -170,8 +169,12 @@ public class PaneMenuPrincipalSucursal {
     }
 
     private void label() {
-        nombreUsuario.setStyle("-fx-font: 12 Verdana;");
-        nombreUsuario.setAlignment(Pos.BOTTOM_LEFT);
-        root.setBottom(nombreUsuario);
+        nombreUsuarioSucursal.setStyle("-fx-font: 12 Verdana;");
+        HBox b = new HBox();
+        b.setAlignment(Pos.BOTTOM_CENTER);
+        Label user = new Label("Sesión actual: ");
+        user.setStyle("-fx-font: 12 Verdana;");
+        b.getChildren().addAll(user, nombreUsuarioSucursal);
+        root.setBottom(b);
     }
 }

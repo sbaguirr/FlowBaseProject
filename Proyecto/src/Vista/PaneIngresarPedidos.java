@@ -10,8 +10,6 @@ import controlador.CONSTANTES;
 import controlador.VentanaDialogo;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -443,7 +441,7 @@ public class PaneIngresarPedidos {
         back.setContentDisplay(ContentDisplay.TOP);
         back.setGraphic(w);
         back.setOnAction(e -> {
-            if (PaneMenuPrincipal.nombreUsuario.getText().equals("") && !PaneMenuPrincipalSucursal.nombreUsuario.getText().equals("")) {
+            if (PaneMenuPrincipal.nombreUsuario.getText().equals("") && !PaneMenuPrincipalSucursal.nombreUsuarioSucursal.getText().equals("")) {
                 PaneMenuPrincipalSucursal p = new PaneMenuPrincipalSucursal();
                 Proyecto.scene.setRoot(p.getRoot());
             } else {

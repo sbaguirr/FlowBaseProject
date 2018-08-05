@@ -4,10 +4,8 @@ package Vista;
 import Main.Proyecto;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -17,14 +15,12 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
-import Vista.UsuarioSesion;
 import controlador.CONSTANTES;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 
@@ -116,25 +112,35 @@ public class PaneLogin {
         VBox v = new VBox();
         v.getChildren().add(login);
         v.setAlignment(Pos.CENTER);
+        login.setOnKeyPressed((KeyEvent event) -> {
+            if (event.getCode().equals(KeyCode.ENTER)){
+                validarInicioSesion();
+            }
+        });
         login.setOnAction(e -> {
-            if (UsuarioSesion.Usuarios().contains(new UsuarioSesion(user.getText(), contra.getText()))) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            validarInicioSesion();
+        });
+        return v;
+    }
+
+    public void validarInicioSesion(){
+        if (UsuarioSesion.Usuarios().contains(new UsuarioSesion(user.getText(), contra.getText()))) {
+                /*Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Mensaje del sistema");
                 alert.setHeaderText("");
                 alert.setContentText("Inicio correcto");
-                alert.showAndWait();
+                alert.showAndWait();*/
                 if (user.getText().equalsIgnoreCase("admin")) {
                     PaneMenuPrincipal pn = new PaneMenuPrincipal();
                     PaneMenuPrincipal.nombreUsuario.setText("admin");
                     Proyecto.scene.setRoot(pn.getRoot());
                 } else {
                     PaneMenuPrincipalSucursal pn = new PaneMenuPrincipalSucursal();
-                    PaneMenuPrincipalSucursal.nombreUsuario.setText(user.getText());
+                    PaneMenuPrincipalSucursal.nombreUsuarioSucursal.setText(user.getText());
                     Proyecto.scene.setRoot(pn.getRoot());
                 }
                 user.setText("");
                 contra.setText("");
-
             } else {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Mensaje del sistema");
@@ -144,11 +150,6 @@ public class PaneLogin {
                 user.setText("");
                 contra.setText("");
             }
-
-        });
-
-        return v;
-    }
-
+        }
  
 }

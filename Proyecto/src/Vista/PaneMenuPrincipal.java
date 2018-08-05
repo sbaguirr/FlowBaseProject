@@ -185,8 +185,12 @@ public class PaneMenuPrincipal {
 
     private void label() {
         nombreUsuario.setStyle("-fx-font: 12 Verdana;");
-        nombreUsuario.setAlignment(Pos.BOTTOM_LEFT);
-        root.setBottom(nombreUsuario);
+        HBox b = new HBox();
+        b.setAlignment(Pos.BOTTOM_CENTER);
+        Label user = new Label("Sesión actual: ");
+        user.setStyle("-fx-font: 12 Verdana;");
+        b.getChildren().addAll(user, nombreUsuario);
+        root.setBottom(b);
     }
 
 }
