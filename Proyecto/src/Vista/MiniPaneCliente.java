@@ -5,6 +5,7 @@
  */
 package Vista;
 
+import controlador.VentanaDialogo;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -21,6 +22,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import modelo.Tb_cliente;
+import modelo.Tb_telefono;
 
 /**
  *
@@ -29,9 +32,10 @@ import javafx.stage.Stage;
 public class MiniPaneCliente {
 
     private BorderPane root;
-    private TextField cedula, nombres, apellidos, telefono, email, dir, tlf, ruc, oNombre, oDir, oTlf;
-    private Button guardar, modificar;
+    public static TextField cedula, nombres, apellidos, telefono, email, dir, tlf, ruc, oNombre, oDir, oTlf;
+    public static Button guardar, modificar;
     private Stage stageForm;
+    private Conexion co = new Conexion();
 
     public MiniPaneCliente() {
         root = new BorderPane();
@@ -112,16 +116,45 @@ public class MiniPaneCliente {
 
     }
 
-    /**
+    /**Aun no vale :D
      * Permite guardar un nuevo cliente Validaciones: que todos los campos esten
      * llenos
      */
-    public void guardarCliente() {
+    private void guardarCliente() {
         guardar.setOnAction(e -> {
-
+            if (!cedula.getText().equals("")) {
+                co.connect();
+                Tb_cliente f = Tb_cliente.buscarCliente(cedula.getText(), co.getC());
+                if (f.getCi_cliente() == null) {
+                    Tb_cliente.ingresarDatosCliente(cedula.getText(), nombres.getText(), apellidos.getText(), dir.getText(), email.getText(), co.getC());
+                    Tb_telefono.ingresarTelefonosCliente(telefono.getText(), cedula.getText(), co.getC());
+                    Tb_telefono.ingresarTelefonosCliente(tlf.getText(), cedula.getText(), co.getC());
+                    co.cerrarConexion();
+                    VentanaDialogo.dialogoAccion();
+                } else {
+                    VentanaDialogo.VentanaRegistroDuplicado();
+                }
+            } else {
+                VentanaDialogo.dialogoAdvertencia();
+            }
         });
     }
 
+    /**
+     * Carga los datos del cliente
+     * ingresado, se usa en PaneIngresarPedidos
+     */
+    public void cargarDatos() {
+        cedula.setText(PaneIngresarPedidos.f.getCi_cliente());
+        nombres.setText(PaneIngresarPedidos.f.getNombres());
+        apellidos.setText(PaneIngresarPedidos.f.getApellidos());
+        dir.setText(PaneIngresarPedidos.f.getDireccion());
+        email.setText(PaneIngresarPedidos.f.getEmail());
+        telefono.setText(PaneIngresarPedidos.f.getTlf().get(0).getTelefono());
+        tlf.setText(PaneIngresarPedidos.f.getTlf().get(1).getTelefono());
+    }
+    
+    
     /**
      * Permite actualizar la info del cliente Validaciones: que todos los campos
      * esten llenos

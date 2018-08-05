@@ -7,6 +7,7 @@ package Vista;
 
 import Main.Proyecto;
 import controlador.CONSTANTES;
+import controlador.VentanaDialogo;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -36,6 +37,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import modelo.Tb_cliente;
 
 /**
  *
@@ -47,12 +49,14 @@ public class PaneIngresarPedidos {
     private TextField cedula, nombres, dnombres, dapellidos, ddir, rdir, dtlf, cantidad, codigo,
             horario, estado, sub, tot, color, cobro;
     private TextArea mensaje, descrip;
-    private Button buscar, realizar, verCliente, agregar;
+    private Button buscar, realizar, verCliente, agregar, nuevoCliente;
     private Label fechaActual, numPedido, vendedor;
     private DatePicker fpedido;
     //private ObservableList<String> listaProductos;
     private RadioButton si, no, efectivo, credito, debito, transferencia, paypal;
     private TableView tablaPedido;
+    private Conexion c = new Conexion(); //new
+    public static Tb_cliente f;
 
     public PaneIngresarPedidos() {
         root = new BorderPane();
@@ -96,11 +100,14 @@ public class PaneIngresarPedidos {
         HBox comb = new HBox();
         comb.getChildren().addAll(dtlf, hEntrega, horario);
         comb.setSpacing(10);
-
+        HBox botones = new HBox();
+        botones.getChildren().addAll(verCliente, nuevoCliente);
+        botones.setSpacing(10);
+        botones.setPadding(new Insets(15, 0, 0, 0));
         GridPane gp = new GridPane();
         gp.addColumn(0, Lcedula, Lnombre, Lentrega, Ldestino, Ldnombre, Ldireccion, Ltelefono);
         gp.addColumn(1, cedula, nombres, hb);
-        gp.addColumn(3, verCliente);
+        gp.addColumn(3, botones);
 
         gp.add(dnombres, 1, 4);
         gp.add(ddir, 1, 5);
@@ -125,6 +132,7 @@ public class PaneIngresarPedidos {
 
     private void inicializarObjetos() {
         buscar = new Button();
+        nuevoCliente = new Button("Nuevo Cliente");
         nombres = new TextField();
         nombres.setDisable(true);
         nombres.setPrefWidth(300);
@@ -151,6 +159,7 @@ public class PaneIngresarPedidos {
         cobro = new TextField();
 
         verCliente = new Button("Ver Cliente");
+        verCliente.setDisable(true);
         Image imagePlay = new Image(getClass().getResource(CONSTANTES.path_image + "/search.png").toExternalForm());
         ImageView w = new ImageView();
         w.setImage(imagePlay);
@@ -298,8 +307,9 @@ public class PaneIngresarPedidos {
     }
 
     private void llamarBotones() {
-        //  buscarCliente();
+        buscarCliente();
         VerCliente();
+        NuevoCliente();
         habilitarDestinatario();
         deshabilitarDestinatario();
         //  agregarProducto();
@@ -308,12 +318,13 @@ public class PaneIngresarPedidos {
     }
 
     private void habilitarDestinatario() {
-        si.setOnAction(e ->{
+        si.setOnAction(e -> {
             habilitarCasillas();
         });
-    } 
-     private void deshabilitarDestinatario() {
-        no.setOnAction(e ->{
+    }
+
+    private void deshabilitarDestinatario() {
+        no.setOnAction(e -> {
             deshabilitarCasillas();
         });
     }
@@ -348,7 +359,22 @@ public class PaneIngresarPedidos {
      */
     private void buscarCliente() {
         buscar.setOnAction(e -> {
-
+            if (!cedula.getText().equals("")) {
+                c.connect();
+                f = Tb_cliente.buscarCliente(cedula.getText(), c.getC());
+                c.cerrarConexion();
+                if (f.getCi_cliente() != null) {
+                    String k = f.getNombres() + " " + f.getApellidos();
+                    nombres.setText(k);
+                    verCliente.setDisable(false); 
+                } else {
+                    VentanaDialogo.VentanaRegistroNoEncontrado();
+                    nombres.setText("");
+                }
+            } else {
+                VentanaDialogo.dialogoAdvertencia();
+                nombres.setText("");
+            }
         });
     }
 
@@ -361,8 +387,25 @@ public class PaneIngresarPedidos {
      */
     private void VerCliente() {
         verCliente.setOnAction(e -> {
-            MiniPaneCliente pm = new MiniPaneCliente();
-            pm.showWindow();
+            if (!cedula.getText().equals("") && f.getCi_cliente() != null) {
+                MiniPaneCliente pk = new MiniPaneCliente();
+                MiniPaneCliente.guardar.setDisable(true); 
+                pk.cargarDatos(); 
+                pk.showWindow();
+            } else {
+                VentanaDialogo.dialogoAdvertencia();
+            }
+        });
+    }
+
+    /**
+     * Agregar un nuevo cliente
+     */
+    private void NuevoCliente() {
+        nuevoCliente.setOnAction(e -> {
+            MiniPaneCliente pk = new MiniPaneCliente();
+            MiniPaneCliente.modificar.setDisable(true);
+            pk.showWindow();
         });
     }
 
@@ -400,7 +443,7 @@ public class PaneIngresarPedidos {
         back.setContentDisplay(ContentDisplay.TOP);
         back.setGraphic(w);
         back.setOnAction(e -> {
-             if (PaneMenuPrincipal.nombreUsuario.getText().equals("") && !PaneMenuPrincipalSucursal.nombreUsuario.getText().equals("")) {
+            if (PaneMenuPrincipal.nombreUsuario.getText().equals("") && !PaneMenuPrincipalSucursal.nombreUsuario.getText().equals("")) {
                 PaneMenuPrincipalSucursal p = new PaneMenuPrincipalSucursal();
                 Proyecto.scene.setRoot(p.getRoot());
             } else {

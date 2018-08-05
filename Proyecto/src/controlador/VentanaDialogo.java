@@ -76,7 +76,7 @@ public class VentanaDialogo {
     }
     
     /** 
-     * Método que permitirá mostrar una ventana cuando no exista un registro buscado
+     * Método que permitirá mostrar una ventana cuando ya exista un registro buscado
      */
     public static void VentanaRegistroDuplicado() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
