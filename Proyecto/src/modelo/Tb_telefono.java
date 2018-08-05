@@ -59,13 +59,13 @@ public class Tb_telefono {
     }
 public static void ingresarTelefonosCliente(String telefono,String ci,Connection c){
     try {
-            String consulta= "insert into db_flowbase.tb_telefono values (?,?)";
+            String consulta= "insert into db_flowbase.tb_telefono(telefono,ci_cliente) values (?,?)";
              PreparedStatement ingreso = c.prepareStatement(consulta);
-             ingreso.setString(1, ci);
-             ingreso.setString(2, telefono);
+             ingreso.setString(1, telefono);
+             ingreso.setString(2, ci);
              int j= ingreso.executeUpdate();
              if(j>0){ //BORRAR LUEGO
-                 System.out.println("ingreso exitoso...");
+                 System.out.println("ingreso exitoso telefono...");
              }
         } catch (SQLException ex) {
             System.out.println("EXCEPCION: " + ex.getMessage());
@@ -77,11 +77,11 @@ public static void actualizarTelefonosCliente(String telefono,String ci,Connecti
     try {
             String consulta= "update db_flowbase.tb_telefono set telefono=?,?)";
              PreparedStatement ingreso = c.prepareStatement(consulta);
-             ingreso.setString(1, ci);
-             ingreso.setString(2, telefono);
+             ingreso.setString(1, telefono);
+             ingreso.setString(2, ci);
              int j= ingreso.executeUpdate();
              if(j>0){ //BORRAR LUEGO
-                 System.out.println("ingreso exitoso...");
+                 System.out.println("actualizacion exitosa telefono...");
              }
         } catch (SQLException ex) {
             System.out.println("EXCEPCION: " + ex.getMessage());

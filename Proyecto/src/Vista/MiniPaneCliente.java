@@ -44,6 +44,7 @@ public class MiniPaneCliente {
         root.setBackground(new Background(fondo));
         inicializarObjetos();
         seccionFormulario();
+        guardarCliente();
     }
 
     public Pane getRoot() {
@@ -116,9 +117,8 @@ public class MiniPaneCliente {
 
     }
 
-    /**Aun no vale :D
-     * Permite guardar un nuevo cliente Validaciones: que todos los campos esten
-     * llenos
+    /**
+     * Permite guardar un nuevo cliente Validaciones: que el campo ci no esté vacio
      */
     private void guardarCliente() {
         guardar.setOnAction(e -> {
@@ -131,6 +131,7 @@ public class MiniPaneCliente {
                     Tb_telefono.ingresarTelefonosCliente(tlf.getText(), cedula.getText(), co.getC());
                     co.cerrarConexion();
                     VentanaDialogo.dialogoAccion();
+                    limpiarCampos();
                 } else {
                     VentanaDialogo.VentanaRegistroDuplicado();
                 }
@@ -154,6 +155,18 @@ public class MiniPaneCliente {
         tlf.setText(PaneIngresarPedidos.f.getTlf().get(1).getTelefono());
     }
     
+    /**
+     * 
+     */
+    private void limpiarCampos() {
+        cedula.setText("");
+        nombres.setText("");
+        apellidos.setText("");
+        dir.setText("");
+        email.setText("");
+        telefono.setText("");
+        tlf.setText("");
+    }
     
     /**
      * Permite actualizar la info del cliente Validaciones: que todos los campos
