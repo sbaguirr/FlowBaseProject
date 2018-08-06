@@ -7,6 +7,12 @@ package Vista;
 
 import Main.Proyecto;
 import controlador.CONSTANTES;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -28,6 +34,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import modelo.Articulo;
+import static modelo.Articulo.llenarArticulos;
 
 /**
  *
@@ -38,10 +46,15 @@ public class PaneArticulos {
     private BorderPane root;
     private TextField codigo, descripcion, costo;
     private Button nuevo, guardar, actualizar, eliminar, modificar;
-    //private ObservableList<String> listaProductos;
+    private ObservableList<Articulo> listaProductos;
     private TableView tablaProductos;
+    private Conexion cone ;
+   
 
     public PaneArticulos() {
+        cone = new Conexion();
+        cone.connect();
+        listaProductos = FXCollections.observableArrayList();
         root = new BorderPane();
         BackgroundFill fondo = new BackgroundFill(Color.LINEN, new CornerRadii(1),
                 new Insets(0.0, 0.0, 0.0, 0.0));
@@ -114,7 +127,7 @@ public class PaneArticulos {
         costo.setDisable(false);
         guardar.setDisable(false);
     }
-
+    
     private void Secciontabla() {  //corregir
         VBox vb = new VBox();
         HBox hb = new HBox();
@@ -123,19 +136,33 @@ public class PaneArticulos {
         nuevo = new Button("Nuevo");
         hb.getChildren().addAll(nuevo, eliminar, modificar);
         tablaProductos = new TableView();
-        TableColumn codigoProd = new TableColumn<>("Código");
-        TableColumn descrip = new TableColumn<>("Descripción");
+        
+        llenarArticulos(cone.getC(),listaProductos);
+        TableColumn<Articulo, String> codigoProd = new TableColumn<>("Código");
+        TableColumn<Articulo, String> nombre = new TableColumn<>("Nombre");
+        TableColumn<Articulo, String> descrip = new TableColumn<>("Descripción");
         TableColumn cost = new TableColumn<>("Costo");
+        TableColumn color = new TableColumn<>("Color");
         codigoProd.setPrefWidth(190);
-        //codigoProd.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
+        
+        
+        
+        codigoProd.setCellValueFactory(new PropertyValueFactory<>("cod_articulo"));
         propertiesTableView(codigoProd);
         descrip.setPrefWidth(300);
-        //descrip.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
+        
+        nombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+        descrip.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
         propertiesTableView(descrip);
+        propertiesTableView(nombre);
         cost.setPrefWidth(200);
-        //cost.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
+        
+        cost.setCellValueFactory(new PropertyValueFactory<>("costo"));
+        color.setCellValueFactory(new PropertyValueFactory<>("color"));
         propertiesTableView(cost);
-        tablaProductos.getColumns().addAll(codigoProd, descrip, cost);
+        propertiesTableView(color);
+        tablaProductos.setItems(listaProductos);
+        tablaProductos.getColumns().addAll(codigoProd, nombre, descrip, cost, color);
         tablaProductos.setPrefSize(40, 300);
         vb.setPadding(new Insets(0, 25, 10, 50)); //top, derecha,abajo,izquierda
         vb.getChildren().addAll(tablaProductos, hb);

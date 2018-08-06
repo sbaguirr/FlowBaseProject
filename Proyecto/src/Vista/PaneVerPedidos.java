@@ -6,6 +6,7 @@
 package Vista;
 
 import Main.Proyecto;
+import static Vista.Conexion.llenar;
 import controlador.CONSTANTES;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
@@ -18,6 +19,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
@@ -43,7 +45,7 @@ public class PaneVerPedidos {
     private TextField campo;
     private Button filtrar;
     private DatePicker desde, hasta, entrega;
-
+    
     public PaneVerPedidos() {
         root = new BorderPane();
         BackgroundFill fondo = new BackgroundFill(Color.LINEN, new CornerRadii(1),
@@ -122,10 +124,10 @@ public class PaneVerPedidos {
         TableColumn tra = new TableColumn<>("Destinatario");
         TableColumn cant = new TableColumn<>("Estado");
         fe.setPrefWidth(100);
-        //fe.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
+        fe.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
         propertiesTableView(fe);
         obs.setPrefWidth(100);
-        //obs.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
+        obs.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
         propertiesTableView(obs);
         fee.setPrefWidth(100);
         //fee.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
