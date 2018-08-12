@@ -35,6 +35,7 @@ public class MiniPaneCliente {
     public static TextField cedula, nombres, apellidos, telefono, email, dir, tlf, ruc, oNombre, oDir, oTlf;
     public static Button guardar, modificar;
     private Stage stageForm;
+    private static String tl1, tl2;
     private Conexion co = new Conexion();
 
     public MiniPaneCliente() {
@@ -42,13 +43,18 @@ public class MiniPaneCliente {
         BackgroundFill fondo = new BackgroundFill(Color.LINEN, new CornerRadii(1),
                 new Insets(0.0, 0.0, 0.0, 0.0));
         root.setBackground(new Background(fondo));
-        inicializarObjetos();
-        seccionFormulario();
-        guardarCliente();
+        llamarMetodos();
     }
 
     public Pane getRoot() {
         return root;
+    }
+
+    private void llamarMetodos() {
+        inicializarObjetos();
+        seccionFormulario();
+        guardarCliente();
+        ModificarCliente();
     }
 
     private void seccionFormulario() {
@@ -118,7 +124,8 @@ public class MiniPaneCliente {
     }
 
     /**
-     * Permite guardar un nuevo cliente Validaciones: que el campo ci no esté vacio
+     * Permite guardar un nuevo cliente Validaciones: que el campo ci no esté
+     * vacio
      */
     private void guardarCliente() {
         guardar.setOnAction(e -> {
@@ -142,8 +149,7 @@ public class MiniPaneCliente {
     }
 
     /**
-     * Carga los datos del cliente
-     * ingresado, se usa en PaneIngresarPedidos
+     * Carga los datos del cliente ingresado, se usa en PaneIngresarPedidos
      */
     public void cargarDatos() {
         cedula.setText(PaneIngresarPedidos.f.getCi_cliente());
@@ -152,11 +158,13 @@ public class MiniPaneCliente {
         dir.setText(PaneIngresarPedidos.f.getDireccion());
         email.setText(PaneIngresarPedidos.f.getEmail());
         telefono.setText(PaneIngresarPedidos.f.getTlf().get(0).getTelefono());
+        tl1 = PaneIngresarPedidos.f.getTlf().get(0).getTelefono();
         tlf.setText(PaneIngresarPedidos.f.getTlf().get(1).getTelefono());
+        tl2 = PaneIngresarPedidos.f.getTlf().get(1).getTelefono();
     }
-    
+
     /**
-     * 
+     *
      */
     private void limpiarCampos() {
         cedula.setText("");
@@ -167,14 +175,18 @@ public class MiniPaneCliente {
         telefono.setText("");
         tlf.setText("");
     }
-    
-    /**
-     * Permite actualizar la info del cliente Validaciones: que todos los campos
-     * esten llenos
-     */
-    public void ModificarCliente() {
-        guardar.setOnAction(e -> {
 
+    /**
+     * Permite actualizar la info del cliente Validaciones: ninguna
+     */
+    private void ModificarCliente() {
+        modificar.setOnAction(e -> {
+            co.connect();
+            Tb_cliente.actualizarDatosCliente(cedula.getText(), nombres.getText(), apellidos.getText(), dir.getText(), email.getText(), co.getC());
+            Tb_telefono.actualizarTelefonosCliente(telefono.getText(), tl1, cedula.getText(), co.getC());
+            Tb_telefono.actualizarTelefonosCliente(tlf.getText(), tl2, cedula.getText(), co.getC());
+            co.cerrarConexion();
+            VentanaDialogo.dialogoAccion();
         });
     }
 

@@ -128,9 +128,9 @@ public class Tb_cliente {
         }
     }
     
-    public static void actualizarDatosCliente(String ci,String nombres,String apellidos, String direccion, String email,Connection c){
+      public static void actualizarDatosCliente(String ci,String nombres,String apellidos, String direccion, String email,Connection c){
     try {
-            String consulta= "update db_flowbase.tb_cliente set nombres=?,apellidos=?,direccion=?,email=? where="+ci;
+            String consulta= "update db_flowbase.tb_cliente set nombres=?,apellidos=?,direccion=?,email=? where ci_cliente="+ci;
              PreparedStatement ingreso = c.prepareStatement(consulta);
              ingreso.setString(1, nombres);
              ingreso.setString(2, apellidos);

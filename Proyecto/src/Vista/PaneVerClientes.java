@@ -39,22 +39,29 @@ public class PaneVerClientes {
     private BorderPane root;
     private TableView cliente, pedidos;
     private Button buscar, modificar;
-    private TextField ci, rc;
-    private RadioButton ruc, c;
+    private TextField ci, rc, nom,ape;
+    private RadioButton ruc, c, n;
 
     public PaneVerClientes() {
         root = new BorderPane();
         BackgroundFill fondo = new BackgroundFill(Color.SEASHELL, new CornerRadii(1),
                 new Insets(0.0, 0.0, 0.0, 0.0));
         root.setBackground(new Background(fondo));
-        inicializarObjetos();
-        seccionIzquierda();
-        seccionCentro() ;
-        back();
+        llamarMetodos();
     }
 
     public Pane getRoot() {
         return root;
+    }
+
+    private void llamarMetodos() {
+        inicializarObjetos();
+        seccionIzquierda();
+        seccionCentro();
+        habilitarCedula();
+        habilitarRuc();
+        habilitarNombre();
+        back();
     }
 
     private void inicializarObjetos() {
@@ -63,12 +70,22 @@ public class PaneVerClientes {
         buscar = new Button("Buscar");
         modificar = new Button("Modificar");
         ci = new TextField();
+        ci.setDisable(true);
         rc = new TextField();
-        ToggleGroup grupo= new ToggleGroup();
+        rc.setDisable(true);
+        nom = new TextField();
+        nom.setPromptText("Nombres");
+        nom.setDisable(true);
+        ape = new TextField();
+        ape.setPromptText("Apellidos");
+        ape.setDisable(true);
+        ToggleGroup grupo = new ToggleGroup();
         ruc = new RadioButton("Ruc");
         ruc.setToggleGroup(grupo);
         c = new RadioButton("Cédula");
         c.setToggleGroup(grupo);
+        n = new RadioButton("Nombres");
+        n.setToggleGroup(grupo);
     }
 
     private HBox encabezado() {
@@ -86,10 +103,14 @@ public class PaneVerClientes {
         GridPane gp = new GridPane();
         VBox vb = new VBox();
         Label l = new Label("Cédula de cliente");
+        Label no = new Label("Nombres de cliente");
         Label r = new Label("Ruc empresa");
+        VBox x = new VBox();
+        x.getChildren().addAll(nom, ape);
         gp.addRow(0, c, l, ci);
         gp.addRow(1, ruc, r, rc);
-        gp.add(buscar,2,2);
+        gp.addRow(2, n, no, x);
+        gp.add(buscar, 4, 0);
         gp.setHgap(10);
         vb.setPadding(new Insets(0, 0, 10, 50)); //top,derecha,abajo,izquierda
         vb.setSpacing(5);
@@ -99,12 +120,12 @@ public class PaneVerClientes {
 
     private void seccionCentro() {
         VBox vb = new VBox();
-         TableColumn c = new TableColumn<>("CI");
+        TableColumn c = new TableColumn<>("CI");
         TableColumn nom = new TableColumn<>("Nombres");
         TableColumn ape = new TableColumn<>("Apellidos");
         TableColumn tld = new TableColumn<>("Teléfono");
         TableColumn mail = new TableColumn<>("E-mail");
-        TableColumn tl2= new TableColumn<>("Teléfono 2"); 
+        TableColumn tl2 = new TableColumn<>("Teléfono 2");
         TableColumn dir = new TableColumn<>("Dirección");
         TableColumn r = new TableColumn<>("Ruc");
         TableColumn rnom = new TableColumn<>("Empresa");
@@ -125,7 +146,7 @@ public class PaneVerClientes {
         tl2.setPrefWidth(100);
         //tl2.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
         propertiesTableView(tl2);
-        
+
         dir.setPrefWidth(150);
         //dir.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
         propertiesTableView(dir);
@@ -135,34 +156,34 @@ public class PaneVerClientes {
         rnom.setPrefWidth(100);
         //rnom.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
         propertiesTableView(rnom);
-        
+
         rdir.setPrefWidth(150);
         //rdir.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
         propertiesTableView(rdir);
-        
+
         rtlf.setPrefWidth(100);
         //rtlf.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
         propertiesTableView(rtlf);
-        
+
         c.setPrefWidth(100);
         //c.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
         propertiesTableView(c);
-        cliente.getColumns().addAll(c,nom, ape, tld, tl2,mail,dir,r,rnom,rdir,rtlf);
+        cliente.getColumns().addAll(c, nom, ape, tld, tl2, mail, dir, r, rnom, rdir, rtlf);
         cliente.setPrefSize(1000, 250);
         vb.setPadding(new Insets(0, 10, 15, 10)); //top, derecha,abajo,izquierda+
-        vb.getChildren().addAll(cliente,seccionCentro2());
+        vb.getChildren().addAll(cliente, seccionCentro2());
         root.setCenter(vb);
 
     }
-    
-     private VBox seccionCentro2() {
+
+    private VBox seccionCentro2() {
         VBox vb = new VBox();
-         TableColumn c = new TableColumn<>("Código");
+        TableColumn c = new TableColumn<>("Código");
         TableColumn fe = new TableColumn<>("Fecha");
         TableColumn obs = new TableColumn<>("Observaciones");
         TableColumn fee = new TableColumn<>("Fecha entrega");
         TableColumn hen = new TableColumn<>("Hora entrega");
-        TableColumn fp= new TableColumn<>("Forma de pago"); 
+        TableColumn fp = new TableColumn<>("Forma de pago");
         TableColumn ra = new TableColumn<>("Articulo");
         TableColumn r = new TableColumn<>("Mensaje");
         TableColumn rem = new TableColumn<>("Empleado");
@@ -183,7 +204,7 @@ public class PaneVerClientes {
         fp.setPrefWidth(100);
         //fp.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
         propertiesTableView(fp);
-        
+
         ra.setPrefWidth(100);
         //ra.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
         propertiesTableView(ra);
@@ -193,23 +214,61 @@ public class PaneVerClientes {
         rem.setPrefWidth(100);
         //rem.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
         propertiesTableView(rem);
-        
+
         tra.setPrefWidth(100);
         //tra.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
         propertiesTableView(tra);
-        
+
         cant.setPrefWidth(100);
         //cant.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
         propertiesTableView(cant);
-        
+
         c.setPrefWidth(100);
         //c.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
         propertiesTableView(c);
-        pedidos.getColumns().addAll(c,fe, obs, fee, fp,hen,ra,r,rem,tra,cant);
+        pedidos.getColumns().addAll(c, fe, obs, fee, fp, hen, ra, r, rem, tra, cant);
         pedidos.setPrefSize(1000, 250);
         vb.setPadding(new Insets(10, 0, 15, 0)); //top, derecha,abajo,izquierda+
         vb.getChildren().add(pedidos);
-       return vb;
+        return vb;
+
+    }
+
+     private void habilitarCedula() {
+        c.setOnAction(e -> {
+            ci.setDisable(false);
+            rc.setText("");
+            rc.setDisable(true);
+            nom.setText("");
+            nom.setDisable(true);
+            ape.setText("");
+            ape.setDisable(true);
+        });
+
+    }
+
+    private void habilitarRuc() {
+        ruc.setOnAction(e -> {
+            rc.setDisable(false);
+            ci.setText("");
+            ci.setDisable(true);
+            nom.setText("");
+            nom.setDisable(true);
+            ape.setText("");
+            ape.setDisable(true);
+        });
+
+    }
+
+    private void habilitarNombre() {
+        n.setOnAction(e -> {
+            nom.setDisable(false);
+            ape.setDisable(false);
+            rc.setDisable(true);
+            rc.setText("");
+            ci.setDisable(true);
+            ci.setText("");
+        });
 
     }
 
