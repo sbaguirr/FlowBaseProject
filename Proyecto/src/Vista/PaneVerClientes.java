@@ -7,6 +7,10 @@ package Vista;
 
 import Main.Proyecto;
 import controlador.CONSTANTES;
+import java.util.ArrayList;
+import java.util.List;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -17,6 +21,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
@@ -29,6 +34,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import modelo.Tb_cliente;
 
 /**
  *
@@ -39,11 +45,14 @@ public class PaneVerClientes {
     private BorderPane root;
     private TableView cliente, pedidos;
     private Button buscar, modificar;
-    private TextField ci, rc, nom,ape;
+    private TextField ci, rc, nom, ape;
     private RadioButton ruc, c, n;
+    private ObservableList<Tb_cliente> listaClientes;
+    private Conexion co;
 
     public PaneVerClientes() {
         root = new BorderPane();
+        co = new Conexion();
         BackgroundFill fondo = new BackgroundFill(Color.SEASHELL, new CornerRadii(1),
                 new Insets(0.0, 0.0, 0.0, 0.0));
         root.setBackground(new Background(fondo));
@@ -120,7 +129,7 @@ public class PaneVerClientes {
 
     private void seccionCentro() {
         VBox vb = new VBox();
-        TableColumn c = new TableColumn<>("CI");
+        TableColumn c = new TableColumn<>("Ci");
         TableColumn nom = new TableColumn<>("Nombres");
         TableColumn ape = new TableColumn<>("Apellidos");
         TableColumn tld = new TableColumn<>("Teléfono");
@@ -132,23 +141,23 @@ public class PaneVerClientes {
         TableColumn rdir = new TableColumn<>("Dirección");
         TableColumn rtlf = new TableColumn<>("Teléfono");
         nom.setPrefWidth(110);
-        //nom.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
+        nom.setCellValueFactory(new PropertyValueFactory<>("nombres"));
         propertiesTableView(nom);
         ape.setPrefWidth(100);
-        //ape.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
+        ape.setCellValueFactory(new PropertyValueFactory<>("apellidos"));
         propertiesTableView(ape);
         tld.setPrefWidth(80);
-        //tld.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
+        tld.setCellValueFactory(new PropertyValueFactory<>("telefono"));
         propertiesTableView(tld);
         mail.setPrefWidth(100);
-        //mail.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
+        mail.setCellValueFactory(new PropertyValueFactory<>("email"));
         propertiesTableView(mail);
         tl2.setPrefWidth(100);
         //tl2.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
         propertiesTableView(tl2);
 
         dir.setPrefWidth(150);
-        //dir.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
+        dir.setCellValueFactory(new PropertyValueFactory<>("direccion"));
         propertiesTableView(dir);
         r.setPrefWidth(100);
         //r.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
@@ -164,9 +173,8 @@ public class PaneVerClientes {
         rtlf.setPrefWidth(100);
         //rtlf.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
         propertiesTableView(rtlf);
-
         c.setPrefWidth(100);
-        //c.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
+        c.setCellValueFactory(new PropertyValueFactory<>("ci_cliente"));
         propertiesTableView(c);
         cliente.getColumns().addAll(c, nom, ape, tld, tl2, mail, dir, r, rnom, rdir, rtlf);
         cliente.setPrefSize(1000, 250);
@@ -234,7 +242,18 @@ public class PaneVerClientes {
 
     }
 
-     private void habilitarCedula() {
+    /**
+     * Método que cargará la información de los paises en el TableView
+     */
+    private void cargarContenido() {
+        List<Tb_cliente> q = new ArrayList<>();
+        Tb_cliente cp = Tb_cliente.buscarCliente(ci.getText(), co.getC());
+        q.add(cp);
+        listaClientes = FXCollections.observableList(q);
+        cliente.setItems(listaClientes);
+    }
+
+    private void habilitarCedula() {
         c.setOnAction(e -> {
             ci.setDisable(false);
             rc.setText("");
@@ -271,7 +290,6 @@ public class PaneVerClientes {
         });
 
     }
-
 
     /**
      * Método que permite modificar una columna de un TableView
