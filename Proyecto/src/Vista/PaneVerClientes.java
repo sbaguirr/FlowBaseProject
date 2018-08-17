@@ -7,6 +7,7 @@ package Vista;
 
 import Main.Proyecto;
 import controlador.CONSTANTES;
+import controlador.VentanaDialogo;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.collections.FXCollections;
@@ -70,6 +71,7 @@ public class PaneVerClientes {
         habilitarCedula();
         habilitarRuc();
         habilitarNombre();
+        buscar();
         back();
     }
 
@@ -132,58 +134,80 @@ public class PaneVerClientes {
         TableColumn c = new TableColumn<>("Ci");
         TableColumn nom = new TableColumn<>("Nombres");
         TableColumn ape = new TableColumn<>("Apellidos");
-        TableColumn tld = new TableColumn<>("Teléfono");
         TableColumn mail = new TableColumn<>("E-mail");
+        TableColumn tl = new TableColumn<>("Teléfono 1"); 
         TableColumn tl2 = new TableColumn<>("Teléfono 2");
         TableColumn dir = new TableColumn<>("Dirección");
-        TableColumn r = new TableColumn<>("Ruc");
-        TableColumn rnom = new TableColumn<>("Empresa");
-        TableColumn rdir = new TableColumn<>("Dirección");
-        TableColumn rtlf = new TableColumn<>("Teléfono");
-        nom.setPrefWidth(110);
-        nom.setCellValueFactory(new PropertyValueFactory<>("nombres"));
-        propertiesTableView(nom);
-        ape.setPrefWidth(100);
-        ape.setCellValueFactory(new PropertyValueFactory<>("apellidos"));
-        propertiesTableView(ape);
-        tld.setPrefWidth(80);
-        tld.setCellValueFactory(new PropertyValueFactory<>("telefono"));
-        propertiesTableView(tld);
-        mail.setPrefWidth(100);
-        mail.setCellValueFactory(new PropertyValueFactory<>("email"));
-        propertiesTableView(mail);
-        tl2.setPrefWidth(100);
-        //tl2.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
-        propertiesTableView(tl2);
-
-        dir.setPrefWidth(150);
-        dir.setCellValueFactory(new PropertyValueFactory<>("direccion"));
-        propertiesTableView(dir);
-        r.setPrefWidth(100);
-        //r.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
-        propertiesTableView(r);
-        rnom.setPrefWidth(100);
-        //rnom.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
-        propertiesTableView(rnom);
-
-        rdir.setPrefWidth(150);
-        //rdir.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
-        propertiesTableView(rdir);
-
-        rtlf.setPrefWidth(100);
-        //rtlf.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
-        propertiesTableView(rtlf);
         c.setPrefWidth(100);
         c.setCellValueFactory(new PropertyValueFactory<>("ci_cliente"));
         propertiesTableView(c);
-        cliente.getColumns().addAll(c, nom, ape, tld, tl2, mail, dir, r, rnom, rdir, rtlf);
-        cliente.setPrefSize(1000, 250);
+        nom.setPrefWidth(160);
+        nom.setCellValueFactory(new PropertyValueFactory<>("nombres"));
+        propertiesTableView(nom);
+        ape.setPrefWidth(160);
+        ape.setCellValueFactory(new PropertyValueFactory<>("apellidos"));
+        propertiesTableView(ape);
+        tl.setPrefWidth(100);
+        tl.setCellValueFactory(new PropertyValueFactory<>("telefono1"));
+        propertiesTableView(tl);
+        tl2.setPrefWidth(100);
+        tl2.setCellValueFactory(new PropertyValueFactory<>("telefono2"));
+        propertiesTableView(tl2);
+        mail.setPrefWidth(110);
+        mail.setCellValueFactory(new PropertyValueFactory<>("email"));
+        propertiesTableView(mail);
+        dir.setPrefWidth(358);
+        dir.setCellValueFactory(new PropertyValueFactory<>("direccion"));
+        propertiesTableView(dir);
+        cliente.getColumns().addAll(c, nom, ape, tl, tl2, mail, dir); //chanfe
+        cliente.setPrefSize(1000, 100);
         vb.setPadding(new Insets(0, 10, 15, 10)); //top, derecha,abajo,izquierda+
         vb.getChildren().addAll(cliente, seccionCentro2());
         root.setCenter(vb);
-
     }
 
+    /**
+     * Método que cargará la información de los clientes a partir de su ci en el
+     * TableView
+     */
+    private void cargarContenidoPorCi() {
+        List<Tb_cliente> q = new ArrayList<>();
+        co.connect();
+        Tb_cliente p = Tb_cliente.buscarCliente(ci.getText(), co.getC());
+        co.cerrarConexion();
+        if (p.getCi_cliente()== null) {
+            VentanaDialogo.VentanaRegistroNoEncontrado();
+        } else {
+            q.add(p);
+            listaClientes = FXCollections.observableList(q);
+            cliente.setItems(listaClientes);
+        }
+    }
+    
+    /**
+     * Método que cargará la información de los clientes a partir del nombre en el
+     * TableView
+     */
+    private void cargarContenidoPorNombres() {
+        List<Tb_cliente> q = new ArrayList<>();
+        co.connect();
+        Tb_cliente p = Tb_cliente.buscarClientePorNombres(nom.getText(), ape.getText(), co.getC());
+        co.cerrarConexion();
+        if (p.getCi_cliente() != null) {
+            q.add(p);
+            listaClientes = FXCollections.observableList(q);
+            cliente.setItems(listaClientes);
+        } else {
+            VentanaDialogo.VentanaRegistroNoEncontrado();
+        }
+
+    }
+    
+    
+    /**
+     * FALTA by 17/08/18
+     * @return 
+     */
     private VBox seccionCentro2() {
         VBox vb = new VBox();
         TableColumn c = new TableColumn<>("Código");
@@ -242,16 +266,6 @@ public class PaneVerClientes {
 
     }
 
-    /**
-     * Método que cargará la información de los paises en el TableView
-     */
-    private void cargarContenido() {
-        List<Tb_cliente> q = new ArrayList<>();
-        Tb_cliente cp = Tb_cliente.buscarCliente(ci.getText(), co.getC());
-        q.add(cp);
-        listaClientes = FXCollections.observableList(q);
-        cliente.setItems(listaClientes);
-    }
 
     private void habilitarCedula() {
         c.setOnAction(e -> {
@@ -288,8 +302,31 @@ public class PaneVerClientes {
             ci.setDisable(true);
             ci.setText("");
         });
-
     }
+    
+     private void buscar() {
+        buscar.setOnAction(e -> {
+            if (c.isSelected()) {
+                if (!ci.getText().equals("")) {
+                    cargarContenidoPorCi();
+                } else {
+                    VentanaDialogo.dialogoAdvertencia();
+                }
+            } else if (ruc.isSelected()) {
+                System.out.println("ruc activado");
+            } else if (n.isSelected()) {
+                if (!nom.getText().equals("") && !ape.getText().equals("")) {
+                    cargarContenidoPorNombres();
+                } else {
+                    VentanaDialogo.dialogoAdvertencia();
+                }
+            } else {
+                VentanaDialogo.dialogoAdvertencia();
+            }
+
+        });
+    }
+
 
     /**
      * Método que permite modificar una columna de un TableView
