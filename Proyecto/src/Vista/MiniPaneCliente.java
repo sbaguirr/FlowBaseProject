@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
@@ -23,7 +24,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import modelo.Tb_cliente;
-
 
 /**
  *
@@ -134,8 +134,8 @@ public class MiniPaneCliente {
                 Tb_cliente f = Tb_cliente.buscarCliente(cedula.getText(), co.getC());
                 if (f.getCi_cliente() == null) {
                     Tb_cliente.ingresarDatosCliente(cedula.getText(), nombres.getText(), apellidos.getText(), dir.getText(), email.getText(), co.getC());
-                     Tb_cliente.ingresarTelefonosCliente(telefono.getText(), cedula.getText(), co.getC());
-                     Tb_cliente.ingresarTelefonosCliente(tlf.getText(), cedula.getText(), co.getC());
+                    Tb_cliente.ingresarTelefonosCliente(telefono.getText(), cedula.getText(), co.getC());
+                    Tb_cliente.ingresarTelefonosCliente(tlf.getText(), cedula.getText(), co.getC());
                     co.cerrarConexion();
                     VentanaDialogo.dialogoAccion();
                     limpiarCampos();
@@ -147,15 +147,16 @@ public class MiniPaneCliente {
             }
         });
     }
-    
-     /**
+
+    /**
      * Este metodo obliga al usuario a escribir en los campos obligatorios
+     *
      * @return true si todos los campos estan llenos
      */
-    private boolean validar(){
-    return !cedula.getText().equals("") && !nombres.getText().equals("") 
-            && !apellidos.getText().equals("")&& !dir.getText().equals("")
-            && !telefono.getText().equals("");
+    private boolean validar() {
+        return !cedula.getText().equals("") && !nombres.getText().equals("")
+                && !apellidos.getText().equals("") && !dir.getText().equals("")
+                && !telefono.getText().equals("");
     }
 
     /**
@@ -213,6 +214,8 @@ public class MiniPaneCliente {
         Scene scene = new Scene(getRoot(), 400, 500);
         stageForm.setTitle("Cliente");
         stageForm.setScene(scene);
+        Image image = new Image("/recursos/logo.png");
+        stageForm.getIcons().add(image);
         stageForm.resizableProperty().setValue(Boolean.FALSE);
         stageForm.show();
 

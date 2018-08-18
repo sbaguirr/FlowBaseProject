@@ -47,7 +47,7 @@ public class PaneIngresarPedidos {
     private TextField cedula, nombres, dnombres, dapellidos, ddir, rdir, dtlf, cantidad, codigo,
             horario, estado, sub, tot, color, cobro;
     private TextArea mensaje, descrip;
-    private Button buscar, realizar, verCliente, agregar, nuevoCliente;
+    private Button buscar, realizar, verCliente, agregar, nuevoCliente, verCodigo;
     private Label fechaActual, numPedido, vendedor;
     private DatePicker fpedido;
     //private ObservableList<String> listaProductos;
@@ -158,6 +158,9 @@ public class PaneIngresarPedidos {
 
         verCliente = new Button("Ver Cliente");
         verCliente.setDisable(true);
+        verCodigo = new Button("...");
+        verCodigo.setPrefSize(20, 20);
+
         Image imagePlay = new Image(getClass().getResource(CONSTANTES.path_image + "/search.png").toExternalForm());
         ImageView w = new ImageView();
         w.setImage(imagePlay);
@@ -220,10 +223,14 @@ public class PaneIngresarPedidos {
         Label Lcantidad = new Label("Cantidad");
         Label Lcolor = new Label("Color rosas");
         codigo = new TextField();
+         codigo.setDisable(true); /////
+        codigo.setPrefWidth(100);
+        HBox conjunto = new HBox();
+        conjunto.getChildren().addAll(codigo, verCodigo);//
         agregar = new Button("Agregar");
         cantidad = new TextField();
         gp.addRow(0, hb, numPedido, hb2);
-        gp.addRow(1, LcodigoProducto, codigo, Lcantidad, cantidad, Lcolor, color, agregar);
+        gp.addRow(1, LcodigoProducto, conjunto, Lcantidad, cantidad, Lcolor, color, agregar);
         gp.setVgap(10);
         gp.setHgap(10);
         v.getChildren().addAll(gp, tablaArticulo(), seccionCentro());
@@ -310,6 +317,7 @@ public class PaneIngresarPedidos {
         NuevoCliente();
         habilitarDestinatario();
         deshabilitarDestinatario();
+        Vercodigos();
         //  agregarProducto();
         // realizarPedido();
         back();
@@ -364,7 +372,7 @@ public class PaneIngresarPedidos {
                 if (f.getCi_cliente() != null) {
                     String k = f.getNombres() + " " + f.getApellidos();
                     nombres.setText(k);
-                    verCliente.setDisable(false); 
+                    verCliente.setDisable(false);
                 } else {
                     VentanaDialogo.VentanaRegistroNoEncontrado();
                     nombres.setText("");
@@ -373,6 +381,16 @@ public class PaneIngresarPedidos {
                 VentanaDialogo.dialogoAdvertencia();
                 nombres.setText("");
             }
+        });
+    }
+    
+    /**
+     * Este botón me permitirá obtener el codigo de la  lista de productos 
+     */
+    private void Vercodigos() {
+        verCodigo.setOnAction(e -> {
+            MiniPaneArticulo mpp = new MiniPaneArticulo();
+            mpp.showWindow();
         });
     }
 
@@ -387,8 +405,8 @@ public class PaneIngresarPedidos {
         verCliente.setOnAction(e -> {
             if (!cedula.getText().equals("") && f.getCi_cliente() != null) {
                 MiniPaneCliente pk = new MiniPaneCliente();
-                MiniPaneCliente.guardar.setDisable(true); 
-                pk.cargarDatos(); 
+                MiniPaneCliente.guardar.setDisable(true);
+                pk.cargarDatos();
                 pk.showWindow();
             } else {
                 VentanaDialogo.dialogoAdvertencia();
