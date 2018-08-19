@@ -1,6 +1,5 @@
 package Vista;
 
-
 import Main.Proyecto;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -19,6 +18,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import controlador.CONSTANTES;
+import controlador.VentanaDialogo;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
@@ -29,16 +29,17 @@ import javafx.scene.text.Font;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author ROSA
  */
 public class PaneLogin {
+
     private BorderPane root1;
     private Button login;
     private TextField user;
     private PasswordField contra;
+    private Conexion c;
 
     public BorderPane getRoot1() {
         return root1;
@@ -46,6 +47,7 @@ public class PaneLogin {
 
     public PaneLogin() {
         root1 = new BorderPane();
+        c = new Conexion();
         BackgroundFill myBF = new BackgroundFill(Color.FLORALWHITE, new CornerRadii(1), new Insets(0.0, 0.0, 0.0, 0.0));
         root1.setBackground(new Background(myBF));
         inicializarObjetos();
@@ -112,24 +114,21 @@ public class PaneLogin {
         VBox v = new VBox();
         v.getChildren().add(login);
         v.setAlignment(Pos.CENTER);
-        login.setOnKeyPressed((KeyEvent event) -> {
-            if (event.getCode().equals(KeyCode.ENTER)){
-                validarInicioSesion();
-            }
-        });
+        login.setDefaultButton(true);
         login.setOnAction(e -> {
-            validarInicioSesion();
+            validarSesion();
         });
         return v;
     }
 
+    /*
     public void validarInicioSesion(){
         if (UsuarioSesion.Usuarios().contains(new UsuarioSesion(user.getText(), contra.getText()))) {
-                /*Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Mensaje del sistema");
                 alert.setHeaderText("");
                 alert.setContentText("Inicio correcto");
-                alert.showAndWait();*/
+                alert.showAndWait();
                 if (user.getText().equalsIgnoreCase("admin")) {
                     PaneMenuPrincipal pn = new PaneMenuPrincipal();
                     PaneMenuPrincipal.nombreUsuario.setText("admin");
@@ -151,5 +150,36 @@ public class PaneLogin {
                 contra.setText("");
             }
         }
- 
+     */
+    public void validarSesion() {
+        if (!user.getText().equals("") && !contra.getText().equals("")) {
+            c.connect();
+            String usu = UsuarioSesion.validarUser(user.getText(), contra.getText(), c.getC());
+            c.cerrarConexion();
+            if (usu != null) {
+                if (usu.equals("0592345234")) {
+                    PaneMenuPrincipal pn = new PaneMenuPrincipal();
+                    PaneMenuPrincipal.nombreUsuario.setText(usu);
+                    Proyecto.scene.setRoot(pn.getRoot());
+                } else {
+                    PaneMenuPrincipalSucursal pn = new PaneMenuPrincipalSucursal();
+                    PaneMenuPrincipalSucursal.nombreUsuarioSucursal.setText(usu);
+                    Proyecto.scene.setRoot(pn.getRoot());
+                }
+                user.setText("");
+                contra.setText("");
+            } else {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Mensaje del sistema");
+                alert.setHeaderText("");
+                alert.setContentText("Inicio de sesion incorrecto");
+                alert.showAndWait();
+                user.setText("");
+                contra.setText("");
+            }
+        } else {
+            VentanaDialogo.dialogoAdvertencia();
+        }
+    }
+
 }

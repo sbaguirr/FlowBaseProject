@@ -2,6 +2,10 @@ package Vista;
 
 
 
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Types;
 import java.util.LinkedList;
 import java.util.Objects;
 
@@ -78,7 +82,25 @@ public class UsuarioSesion {
         }
         return false;
     }
-
+    
+    public static String validarUser(String user, String pass, Connection c){
+        String ci=null;
+        try {
+            String consulta = "{call login(?,?,?)}"; 
+            CallableStatement sp = c.prepareCall(consulta);
+            sp.setString(1, user); //ingresar valor
+            sp.setString(2, pass);
+            sp.registerOutParameter(3, Types.VARCHAR); //configura para que retorne
+            sp.execute();
+            ci= sp.getString(3);
+            sp.close();
+            //return ci;
+        } catch (SQLException ex) {
+            System.out.println("EXCEPCION user: " + ex.getMessage());
+        }      
+        return ci;
+    }
+    
     @Override
     public String toString() {
         return "Usuario{" + "user=" + user + ", contra=" + contra + '}';

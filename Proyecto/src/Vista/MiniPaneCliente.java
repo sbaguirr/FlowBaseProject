@@ -32,14 +32,15 @@ import modelo.Tb_cliente;
 public class MiniPaneCliente {
 
     private BorderPane root;
-    public static TextField cedula, nombres, apellidos, telefono, email, dir, tlf, ruc, oNombre, oDir, oTlf;
+    public static TextField cedula, nombres, apellidos, telefono, email, dir, tlf;
     public static Button guardar, modificar;
     private Stage stageForm;
     private static String tl1, tl2;
-    private Conexion co = new Conexion();
+    private Conexion co;
 
     public MiniPaneCliente() {
         root = new BorderPane();
+        co = new Conexion();
         BackgroundFill fondo = new BackgroundFill(Color.LINEN, new CornerRadii(1),
                 new Insets(0.0, 0.0, 0.0, 0.0));
         root.setBackground(new Background(fondo));
@@ -68,13 +69,6 @@ public class MiniPaneCliente {
         Label Lemail = new Label("Email");
         Label Ldireccion = new Label("Dirección*");
         Label Ltlf = new Label("Telefono 2");
-        Label oRuc = new Label("RUC");
-        Label onom = new Label("Nombre");
-        Label odir = new Label("Dirección");
-        Label otlf = new Label("Teléfono");
-        Label other = new Label("Facturación");
-        other.setFont(new Font("Verdana", 12));
-        other.setStyle("-fx-text-fill: #E4C953;");
 
         guardar = new Button("Guardar");
         modificar = new Button("Actualizar");
@@ -84,16 +78,11 @@ public class MiniPaneCliente {
         VBox vb = new VBox();
         GridPane gp = new GridPane();
 
-        gp.addColumn(0, Lcedula, Lnombre, Lapellido, Ltelefono, Ltlf, Ldireccion, Lemail, other, oRuc, onom, odir, otlf);
+        gp.addColumn(0, Lcedula, Lnombre, Lapellido, Ltelefono, Ltlf, Ldireccion, Lemail);
         gp.addColumn(1, cedula, nombres, apellidos, telefono, tlf, dir, email);
-        gp.add(ruc, 1, 8);
-        gp.add(oNombre, 1, 9);
-        gp.add(oDir, 1, 10);
-        gp.add(oTlf, 1, 11);
-        gp.add(hb, 1, 13);
+        gp.add(hb, 1, 8);
         gp.setVgap(10);
         gp.setHgap(10);
-
         vb.getChildren().addAll(Lcliente, gp);
         vb.setPadding(new Insets(10, 10, 10, 10));
         root.setCenter(vb);
@@ -116,11 +105,6 @@ public class MiniPaneCliente {
         dir = new TextField();
         dir.setPrefHeight(50);
         dir.setPrefWidth(250);
-        ruc = new TextField();
-        oNombre = new TextField();
-        oDir = new TextField();
-        oTlf = new TextField();
-
     }
 
     /**
@@ -211,7 +195,7 @@ public class MiniPaneCliente {
 
     public void showWindow() {
         stageForm = new Stage();
-        Scene scene = new Scene(getRoot(), 400, 500);
+        Scene scene = new Scene(getRoot(), 350, 350);
         stageForm.setTitle("Cliente");
         stageForm.setScene(scene);
         Image image = new Image("/recursos/logo.png");

@@ -53,11 +53,12 @@ public class PaneIngresarPedidos {
     //private ObservableList<String> listaProductos;
     private RadioButton si, no, efectivo, credito, debito, transferencia, paypal;
     private TableView tablaPedido;
-    private Conexion c = new Conexion(); //new
+    private Conexion c ;
     public static Tb_cliente f;
 
     public PaneIngresarPedidos() {
         root = new BorderPane();
+        c = new Conexion();
         BackgroundFill fondo = new BackgroundFill(Color.LINEN, new CornerRadii(1),
                 new Insets(0.0, 0.0, 0.0, 0.0));
         root.setBackground(new Background(fondo));
@@ -197,7 +198,9 @@ public class PaneIngresarPedidos {
         paypal = new RadioButton("PayPal");
         paypal.setToggleGroup(grupo);
 
-        vendedor = new Label("Nom usuario");
+        vendedor = new Label();
+        VerVendedor();
+
         fechaActual = new Label();
         numPedido = new Label();
 
@@ -214,16 +217,17 @@ public class PaneIngresarPedidos {
         Label l = new Label("Fecha");
         Label ve = new Label("Vendedor");
         hb.setSpacing(5);
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
         fechaActual.setText(dateFormat.format(r));///
         hb.getChildren().addAll(l, fechaActual);
         hb2.getChildren().addAll(ve, vendedor);
+        hb2.setSpacing(5);
         numPedido.setText("N pedido 000N");
         Label LcodigoProducto = new Label("Código Producto");
         Label Lcantidad = new Label("Cantidad");
         Label Lcolor = new Label("Color rosas");
         codigo = new TextField();
-         codigo.setDisable(true); /////
+        codigo.setDisable(true); /////
         codigo.setPrefWidth(100);
         HBox conjunto = new HBox();
         conjunto.getChildren().addAll(codigo, verCodigo);//
@@ -383,9 +387,9 @@ public class PaneIngresarPedidos {
             }
         });
     }
-    
+
     /**
-     * Este botón me permitirá obtener el codigo de la  lista de productos 
+     * Este botón me permitirá obtener el codigo de la lista de productos
      */
     private void Vercodigos() {
         verCodigo.setOnAction(e -> {
@@ -426,19 +430,6 @@ public class PaneIngresarPedidos {
     }
 
     /**
-     * VER LO DE LA LISTITA DE CODIGOS Este método agregará un nuevo producto a
-     * la tabla pedido
-     *
-     * Validaciones: Que el campo código y cantidad no esten vacíos Que el
-     * codigo ingresado exista
-     */
-    private void agregarProducto() {
-        agregar.setOnAction(e -> {
-
-        });
-    }
-
-    /**
      * Este método guardará el pedido Validaciones: Al menos el campo cedula con
      * datos, productos ingresados(?)
      */
@@ -446,6 +437,18 @@ public class PaneIngresarPedidos {
         realizar.setOnAction(e -> {
 
         });
+    }
+
+    /**
+     * Este metodo coloca la ci del vendedor que ha iniciado sesion
+     */
+    private void VerVendedor() {
+        if (PaneMenuPrincipal.nombreUsuario.getText().equals("") && !PaneMenuPrincipalSucursal.nombreUsuarioSucursal.getText().equals("")) {
+            vendedor.setText(PaneMenuPrincipalSucursal.nombreUsuarioSucursal.getText());
+        } else {
+            PaneMenuPrincipal p = new PaneMenuPrincipal();
+            vendedor.setText(PaneMenuPrincipal.nombreUsuario.getText());
+        }
     }
 
     private void back() {
