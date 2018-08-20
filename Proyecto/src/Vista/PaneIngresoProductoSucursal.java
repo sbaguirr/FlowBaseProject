@@ -7,16 +7,18 @@ package Vista;
 
 import Main.Proyecto;
 import controlador.CONSTANTES;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContentDisplay;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
@@ -29,6 +31,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import modelo.Tb_envio_articulo;
 
 /**
  *
@@ -40,96 +43,111 @@ public class PaneIngresoProductoSucursal {
     private ComboBox<String> sucursal;
     private TextField cantidad, codigo;
     private Button showMore, agregar, eliminar;
-     private DatePicker fecha;
-    
-    //private ObservableList<String> listaProductos;
-    private TableView tablaProductosSucursal;
+    private Conexion c;
+    private ObservableList<Tb_envio_articulo> listaProductos;
+    private TableView<Tb_envio_articulo> tablaProductosSucursal;
 
     public PaneIngresoProductoSucursal() {
         root = new BorderPane();
+        c = new Conexion();
         BackgroundFill fondo = new BackgroundFill(Color.SEASHELL, new CornerRadii(1),
                 new Insets(0.0, 0.0, 0.0, 0.0));
         root.setBackground(new Background(fondo));
-     //   encabezado();
+        //   encabezado();
         seccionIzquierda();
         seccionCentro();
         back();
 
     }
+
     private HBox encabezado() {
         HBox h = new HBox();
         Label titulo = new Label("Ingreso Productos Sucursal");
         titulo.setFont(new Font("Verdana", 30));
-        titulo.setStyle("-fx-text-fill: #E4C953;" );
+        titulo.setStyle("-fx-text-fill: #E4C953;");
         h.setAlignment(Pos.CENTER);
         h.setPadding(new Insets(10, 10, 25, 10));
         h.getChildren().add(titulo);
         return h;
-       // root.setTop(h);
+        // root.setTop(h);
 
     }
 
     private void seccionIzquierda() {
         GridPane gp = new GridPane();
         VBox vb = new VBox();
-        
+
         Label Lsucursal = new Label("Seleccione sucursal");
         Label Lproducto = new Label("Seleccione producto");
-        Label Lfecha = new Label("Fecha de entrega");
         Label Lcantidad = new Label("cantidad");
         sucursal = new ComboBox();
         sucursal.setPrefWidth(200);
         cantidad = new TextField();
         codigo = new TextField();
-        fecha= new DatePicker();
-        
-       
+
         showMore = new Button("Seleccionar");
         agregar = new Button("Agregar");
-       // agregar.setStyle("-fx-background-color: #FF69B4; -fx-text-fill: white;");
-        gp.addColumn(0, Lsucursal, Lproducto, Lcantidad,Lfecha);
-        gp.addColumn(1, sucursal, codigo, cantidad, fecha,agregar);
+        // agregar.setStyle("-fx-background-color: #FF69B4; -fx-text-fill: white;");
+        gp.addColumn(0, Lsucursal, Lproducto, Lcantidad);
+        gp.addColumn(1, sucursal, codigo, cantidad, agregar);
         gp.add(showMore, 2, 1);
-        
+
         gp.setVgap(10);
         gp.setHgap(15);
         vb.setPadding(new Insets(0, 0, 10, 50)); //top,derecha,abajo,izquierda
         vb.setSpacing(5);
-        vb.getChildren().addAll(encabezado(),gp);
-        
+        vb.getChildren().addAll(encabezado(), gp);
+
         root.setTop(vb);
     }
 
     private void seccionCentro() {
         VBox vb = new VBox();
         eliminar = new Button("Eliminar");
-    //    eliminar.setStyle("-fx-background-color: #FF69B4; -fx-text-fill: white;");
         tablaProductosSucursal = new TableView();
+        TableColumn cod = new TableColumn<>("n°");
         TableColumn Tsucursal = new TableColumn<>("Sucursal");
         TableColumn Tcodigo = new TableColumn<>("Codigo del producto");
-        TableColumn Tcantidad = new TableColumn<>("Cantidad");
-         TableColumn Tfecha = new TableColumn<>("Fecha");
+        TableColumn Tcantidad = new TableColumn<>("Stock Inicial");
+        TableColumn Tfecha = new TableColumn<>("Stock");
+
+        cod.setPrefWidth(180);
+        cod.setCellValueFactory(new PropertyValueFactory<>("id_envio_articulo"));
+        propertiesTableView(cod);
+
         Tsucursal.setPrefWidth(190);
-        //Tsucursal.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
+        Tsucursal.setCellValueFactory(new PropertyValueFactory<>("id_floreria"));
         propertiesTableView(Tsucursal);
+
         Tcodigo.setPrefWidth(300);
-        //Tcodigo.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
+        Tcodigo.setCellValueFactory(new PropertyValueFactory<>("cod_articulo"));
         propertiesTableView(Tcodigo);
+
         Tcantidad.setPrefWidth(200);
-        //Tcantidad.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
+        Tcantidad.setCellValueFactory(new PropertyValueFactory<>("stockInicial"));
         propertiesTableView(Tcantidad);
+
         Tfecha.setPrefWidth(190);
-        //Tfecha.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
+        Tfecha.setCellValueFactory(new PropertyValueFactory<>("stock"));
         propertiesTableView(Tfecha);
-        tablaProductosSucursal.getColumns().addAll(Tsucursal,Tcodigo, Tcantidad,Tfecha);
+
+        tablaProductosSucursal.getColumns().addAll(cod, Tsucursal, Tcodigo, Tcantidad, Tfecha);
         tablaProductosSucursal.setPrefSize(40, 300);
         vb.setPadding(new Insets(0, 25, 10, 50)); //top, derecha,abajo,izquierda
-       
+
         vb.getChildren().addAll(tablaProductosSucursal, eliminar);
         root.setCenter(vb);
 
     }
-    
+
+    private void cargarContenido() {
+        listaProductos = FXCollections.observableArrayList();
+        c.connect();
+        Tb_envio_articulo.llenarEnvios(listaProductos, c.getC());
+        c.cerrarConexion();
+        tablaProductosSucursal.setItems(listaProductos);
+    }
+
     /**
      * Método que permite modificar una columna de un TableView
      *
@@ -144,6 +162,7 @@ public class PaneIngresoProductoSucursal {
     public Pane getRoot() {
         return root;
     }
+
     private void back() {
         HBox f = new HBox();
         Image imagePlay = new Image(getClass().getResource(CONSTANTES.path_image + "/left-arrow.png").toExternalForm());
@@ -156,14 +175,12 @@ public class PaneIngresoProductoSucursal {
         back.setGraphic(w);
         back.setOnAction(e -> {
             PaneMenuPrincipal p = new PaneMenuPrincipal();
-             Proyecto.scene.setRoot(p.getRoot());
+            Proyecto.scene.setRoot(p.getRoot());
         });
         f.getChildren().add(back);
         f.setAlignment(Pos.BOTTOM_LEFT);
         root.setBottom(f);
     }
-    
-    
-    
+
     //validaciones, filtros
 }
