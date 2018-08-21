@@ -81,13 +81,13 @@ public class PaneMenuPrincipal {
         Image imagePlay = new Image(getClass().getResource(CONSTANTES.path_image + "/producto.png").toExternalForm());
         ImageView w = new ImageView();
         w.setImage(imagePlay);
-        productos = new Button("Agregar Productos");
+        productos = new Button("Productos");
         productos.setPrefSize(250, 150);
         productos.setStyle("-fx-font: 16 Verdana; -fx-base: #FFC0CB; -fx-text-fill: white;");
         productos.setContentDisplay(ContentDisplay.TOP);
         productos.setGraphic(w);
         productos.setOnAction(e -> {
-            PaneArticulos p = new PaneArticulos();
+            PaneOpcionProducto p = new PaneOpcionProducto();
             Proyecto.scene.setRoot(p.getRoot());
         });
         return productos;

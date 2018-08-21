@@ -85,5 +85,27 @@ public class VentanaDialogo {
         alert.setContentText("El registro que está ingresando ya existe");
         alert.showAndWait();
     }
+    
+    /** 
+     * Método que permitirá mostrar una ventana cuando se haya agregado un articulo correctamente
+     */
+    public static void ProductoGuardadoExitosamente() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Agregar nuevo producto");
+        alert.setHeaderText(null);
+        alert.setContentText("El producto ha sido guardado exitosamente");
+        alert.showAndWait();
+    }
+    
+    /** 
+     * Método que permitirá mostrar una ventana cuando se no se haya agregado un articulo 
+     */
+    public static void ProductoGuardadoFallido() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Agregar nuevo artículo");
+        alert.setHeaderText("El producto no ha sido guardado exitosamente");
+        alert.setContentText("Por favor, asegúrese de llenar todos los campos");
+        alert.showAndWait();
+    }
 
 }
