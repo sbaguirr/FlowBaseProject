@@ -56,7 +56,7 @@ public class PaneIngresoProductoSucursal {
         //   encabezado();
         seccionIzquierda();
         seccionCentro();
-        back();
+        llamarMetodos();
 
     }
 
@@ -71,6 +71,12 @@ public class PaneIngresoProductoSucursal {
         return h;
         // root.setTop(h);
 
+    }
+
+    private void llamarMetodos() {
+        Vercodigos();
+        cargarContenido();
+        back();
     }
 
     private void seccionIzquierda() {
@@ -161,6 +167,13 @@ public class PaneIngresoProductoSucursal {
 
     public Pane getRoot() {
         return root;
+    }
+
+    private void Vercodigos() {
+        showMore.setOnAction(e -> {
+            MiniPaneArticulo mpp = new MiniPaneArticulo();
+            mpp.showWindow();
+        });
     }
 
     private void back() {

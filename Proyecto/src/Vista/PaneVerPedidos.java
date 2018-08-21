@@ -6,8 +6,8 @@
 package Vista;
 
 import Main.Proyecto;
-import static Vista.Conexion.llenar;
 import controlador.CONSTANTES;
+import controlador.VentanaDialogo;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -16,6 +16,8 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -41,11 +43,12 @@ public class PaneVerPedidos {
 
     private BorderPane root;
     private TableView tablaPedidos;
-    private ComboBox<String> combo;
+    private ComboBox<String> combo, comboEstado;
     private TextField campo;
+    private Spinner<Integer> hora, minutos;
     private Button filtrar;
-    private DatePicker desde, hasta, entrega;
-    
+    private DatePicker desde, entrega;
+
     public PaneVerPedidos() {
         root = new BorderPane();
         BackgroundFill fondo = new BackgroundFill(Color.LINEN, new CornerRadii(1),
@@ -54,12 +57,20 @@ public class PaneVerPedidos {
         inicializarObjetos();
         seccionFiltros();
         seccionCentro2();
-        back();
+        llamarObjetos();
+
     }
 
     public Pane getRoot() {
         return root;
 
+    }
+
+    private void llamarObjetos() {
+        cargarCombo();
+        cargarComboEstado();
+        aplicarFiltros();
+        back();
     }
 
     private HBox encabezado() {
@@ -77,90 +88,87 @@ public class PaneVerPedidos {
         VBox vb = new VBox();
         Label l = new Label("Buscar");
         Label f = new Label("Fecha del pedido");
-        Label d = new Label("--");
-       // Label h = new Label("Hasta");
+        Label w = new Label("Estado del pedido");
         Label e = new Label("Fecha de entrega");
+        Label p = new Label(":");
+        HBox ni = new HBox();
+        ni.getChildren().addAll(hora, p, minutos);
+        ni.setSpacing(5);
         GridPane gp = new GridPane();
-        gp.addRow(0, l, combo, campo, f,desde, d, hasta, e, entrega, filtrar);
+        gp.addRow(0, l, combo, campo, f, desde, w, comboEstado);
+        gp.addRow(1, e, entrega, ni, filtrar);
         gp.setHgap(10);
-        /*
-        gp.add(combo, 1, 0);
-        gp.add(combo, 2, 0);
-        gp.add(desde, 2, 2);
-        gp.add(hasta, 2, 3);
-        gp.add(entrega, 2, 4);
-        gp.add(filtrar, 2, 5);
-         */
+        gp.setVgap(5);
         vb.getChildren().addAll(encabezado(), gp);
         root.setTop(vb);
     }
 
     private void inicializarObjetos() {
         combo = new ComboBox();
+        comboEstado = new ComboBox();
         combo.setPrefWidth(150);
         campo = new TextField();
         campo.setPrefWidth(150);
         filtrar = new Button("Aplicar filtros");
         desde = new DatePicker();
         desde.setPrefWidth(110);
-        hasta = new DatePicker();
-        hasta.setPrefWidth(110);
         entrega = new DatePicker();
-         entrega.setPrefWidth(110);
+        entrega.setPrefWidth(110);
         tablaPedidos = new TableView();
+        hora = new Spinner();
+        hora.setPrefWidth(50);
+        minutos = new Spinner();
+        minutos.setPrefWidth(50);
+        SpinnerValueFactory<Integer> valueFactory
+                = new SpinnerValueFactory.IntegerSpinnerValueFactory(8, 18);
+        SpinnerValueFactory<Integer> valueFactory2
+                = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59);
+        hora.setValueFactory(valueFactory);
+        minutos.setValueFactory(valueFactory2);
     }
 
     private void seccionCentro2() {
         VBox vb = new VBox();
         TableColumn c = new TableColumn<>("Código");
-        TableColumn fe = new TableColumn<>("Fecha");
+        TableColumn fe = new TableColumn<>("Fecha Pedido");
         TableColumn obs = new TableColumn<>("Observaciones");
         TableColumn fee = new TableColumn<>("Fecha entrega");
         TableColumn hen = new TableColumn<>("Hora entrega");
-        TableColumn fp = new TableColumn<>("Forma de pago");
-        TableColumn ra = new TableColumn<>("Articulo");
-        TableColumn r = new TableColumn<>("Mensaje");
-        TableColumn rem = new TableColumn<>("Empleado");
+        TableColumn cli = new TableColumn<>("Cliente");
+        TableColumn rem = new TableColumn<>("Vendedor");
         TableColumn tra = new TableColumn<>("Destinatario");
         TableColumn cant = new TableColumn<>("Estado");
         fe.setPrefWidth(100);
-        fe.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
+        fe.setCellValueFactory(new PropertyValueFactory<>("fecha_pedido"));
         propertiesTableView(fe);
-        obs.setPrefWidth(100);
-        obs.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
+        obs.setPrefWidth(150);
+        obs.setCellValueFactory(new PropertyValueFactory<>("observaciones"));
         propertiesTableView(obs);
         fee.setPrefWidth(100);
-        //fee.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
+        fee.setCellValueFactory(new PropertyValueFactory<>("fecha_entrega"));
         propertiesTableView(fee);
         hen.setPrefWidth(100);
-        //hen.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
+        hen.setCellValueFactory(new PropertyValueFactory<>("hora_entrega"));
         propertiesTableView(hen);
-        fp.setPrefWidth(100);
-        //fp.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
-        propertiesTableView(fp);
-
-        ra.setPrefWidth(100);
-        //ra.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
-        propertiesTableView(ra);
-        r.setPrefWidth(100);
-        //r.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
-        propertiesTableView(r);
+        cli.setPrefWidth(100);
+        cli.setCellValueFactory(new PropertyValueFactory<>("cliente"));
+        propertiesTableView(cli);
         rem.setPrefWidth(100);
-        //rem.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
+        rem.setCellValueFactory(new PropertyValueFactory<>("ci_trabajador"));
         propertiesTableView(rem);
 
         tra.setPrefWidth(100);
-        //tra.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
+        tra.setCellValueFactory(new PropertyValueFactory<>("destinatario"));
         propertiesTableView(tra);
 
         cant.setPrefWidth(100);
-        //cant.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
+        cant.setCellValueFactory(new PropertyValueFactory<>("estado"));
         propertiesTableView(cant);
 
         c.setPrefWidth(100);
-        //c.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
+        c.setCellValueFactory(new PropertyValueFactory<>("cod_pedido"));
         propertiesTableView(c);
-        tablaPedidos.getColumns().addAll(c, fe, obs, fee, fp, hen, ra, r, rem, tra, cant);
+        tablaPedidos.getColumns().addAll(c, fe, fee, hen, cli, rem, tra, cant, obs);
         tablaPedidos.setPrefSize(1000, 600);
         vb.setPadding(new Insets(10, 0, 15, 0)); //top, derecha,abajo,izquierda+
         vb.getChildren().add(tablaPedidos);
@@ -178,24 +186,54 @@ public class PaneVerPedidos {
         c.setResizable(true);
         c.setEditable(false);
     }
-    
+
+    private void aplicarFiltros() {
+        filtrar.setOnAction(e -> {
+            if (seleccion() != null && seleccion2() != null) {
+                if (seleccion().equals("Todos")) {
+//llama al procedure
+                } else {
+//llama al procedure
+                }
+            } else {
+                VentanaDialogo.dialogoAdvertencia();
+            }
+        });
+    }
+
     /**
      * De acuerdo a lo seleccionado en el combo, se aplicarán los filtros
      */
-    private void cargarCombo(){
-     String se[] = {"Todos", "Destinatario"}; //agregar los otros
-     combo.setItems(FXCollections.observableArrayList(se));
-     
+    private void cargarCombo() {
+        String se[] = {"Todos", "Vendedor"}; 
+        combo.setItems(FXCollections.observableArrayList(se));
     }
+
+    /**
+     * De acuerdo a lo seleccionado en el combo, se aplicarán los filtros
+     */
+    private void cargarComboEstado() {
+        String se[] = {"Pendiente", "Procesado"}; 
+        comboEstado.setItems(FXCollections.observableArrayList(se));
+    }
+
     /**
      * Método que al seleccionar un comboBox devuelve un String
      *
      * @return g, String
      */
-    private String sexo() {
+    private String seleccion() {
         return combo.getSelectionModel().getSelectedItem();
     }
 
+    /**
+     * Método que al seleccionar un comboBox devuelve un String
+     *
+     * @return g, String
+     */
+    private String seleccion2() {
+        return comboEstado.getSelectionModel().getSelectedItem();
+    }
 
     private void back() {
         HBox f = new HBox();
@@ -208,7 +246,7 @@ public class PaneVerPedidos {
         back.setContentDisplay(ContentDisplay.TOP);
         back.setGraphic(w);
         back.setOnAction(e -> {
-           if (PaneMenuPrincipal.nombreUsuario.getText().equals("") && !PaneMenuPrincipalSucursal.nombreUsuarioSucursal.getText().equals("")) {
+            if (PaneMenuPrincipal.nombreUsuario.getText().equals("") && !PaneMenuPrincipalSucursal.nombreUsuarioSucursal.getText().equals("")) {
                 PaneMenuPrincipalSucursal p = new PaneMenuPrincipalSucursal();
                 Proyecto.scene.setRoot(p.getRoot());
             } else {
