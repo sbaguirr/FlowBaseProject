@@ -5,14 +5,14 @@
  */
 package modelo;
 
+import static Vista.PaneModificarArticulos.*;
+import static controlador.VentanaDialogo.VentanaRegistroNoEncontrado;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import javafx.collections.ObservableList;
-import javafx.scene.control.cell.PropertyValueFactory;
 
 /**
  *
@@ -24,6 +24,7 @@ public class Articulo {
     private String descripcion;
     private float costo;
     private String color;
+    private static PreparedStatement modifica;
 
     public Articulo() {
        
@@ -100,45 +101,100 @@ public class Articulo {
     public static void ingresarArticulo(String id, String nombre,String descripcion, float costo, String color,Connection c){
     try {
             String consulta= "insert into db_flowbase.tb_articulo values (?,?,?,?,?)";
-             PreparedStatement ingreso = c.prepareStatement(consulta);
-             ingreso.setString(1, id);
-             ingreso.setString(2, nombre.toLowerCase());
-             ingreso.setString(3, descripcion.toLowerCase());
-             ingreso.setString(4, String.valueOf(costo));
-             ingreso.setString(5, color.toLowerCase());
-             int j= ingreso.executeUpdate();
-             if(j>0){ //BORRAR LUEGO
-                 System.out.println("ingreso exitoso ...");
+            PreparedStatement ingreso = c.prepareStatement(consulta);
+            ingreso.setString(1, id);
+            ingreso.setString(2, nombre.toLowerCase());
+            ingreso.setString(3, descripcion.toLowerCase());
+            ingreso.setString(4, String.valueOf(costo));
+            ingreso.setString(5, color.toLowerCase());
+            int j= ingreso.executeUpdate();
+            if(j > 0){ //BORRAR LUEGO
+                System.out.println("ingreso exitoso ...");
+            }
+        } catch (SQLException ex) {
+            System.out.println("EXCEPCION: " + ex.getMessage());
+        }
+    }
+    
+    public static String buscarArticuloXCodigo(String code, Connection e) {
+        try {
+            String consulta = "SELECT cod_articulo FROM db_flowbase.tb_articulo "
+                    + "WHERE cod_articulo = ?"+ code;
+            if(consulta == null){
+                return null;
+            }else{
+            Statement in = e.createStatement();
+            ResultSet resultado = in.executeQuery(consulta);
+            String art = null;
+            while(resultado.next()) {
+                art = resultado.getString("cod_articulo");               
+            }
+            return art;  
+            }
+        } catch (SQLException ex) {
+            System.out.println("EXCEPCION: " + ex.getMessage());
+        }
+        return null;
+    }
+    
+    public static void buscarArticulo(String code, Connection e) {
+        try {
+            String consulta = "SELECT nombre,descripcion,costo,color "
+                    + "FROM db_flowbase.tb_articulo "
+                    + "WHERE cod_articulo = ?";
+            PreparedStatement buscar = e.prepareStatement(consulta);
+            buscar.setString(1, code);
+            ResultSet resultado = buscar.executeQuery();
+            if(resultado.next()) {
+                txt_nombre.setText(resultado.getString("nombre"));               
+                txt_descripcion.setText(resultado.getString("descripcion"));               
+                txt_costo.setText(String.valueOf(resultado.getString("costo")));               
+                txt_color.setText(resultado.getString("color"));
+            }else{
+                VentanaRegistroNoEncontrado();
+                txt_nombre.setDisable(true);
+                txt_descripcion.setDisable(true);
+                txt_costo.setDisable(true);
+                txt_color.setDisable(true);
+                limpiarCampos();
+            }
+        } catch (SQLException ex) {
+            System.out.println("EXCEPCION: " + ex.getMessage());
+        }
+    }
+    
+    public static void eliminarArticulo(String code, Connection e) {
+        try {
+            String consulta = "DELETE FROM tb_articulo WHERE cod_articulo = ?";
+            PreparedStatement eliminar = e.prepareStatement(consulta);
+            eliminar.setString(1, code);
+            int d = eliminar.executeUpdate();
+            if(d > 0){ 
+                 System.out.println("borrado exitoso ...");
              }
         } catch (SQLException ex) {
             System.out.println("EXCEPCION: " + ex.getMessage());
         }
     }
     
-     public static Articulo buscarArticulo(String code, Connection e) {
+    public static void modificarArticulo(String code, String nombre, String desc, float costo, String color, Connection e) {
         try {
-            String consulta = "SELECT cod_producto, nombre, "+
-                    "descripcion, " +
-                    "costo, " +
-                    "color, "+ "FROM db_flowbase.tb_articulo "
-                    + "WHERE cod_producto = " + code;
-            Statement in = e.createStatement();
-            ResultSet resultado = in.executeQuery(consulta);
-            ArrayList<String> t = new ArrayList();
-            Articulo art = new Articulo();
-            while(resultado.next()) {
-                t.add(resultado.getString("t.telefono"));
-                art.setCod_articulo(resultado.getString("cod_producto"));
-                art.setNombre(resultado.getString("nombre"));
-                art.setDescripcion(resultado.getString("descripcion"));
-                art.setCosto(Float.parseFloat(resultado.getString("costo")));
-                art.setColor(resultado.getString("color"));               
-            }        
-            return art;
+            String consulta = "UPDATE tb_articulo SET nombre = ?,descripcion=?, "
+                    + "costo =?, color=?  WHERE cod_articulo = ?";
+            modifica = e.prepareStatement(consulta);
+            modifica.setString(1, nombre);
+            modifica.setString(2, desc);
+            modifica.setString(3, String.valueOf(costo));
+            modifica.setString(4, color);
+            modifica.setString(5, code);
+            int m = modifica.executeUpdate();
+            if( m > 0){ 
+                System.out.println("modificación exitosa ...");
+            }
         } catch (SQLException ex) {
             System.out.println("EXCEPCION: " + ex.getMessage());
         }
-        return null;
     }
+    
     
 }

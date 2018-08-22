@@ -7,8 +7,7 @@ package Vista;
 
 import Main.Proyecto;
 import controlador.CONSTANTES;
-import static controlador.VentanaDialogo.ProductoGuardadoExitosamente;
-import static controlador.VentanaDialogo.ProductoGuardadoFallido;
+import static controlador.VentanaDialogo.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -33,25 +32,25 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import modelo.Articulo;
-import static modelo.Articulo.buscarArticuloXCodigo;
-import static modelo.Articulo.ingresarArticulo;
+import static modelo.Articulo.buscarArticulo;
 import static modelo.Articulo.llenarArticulos;
+import static modelo.Articulo.modificarArticulo;
 
 /**
  *
  * @author Tiffy
  */
-public class PaneAgregarArticulos {
+public class PaneModificarArticulos {
 
     private BorderPane root;
-    private TextField codigo, nombre, descripcion, costo, color;
-    private Button guardar;
+    public static TextField txt_codigo, txt_nombre, txt_descripcion, txt_costo, txt_color;
+    private Button modificar, btnBuscar;
     private ObservableList<Articulo> listaProductos;
     private TableView tablaProductos;
     private Conexion cone ;
    
 
-    public PaneAgregarArticulos() {
+    public PaneModificarArticulos() {
         cone = new Conexion();
         cone.connect();
         listaProductos = FXCollections.observableArrayList();
@@ -61,7 +60,7 @@ public class PaneAgregarArticulos {
         root.setBackground(new Background(fondo));
         seccionIzquierda();
         Secciontabla();
-        guardar();
+        modificar();
         back();
     }
 
@@ -71,7 +70,7 @@ public class PaneAgregarArticulos {
 
     private HBox encabezado() {
         HBox h = new HBox();
-        Label titulo = new Label("Agregar Nuevo Artículo");
+        Label titulo = new Label("Modificar Artículo");
         titulo.setFont(new Font("Verdana", 30));
         titulo.setStyle("-fx-text-fill: #E4C953;");
         h.setAlignment(Pos.CENTER);
@@ -89,20 +88,33 @@ public class PaneAgregarArticulos {
         Label Ldescripcion = new Label("Descripción");
         Label Lcosto = new Label("Costo");
         Label Lcolor = new Label("Color");
-        codigo = new TextField();
-        nombre = new TextField();
-        descripcion = new TextField();
-        descripcion.setPrefHeight(100);
-        descripcion.setPrefWidth(300);
-        costo = new TextField();
-        color = new TextField();
-        guardar = new Button("Guardar");
+        txt_codigo = new TextField();
+        txt_nombre = new TextField();
+        txt_descripcion = new TextField();
+        txt_descripcion.setPrefHeight(100);
+        txt_descripcion.setPrefWidth(300);
+        txt_costo = new TextField();
+        txt_color = new TextField();
+        modificar = new Button("Modificar");
+        btnBuscar = new Button("Buscar");
+        desactivarObjetos();
+        btnBuscar.setOnAction(e->{
+            if(!txt_codigo.getText().equals("")){
+                cone.connect();
+                activarObjetos();
+                buscarArticulo(txt_codigo.getText(), cone.getC());
+            }else{
+                VentanaRegistroNoEncontrado();
+                desactivarObjetos();
+                limpiarCampos();
+            }
+        });
         grid.setVgap(10);
         grid.setHgap(10);
-        h.getChildren().addAll(guardar);
+        h.getChildren().addAll(modificar);
         grid.addColumn(0, codigoProducto, nombreProducto, Ldescripcion, Lcosto, Lcolor);
-
-        grid.addColumn(1, codigo, nombre, descripcion, costo, color, h);
+        grid.addColumn(1, txt_codigo, txt_nombre, txt_descripcion, txt_costo, txt_color, h);
+        grid.addColumn(2, btnBuscar);
         contenedor.setPadding(new Insets(0, 0, 10, 50)); //top,derecha,abajo,izquierda
         contenedor.getChildren().addAll(encabezado(), grid);
         root.setTop(contenedor);
@@ -154,39 +166,51 @@ public class PaneAgregarArticulos {
         c.setEditable(false);
     }
 
-    private void guardar() {
-        guardar.setOnAction(e->{
+    private void modificar() {
+        modificar.setOnAction(e->{
             if(validar()){
                 cone.connect();
-                String t = buscarArticuloXCodigo(codigo.getText(), cone.getC());
-                if (t == null) {
-                    ingresarArticulo(codigo.getText(),nombre.getText(), 
-                    descripcion.getText(), Float.parseFloat(costo.getText()), 
-                    color.getText(), cone.getC());
-                    cone.cerrarConexion();
-                    ProductoGuardadoExitosamente();
-                    limpiarCampos();
-                }else{
-                    ProductoGuardadoFallido();
-                }
+                modificarArticulo(txt_codigo.getText(), txt_nombre.getText(), 
+                txt_descripcion.getText(), Float.parseFloat(txt_costo.getText()), 
+                txt_color.getText(), cone.getC());
+                cone.cerrarConexion();
+                ProductoModificadoExitosamente();
+                limpiarCampos();
             }else{
-                ProductoGuardadoFallido(); 
+                ProductoModificadoFallido(); 
+                limpiarCampos();
             }
         });
     }
+    
+    private void desactivarObjetos() {
+        txt_nombre.setDisable(true);
+        txt_descripcion.setDisable(true);
+        txt_costo.setDisable(true);
+        txt_color.setDisable(true);
+        modificar.setDisable(true);
+    }
 
-    private void limpiarCampos() {
-        codigo.setText("");
-        nombre.setText("");
-        descripcion.setText("");
-        costo.setText("");
-        color.setText("");
+    private void activarObjetos() {
+        modificar.setDisable(false);
+        txt_nombre.setDisable(false);
+        txt_descripcion.setDisable(false);
+        txt_costo.setDisable(false);
+        txt_color.setDisable(false);
+    }
+
+    public static void limpiarCampos() {
+        txt_codigo.setText("");
+        txt_nombre.setText("");
+        txt_descripcion.setText("");
+        txt_costo.setText("");
+        txt_color.setText("");
     }
     
     private boolean validar() {
-        return !codigo.getText().equals("") && !nombre.getText().equals("")
-                && !descripcion.getText().equals("") && !costo.getText().equals("")
-                && !color.getText().equals("");
+        return !txt_codigo.getText().equals("") && !txt_nombre.getText().equals("")
+                && !txt_descripcion.getText().equals("") && !txt_costo.getText().equals("")
+                && !txt_color.getText().equals("");
     }
 
     private void back() {

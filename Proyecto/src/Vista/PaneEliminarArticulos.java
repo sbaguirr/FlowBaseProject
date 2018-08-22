@@ -7,8 +7,7 @@ package Vista;
 
 import Main.Proyecto;
 import controlador.CONSTANTES;
-import static controlador.VentanaDialogo.ProductoGuardadoExitosamente;
-import static controlador.VentanaDialogo.ProductoGuardadoFallido;
+import static controlador.VentanaDialogo.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -34,24 +33,24 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import modelo.Articulo;
 import static modelo.Articulo.buscarArticuloXCodigo;
-import static modelo.Articulo.ingresarArticulo;
+import static modelo.Articulo.eliminarArticulo;
 import static modelo.Articulo.llenarArticulos;
 
 /**
  *
  * @author Tiffy
  */
-public class PaneAgregarArticulos {
+public class PaneEliminarArticulos {
 
     private BorderPane root;
-    private TextField codigo, nombre, descripcion, costo, color;
-    private Button guardar;
+    private TextField codigo;
+    private Button eliminar;
     private ObservableList<Articulo> listaProductos;
     private TableView tablaProductos;
     private Conexion cone ;
    
 
-    public PaneAgregarArticulos() {
+    public PaneEliminarArticulos() {
         cone = new Conexion();
         cone.connect();
         listaProductos = FXCollections.observableArrayList();
@@ -61,7 +60,7 @@ public class PaneAgregarArticulos {
         root.setBackground(new Background(fondo));
         seccionIzquierda();
         Secciontabla();
-        guardar();
+        eliminar();
         back();
     }
 
@@ -71,7 +70,7 @@ public class PaneAgregarArticulos {
 
     private HBox encabezado() {
         HBox h = new HBox();
-        Label titulo = new Label("Agregar Nuevo Artículo");
+        Label titulo = new Label("Eliminar Artículo");
         titulo.setFont(new Font("Verdana", 30));
         titulo.setStyle("-fx-text-fill: #E4C953;");
         h.setAlignment(Pos.CENTER);
@@ -85,24 +84,14 @@ public class PaneAgregarArticulos {
         HBox h = new HBox();
         VBox contenedor = new VBox();
         Label codigoProducto = new Label("Código del Producto");
-        Label nombreProducto = new Label("Nombre");
-        Label Ldescripcion = new Label("Descripción");
-        Label Lcosto = new Label("Costo");
-        Label Lcolor = new Label("Color");
         codigo = new TextField();
-        nombre = new TextField();
-        descripcion = new TextField();
-        descripcion.setPrefHeight(100);
-        descripcion.setPrefWidth(300);
-        costo = new TextField();
-        color = new TextField();
-        guardar = new Button("Guardar");
+        eliminar = new Button("Eliminar");
         grid.setVgap(10);
         grid.setHgap(10);
-        h.getChildren().addAll(guardar);
-        grid.addColumn(0, codigoProducto, nombreProducto, Ldescripcion, Lcosto, Lcolor);
+        h.getChildren().addAll(eliminar);
+        grid.addColumn(0, codigoProducto);
 
-        grid.addColumn(1, codigo, nombre, descripcion, costo, color, h);
+        grid.addColumn(1, codigo, h);
         contenedor.setPadding(new Insets(0, 0, 10, 50)); //top,derecha,abajo,izquierda
         contenedor.getChildren().addAll(encabezado(), grid);
         root.setTop(contenedor);
@@ -114,29 +103,29 @@ public class PaneAgregarArticulos {
         tablaProductos = new TableView();
         
         llenarArticulos(cone.getC(),listaProductos);
-        TableColumn<Articulo, String> codigoProd = new TableColumn<>("Código");
-        TableColumn<Articulo, String> nombre = new TableColumn<>("Nombre");
-        TableColumn<Articulo, String> descrip = new TableColumn<>("Descripción");
+        TableColumn codigoProd = new TableColumn<>("Código");
+        TableColumn nombreP = new TableColumn<>("Nombre");
+        TableColumn descrip = new TableColumn<>("Descripción");
         TableColumn cost = new TableColumn<>("Costo");
-        TableColumn color = new TableColumn<>("Color");
+        TableColumn colorP = new TableColumn<>("Color");
         codigoProd.setPrefWidth(190);
         
         codigoProd.setCellValueFactory(new PropertyValueFactory<>("cod_articulo"));
         propertiesTableView(codigoProd);
         descrip.setPrefWidth(300);
         
-        nombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+        nombreP.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         descrip.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
         propertiesTableView(descrip);
-        propertiesTableView(nombre);
+        propertiesTableView(nombreP);
         cost.setPrefWidth(200);
         
         cost.setCellValueFactory(new PropertyValueFactory<>("costo"));
-        color.setCellValueFactory(new PropertyValueFactory<>("color"));
+        colorP.setCellValueFactory(new PropertyValueFactory<>("color"));
         propertiesTableView(cost);
-        propertiesTableView(color);
+        propertiesTableView(colorP);
         tablaProductos.setItems(listaProductos);
-        tablaProductos.getColumns().addAll(codigoProd, nombre, descrip, cost, color);
+        tablaProductos.getColumns().addAll(codigoProd, nombreP, descrip, cost, colorP);
         tablaProductos.setPrefSize(40, 300);
         vb.setPadding(new Insets(0, 25, 10, 50)); //top, derecha,abajo,izquierda
         vb.getChildren().addAll(tablaProductos, hb);
@@ -154,39 +143,31 @@ public class PaneAgregarArticulos {
         c.setEditable(false);
     }
 
-    private void guardar() {
-        guardar.setOnAction(e->{
+    private void eliminar() {
+        eliminar.setOnAction(e->{
             if(validar()){
                 cone.connect();
                 String t = buscarArticuloXCodigo(codigo.getText(), cone.getC());
                 if (t == null) {
-                    ingresarArticulo(codigo.getText(),nombre.getText(), 
-                    descripcion.getText(), Float.parseFloat(costo.getText()), 
-                    color.getText(), cone.getC());
+                    eliminarArticulo(codigo.getText(), cone.getC());
                     cone.cerrarConexion();
-                    ProductoGuardadoExitosamente();
+                    ProductoEliminadoExitosamente();
                     limpiarCampos();
                 }else{
-                    ProductoGuardadoFallido();
+                    ProductoEliminadoFallido();
                 }
             }else{
-                ProductoGuardadoFallido(); 
+                CampoVacio(); 
             }
         });
     }
 
     private void limpiarCampos() {
         codigo.setText("");
-        nombre.setText("");
-        descripcion.setText("");
-        costo.setText("");
-        color.setText("");
     }
     
-    private boolean validar() {
-        return !codigo.getText().equals("") && !nombre.getText().equals("")
-                && !descripcion.getText().equals("") && !costo.getText().equals("")
-                && !color.getText().equals("");
+    private boolean validar(){
+        return (!codigo.getText().equals(""));
     }
 
     private void back() {

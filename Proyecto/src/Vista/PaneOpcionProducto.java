@@ -90,9 +90,8 @@ public class PaneOpcionProducto {
         modificar.setContentDisplay(ContentDisplay.TOP);
         modificar.setGraphic(w);
         modificar.setOnAction(e -> {
-             
-            
-            
+            PaneModificarArticulos p = new PaneModificarArticulos();
+            Proyecto.scene.setRoot(p.getRoot());
         });
         return modificar;
     }
@@ -107,8 +106,8 @@ public class PaneOpcionProducto {
         eliminar.setContentDisplay(ContentDisplay.TOP);
         eliminar.setGraphic(w);
         eliminar.setOnAction(e -> {
-            // PaneIngresarPedidos p = new PaneIngresarPedidos();
-            // Proyecto.scene.setRoot(p.getRoot());
+            PaneEliminarArticulos p = new PaneEliminarArticulos();
+            Proyecto.scene.setRoot(p.getRoot());
         });
         return eliminar;
     }

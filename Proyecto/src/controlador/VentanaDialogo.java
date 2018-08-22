@@ -101,9 +101,49 @@ public class VentanaDialogo {
      * Método que permitirá mostrar una ventana cuando se no se haya agregado un articulo 
      */
     public static void ProductoGuardadoFallido() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Agregar nuevo artículo");
         alert.setHeaderText("El producto no ha sido guardado exitosamente");
+        alert.setContentText("Por favor, asegúrese de llenar todos los campos");
+        alert.showAndWait();
+    }
+    
+    public static void ProductoEliminadoExitosamente() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Eliminar artículo");
+        alert.setHeaderText(null);
+        alert.setContentText("El producto ha sido eliminado exitosamente");
+        alert.showAndWait();
+    }
+    
+    public static void ProductoModificadoExitosamente() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Modificar artículo");
+        alert.setHeaderText(null);
+        alert.setContentText("El producto ha sido modificado exitosamente");
+        alert.showAndWait();
+    }
+    
+    public static void ProductoModificadoFallido() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Modificar artículo");
+        alert.setHeaderText(null);
+        alert.setContentText("El producto  no se ha modificado correctamente");
+        alert.showAndWait();
+    }
+    
+    public static void ProductoEliminadoFallido() {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Eliminar artículo");
+        alert.setHeaderText("El producto no ha sido borrado");
+        alert.setContentText("El producto no se encuentra registrado");
+        alert.showAndWait();
+    }
+    
+    public static void CampoVacio() {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Artículo");
+        alert.setHeaderText("No se puede realizar la acción solicitada");
         alert.setContentText("Por favor, asegúrese de llenar todos los campos");
         alert.showAndWait();
     }

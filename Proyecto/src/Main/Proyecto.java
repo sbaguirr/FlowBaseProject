@@ -31,7 +31,6 @@ public class Proyecto extends Application {
         Image image = new Image("/recursos/logo.png");
         primaryStage.getIcons().add(image);
         primaryStage.resizableProperty().setValue(Boolean.FALSE);
-
         primaryStage.show();
     }
 
