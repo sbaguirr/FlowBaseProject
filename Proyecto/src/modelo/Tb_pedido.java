@@ -10,9 +10,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Time;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import javafx.collections.ObservableList;
 
@@ -28,10 +26,10 @@ public class Tb_pedido {
     private String forma_pago;
     private double costo_total;
     private String estado;
-    private Date fecha_pedido;
-    private Time hora_pedido;
-    private Date fecha_entrega;
-    private Time hora_entrega;
+    private String fecha_pedido;
+    private String hora_pedido;
+    private String fecha_entrega;
+    private String hora_entrega;
     private String ci_trabajador;
     private String ci_cliente;
     private int cod_destinatario;
@@ -40,7 +38,7 @@ public class Tb_pedido {
     private String clienteApe;
     private String destinatarioApe;
 
-    public Tb_pedido(int cod_pedido, String observaciones, String mensaje, String forma_pago, double costo_total, String estado, Date fecha_pedido, Time hora_pedido, Date fecha_entrega, Time hora_entrega, String ci_trabajador, String ci_cliente, int cod_destinatario) {
+    public Tb_pedido(int cod_pedido, String observaciones, String mensaje, String forma_pago, double costo_total, String estado, String fecha_pedido, String hora_pedido, String fecha_entrega, String hora_entrega, String ci_trabajador, String ci_cliente, int cod_destinatario) {
         this.cod_pedido = cod_pedido;
         this.observaciones = observaciones;
         this.mensaje = mensaje;
@@ -56,7 +54,7 @@ public class Tb_pedido {
         this.cod_destinatario = cod_destinatario;
     }
 
-    public Tb_pedido(int cod_pedido, String observaciones, String estado, Date fecha_pedido, Date fecha_entrega, Time hora_entrega, String ci_trabajador, String Nomcliente, String ApeCliente, String Nomdestinatario, String ApeDesti) {
+    public Tb_pedido(int cod_pedido, String observaciones, String estado, String fecha_pedido, String fecha_entrega, String hora_entrega, String ci_trabajador, String Nomcliente, String ApeCliente, String Nomdestinatario, String ApeDesti) {
         this.cod_pedido = cod_pedido;
         this.observaciones = observaciones;
         this.estado = estado;
@@ -134,11 +132,11 @@ public class Tb_pedido {
         this.estado = estado;
     }
 
-    public Date getFecha_pedido() {
+    public String getFecha_pedido() {
         return fecha_pedido;
     }
 
-    public void setFecha_pedido(Date fecha_pedido) {
+    public void setFecha_pedido(String fecha_pedido) {
         this.fecha_pedido = fecha_pedido;
     }
 
@@ -158,29 +156,33 @@ public class Tb_pedido {
         this.destinatarioApe = destinatarioApe;
     }
 
-    public Time getHora_pedido() {
+    public String getHora_pedido() {
         return hora_pedido;
     }
 
-    public void setHora_pedido(Time hora_pedido) {
+    public void setHora_pedido(String hora_pedido) {
         this.hora_pedido = hora_pedido;
     }
 
-    public Date getFecha_entrega() {
-        return fecha_entrega;
-    }
-
-    public void setFecha_entrega(Date fecha_entrega) {
-        this.fecha_entrega = fecha_entrega;
-    }
-
-    public Time getHora_entrega() {
+    public String getHora_entrega() {
         return hora_entrega;
     }
 
-    public void setHora_entrega(Time hora_entrega) {
+    public void setHora_entrega(String hora_entrega) {
         this.hora_entrega = hora_entrega;
     }
+
+   
+
+    public String getFecha_entrega() {
+        return fecha_entrega;
+    }
+
+    public void setFecha_entrega(String fecha_entrega) {
+        this.fecha_entrega = fecha_entrega;
+    }
+
+   
 
     public String getCi_trabajador() {
         return ci_trabajador;
@@ -220,10 +222,10 @@ public class Tb_pedido {
                                 resultado.getString("forma_pago"),
                                 resultado.getDouble("costo_total"),
                                 resultado.getString("estado"),
-                                resultado.getDate("fecha_pedido"),
-                                resultado.getTime("hora_pedido"),
-                                resultado.getDate("fecha_entrega"),
-                                resultado.getTime("hora_entrega"),
+                                resultado.getString("fecha_pedido"),
+                                resultado.getString("hora_pedido"),
+                                resultado.getString("fecha_entrega"),
+                                resultado.getString("hora_entrega"),
                                 resultado.getString("ci_trabajador"),
                                 resultado.getString("ci_cliente"),
                                 resultado.getInt("cod_destinatario")
@@ -234,17 +236,55 @@ public class Tb_pedido {
             System.out.println("EXCEPCION in llenar Tb_envio: " + ex.getMessage());
         }
     }
+    /*
+    delimiter %
+create procedure ObtenerPedidosPorVendedor(in estado varchar(15),in ci_vendedor varchar(10), in fecP date, in fecE date)
+begin
+if(fecP is not null and fecE is not null) then
+select p.cod_pedido,p.observaciones,p.estado,p.fecha_pedido, p.fecha_entrega, p.hora_entrega, p.ci_trabajador, c.nombres, c.apellidos, d.nombres, d.apellidos
+from tb_pedido p 
+join
+tb_cliente c on p.ci_cliente= c.ci_cliente
+join 
+tb_destinatario d on p.cod_destinatario= d.cod_destinatario
+where 
+p.ci_trabajador=ci_vendedor and p.estado=estado and p.fecha_pedido= fecP and p.fecha_entrega= fecE;
+else if (fecP is not null and fecE is null) then
+select p.cod_pedido,p.observaciones,p.estado,p.fecha_pedido, p.fecha_entrega, p.hora_entrega, p.ci_trabajador, c.nombres, c.apellidos, d.nombres, d.apellidos
+from tb_pedido p 
+join
+tb_cliente c on p.ci_cliente= c.ci_cliente
+join 
+tb_destinatario d on p.cod_destinatario= d.cod_destinatario
+where 
+p.ci_trabajador=ci_vendedor and p.estado=estado and p.fecha_pedido= fecP;
+else if(fecP is null and fecE is not null) then 
+select p.cod_pedido,p.observaciones,p.estado,p.fecha_pedido, p.fecha_entrega, p.hora_entrega, p.ci_trabajador, c.nombres, c.apellidos, d.nombres, d.apellidos
+from tb_pedido p 
+join
+tb_cliente c on p.ci_cliente= c.ci_cliente
+join 
+tb_destinatario d on p.cod_destinatario= d.cod_destinatario
+where 
+p.ci_trabajador=ci_vendedor and p.estado=estado and p.fecha_entrega= fecE;
+end if; 
+end if;
+end if;
+end %
+delimiter ;
 
-    public static List<Tb_pedido> callObtenerPedidosPorVendedor(String estado, Date fecP, Date fecE, Time hoE,String ci_vendedor, Connection c) {
+    */
+
+    public static List<Tb_pedido> callObtenerPedidosPorVendedor(String estado, String fecP, String fecE, String ci_vendedor, Connection c) {
         List<Tb_pedido> pw = new ArrayList<>();
         try {
             String consulta = "{call ObtenerPedidosPorVendedor(?,?,?,?)}";
             CallableStatement sp = c.prepareCall(consulta);
             sp.setString(1, estado); //ingresar valor
-            sp.setDate(2, (java.sql.Date) fecP);
-            sp.setDate(3, (java.sql.Date) fecE);
-            sp.setTime(4, hoE);
-            sp.setString(5, ci_vendedor);
+            sp.setString(2, ci_vendedor);
+            sp.setString(3, fecP);
+            sp.setString(4, fecE);
+
             sp.execute();
             final ResultSet resultado = sp.getResultSet();
             while (resultado.next()) {
@@ -253,47 +293,14 @@ public class Tb_pedido {
                                 resultado.getInt("p.cod_pedido"),
                                 resultado.getString("p.observaciones"),
                                 resultado.getString("p.estado"),
-                                resultado.getDate("p.fecha_pedido"),
-                                resultado.getDate("p.fecha_entrega"),
-                                resultado.getTime("p.hora_entrega"),
+                                resultado.getString("p.fecha_pedido"),
+                                resultado.getString("p.fecha_entrega"),
+                                resultado.getString("p.hora_entrega"),
                                 resultado.getString("p.ci_trabajador"),
                                 resultado.getString("c.nombres"),
                                 resultado.getString("c.apellidos"),
                                 resultado.getString("d.nombres"),
-                                resultado.getString("d.nombres")));
-            }
-            sp.close();
-        } catch (SQLException ex) {
-            System.out.println("EXCEPCION callDescuentoStock: " + ex.getMessage());
-        }
-        return pw;
-    }
-    
-    public static List<Tb_pedido> callObtenerPedidosPorFecha(String estado, Date fecP, Date fecE, Time hoE, Connection c) {
-        List<Tb_pedido> pw = new ArrayList<>();
-        try {
-            String consulta = "{call ObtenerPedidosPorVendedor(?,?,?,?)}";
-            CallableStatement sp = c.prepareCall(consulta);
-            sp.setString(1, estado); //ingresar valor
-            sp.setDate(2, (java.sql.Date) fecP);
-            sp.setDate(3, (java.sql.Date) fecE);
-            sp.setTime(4, hoE);
-            sp.execute();
-            final ResultSet resultado = sp.getResultSet();
-            while (resultado.next()) {
-                pw.add(
-                        new Tb_pedido(
-                                resultado.getInt("p.cod_pedido"),
-                                resultado.getString("p.observaciones"),
-                                resultado.getString("p.estado"),
-                                resultado.getDate("p.fecha_pedido"),
-                                resultado.getDate("p.fecha_entrega"),
-                                resultado.getTime("p.hora_entrega"),
-                                resultado.getString("p.ci_trabajador"),
-                                resultado.getString("c.nombres"),
-                                resultado.getString("c.apellidos"),
-                                resultado.getString("d.nombres"),
-                                resultado.getString("d.nombres")));
+                                resultado.getString("d.apellidos")));
             }
             sp.close();
         } catch (SQLException ex) {
@@ -302,5 +309,42 @@ public class Tb_pedido {
         return pw;
     }
 
+    //in estado varchar(15), in fecP date, in fecE date
+    public static List<Tb_pedido> callObtenerPedidosPorFecha(String estado, String fecP, String fecE, Connection c) {
+        List<Tb_pedido> pw = new ArrayList<>();
+        try {
+            String consulta = "{call ObtenerPedidosPorFecha(?,?,?)}";
+            CallableStatement sp = c.prepareCall(consulta);
+            sp.setString(1, estado); 
+            sp.setString(2, fecP);
+            sp.setString(3, fecE);
+            sp.execute();
+            final ResultSet resultado = sp.getResultSet();
+            while (resultado.next()) {
+                pw.add(
+                        new Tb_pedido(
+                                resultado.getInt("p.cod_pedido"),
+                                resultado.getString("p.observaciones"),
+                                resultado.getString("p.estado"),
+                                resultado.getString("p.fecha_pedido"),
+                                resultado.getString("p.fecha_entrega"),
+                                resultado.getString("p.hora_entrega"),
+                                resultado.getString("p.ci_trabajador"),
+                                resultado.getString("c.nombres"),
+                                resultado.getString("c.apellidos"),
+                                resultado.getString("d.nombres"),
+                                resultado.getString("d.apellidos")));
+            }
+            sp.close();
+        } catch (SQLException ex) {
+            System.out.println("EXCEPCION callDescuentoStock: " + ex.getMessage());
+        }
+        return pw;
+    }
+
+    @Override
+    public String toString() {
+        return cod_pedido + observaciones + mensaje + forma_pago + costo_total + estado + fecha_pedido + hora_pedido + fecha_entrega + hora_entrega + ci_trabajador + ci_cliente + cod_destinatario + clienteNom + destinatarioNom + clienteApe + destinatarioApe;
+    }
 }
 

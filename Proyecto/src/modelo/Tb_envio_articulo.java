@@ -125,22 +125,6 @@ public class Tb_envio_articulo {
             System.out.println("EXCEPCION in llenar Tb_envio: " + ex.getMessage());
         }
     }
-      /* Modifiqué la tabla Tb_envio_pedido; VERIFIQUEN la locura que hice :D
-     alter table tb_envio_articulo add column stockInicial int;
-    
-     CREé ESTE PROCEDURE PORQUE NO LO PUEDO HACER DESDE UN TRIGGER......
-     delimiter %
-create procedure descuentoStockMatriz (in stockIngresado int, in cod varchar(10),out valido int)
-begin 
-set @stockActual= (select stock from tb_envio_articulo  where id_floreria=2 and cod_articulo=cod);
-if(@stockActual>stockIngresado) then
-update  tb_envio_articulo set stock=(stock-stockIngresado) where id_floreria=2 and cod_articulo=cod;
-set valido=1;
-else
-set valido=-1;
-end if;
-end %
-delimiter ;
-     */
+      
 }
 

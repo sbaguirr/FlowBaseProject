@@ -39,6 +39,19 @@ public class VentanaDialogo {
         advertencia.initStyle(StageStyle.UTILITY);
         advertencia.showAndWait();
     }
+    
+      /**
+     * Método que permitirá mostrar una ventana cuando el usuario deje algún
+     * campo vacío
+     */
+    public static void dialogoAdvertenciaPedido() {
+        Alert advertencia = new Alert(Alert.AlertType.WARNING);
+        advertencia.setTitle("Error");
+        advertencia.setContentText("Debe asegurarse de seleccionar el método de búsqueda y el estado del pedido");
+        advertencia.setHeaderText(null);
+        advertencia.initStyle(StageStyle.UTILITY);
+        advertencia.showAndWait();
+    }
 
     /**
      * Método que permitirá mostrar una ventana el usuario no seleccione algún registro

@@ -217,7 +217,7 @@ public class PaneIngresarPedidos {
         Label l = new Label("Fecha");
         Label ve = new Label("Vendedor");
         hb.setSpacing(5);
-        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         fechaActual.setText(dateFormat.format(r));///
         hb.getChildren().addAll(l, fechaActual);
         hb2.getChildren().addAll(ve, vendedor);
