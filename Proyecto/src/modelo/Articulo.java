@@ -17,6 +17,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Objects;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TextField;
 
@@ -100,6 +101,29 @@ public class Articulo {
 
     public void setColor(String color) {
         this.color = color;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Articulo other = (Articulo) obj;
+        if (!Objects.equals(this.cod_articulo, other.cod_articulo)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Articulo{" + "cod_articulo=" + cod_articulo + ", nombre=" + nombre + ", descripcion=" + descripcion + ", costo=" + costo + ", color=" + color + ", cant=" + cant + '}';
     }
     
     public static void llenarArticulos(Connection c, ObservableList<Articulo> lista){

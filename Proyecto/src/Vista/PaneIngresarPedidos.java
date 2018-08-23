@@ -11,6 +11,7 @@ import controlador.VentanaDialogo;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -60,10 +61,12 @@ public class PaneIngresarPedidos {
     private ObservableList<Articulo> listaProductos;
     private ObservableList<String> listaCantPedido;
     private RadioButton si, no, efectivo, credito, debito, transferencia, paypal;
-    private TableView tablaPedido;
+    private TableView<Articulo> tablaPedido;
     private Conexion c ;
     public static Tb_cliente f;
     public  static  int indicador;
+    private TableColumn Tcodigo, cant, cost, Tdescripcion, Tname;
+
 
     public PaneIngresarPedidos() {
         root = new BorderPane();
@@ -78,6 +81,7 @@ public class PaneIngresarPedidos {
         seccionClienteDestinatario();
         seccionPedido();
         llamarBotones();
+        eliminar();
     }
 
     public Pane getRoot() {
@@ -135,7 +139,7 @@ public class PaneIngresarPedidos {
         l.setMaxWidth(850);
         gp.setVgap(4);
         gp.setHgap(10);
-        vb.setSpacing(10);
+        vb.setSpacing(7);
         vb.getChildren().addAll(gp, l);
         vb.setPadding(new Insets(0, 10, 5, 10));
         root.setTop(vb);
@@ -220,6 +224,23 @@ public class PaneIngresarPedidos {
         fpedido.setDisable(true);
     }
 
+    private void eliminar() {
+        eliminarCodigo.setOnAction((e) -> {
+            try {
+                Articulo w = tablaPedido.getSelectionModel().getSelectedItem();
+                Iterator<Articulo> it = this.listaProductos.iterator();
+                while(it.hasNext()){
+                    if(w.getCod_articulo().equals(it.next().getCod_articulo())){
+                        it.remove();                
+                    }
+                }
+                tablaPedido.setItems(listaProductos);
+            } catch (Exception ex) {
+                System.out.println("Exception (eliminar)");   
+            }
+        });
+    }
+    
     private void seccionPedido() {
         VBox v = new VBox();
         GridPane gp = new GridPane();
@@ -251,7 +272,7 @@ public class PaneIngresarPedidos {
         agregar = new Button("Agregar");
         cantidad = new TextField();
         gp.addRow(0, hb, hb3, hb2);
-        gp.addRow(1, LcodigoProducto, conjunto, Lcantidad, cantidad,agregar, eliminarCodigo);
+        gp.addRow(1, LcodigoProducto, conjunto, Lcantidad, cantidad,agregar);
         gp.setVgap(10);
         gp.setHgap(10);
         v.getChildren().addAll(gp, tablaArticulo(), seccionCentro());
@@ -263,15 +284,12 @@ public class PaneIngresarPedidos {
     private VBox tablaArticulo() {
         tablaPedido = new TableView();
         VBox vb = new VBox();
-        c.connect();
-        String texto = (cantidad.getText());
-        llenarPedidoArticulo(c.getC(), codigo.getText(), texto, listaProductos);
-        TableColumn Tcodigo = new TableColumn<>("Código del producto");
-        TableColumn cant = new TableColumn<>("Cantidad");
-        TableColumn Tname = new TableColumn<>("Nombre");
-        TableColumn Tdescripcion = new TableColumn<>("Descripción");
-        TableColumn cost = new TableColumn<>("Costo");
-        TableColumn color = new TableColumn<>("Color");
+        Tcodigo = new TableColumn<>("Código del producto");
+        cant = new TableColumn<>("Cantidad");
+        Tname = new TableColumn<>("Nombre");
+        Tdescripcion = new TableColumn<>("Descripción");
+        cost = new TableColumn<>("Costo");
+        //color = new TableColumn<>("Color");
         Tcodigo.setPrefWidth(180);
         Tcodigo.setCellValueFactory(new PropertyValueFactory<>("cod_articulo"));
         propertiesTableView(Tcodigo);
@@ -289,17 +307,24 @@ public class PaneIngresarPedidos {
         propertiesTableView(cost);
         
         cant.setPrefWidth(110);
-        listaCantPedido.add(cantidad.getText());
         cant.setCellValueFactory(new PropertyValueFactory<>("cant"));
+        listaCantPedido.add(cantidad.getText());
         propertiesTableView(cant);
-        tablaPedido.setItems(listaCantPedido);
-        tablaPedido.setItems(listaProductos);
+        tablaPedido.setPrefSize(50, 210); //ancho,alto
+        
+        agregar.setOnAction(e->{
+            c.connect();
+            String texto = (cantidad.getText());
+            llenarPedidoArticulo(c.getC(), codigo.getText(), texto, listaProductos);           
+            tablaPedido.setItems(listaProductos);
+            cantidad.setText("");
+            c.cerrarConexion();
+        });
         tablaPedido.getColumns().addAll(Tcodigo, Tname, Tdescripcion, cost, cant);
-        tablaPedido.setPrefSize(50, 150); //ancho,alto
-
-        vb.setPadding(new Insets(10, 10, 0, 0)); //top, derecha,abajo,izquierda
-        vb.getChildren().addAll(tablaPedido);
-        c.cerrarConexion();
+        vb.setSpacing(2);
+        vb.setPadding(new Insets(5, 0, 5, 0)); //top, derecha,abajo,izquierda
+        vb.getChildren().addAll(tablaPedido, eliminarCodigo);
+       
         return vb;
     }
         
@@ -344,10 +369,10 @@ public class PaneIngresarPedidos {
         gp.add(realizar, 8, 1);
         gp.setVgap(5);
         gp.setHgap(5);
-        vb.setPadding(new Insets(0, 10, 10, 0));
-        vb.setSpacing(5);
-        desc.setSpacing(5);
-        mesj.setSpacing(5);
+        vb.setPadding(new Insets(0, 0, 1, 0));
+        vb.setSpacing(4);
+        desc.setSpacing(3);
+        mesj.setSpacing(3);
         desc.getChildren().addAll(descripcion, descrip);
         mesj.getChildren().addAll(msj, mensaje);
         descYmsj.setSpacing(75);
@@ -363,7 +388,6 @@ public class PaneIngresarPedidos {
         habilitarDestinatario();
         deshabilitarDestinatario();
         Vercodigos();
-        agregarProducto();
         // realizarPedido();
         back();
     }
@@ -515,17 +539,4 @@ public class PaneIngresarPedidos {
         f.setAlignment(Pos.BOTTOM_LEFT);
         root.setBottom(f);
     }
-
-    private void agregarProducto() {
-        agregar.setOnAction(e->{
-//            String t = cantidad.getText();
-//            this.listaCantPedido.add(t);
-//            this.tablaPedido.setItems(this.listaCantPedido);
-//            this.tablaPedido.setItems(this.listaProductos);
-            tablaArticulo();
-            cantidad.setText("");
-            
-        });
-    }
-
 }
