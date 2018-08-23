@@ -35,7 +35,6 @@ import modelo.Articulo;
 public class MiniPaneArticulo {
 
     private BorderPane root;
-    private Conexion co = new Conexion();
     private TableView<Articulo> articulos;
     private ObservableList<Articulo> l_articulos;
     private FilteredList<Articulo> filtro;
@@ -132,7 +131,7 @@ public class MiniPaneArticulo {
         articulos.setItems(sortedData);
     }
 
-    /**
+     /**
      * Método que permitirá obtener un objeto Pais al hacer click sobre una de
      * las filas del TableView
      */
@@ -141,16 +140,22 @@ public class MiniPaneArticulo {
         seleccionar.setOnAction((e) -> {
             try {
                 Articulo w = articulos.getSelectionModel().getSelectedItem();
-                System.out.println(w);
-
-                //stageForm.close();
+                if(w!=null){
+                if (PaneIngresarPedidos.indicador == 1) {
+                    PaneIngresarPedidos.codigo.setText(w.getCod_articulo());    
+                }  if (PaneIngresoProductoSucursal.indicador == 1 ) {
+                    PaneIngresoProductoSucursal.codigo.setText(w.getCod_articulo());
+                }
+                }else{
+                VentanaDialogo.dialogoAdvertencia2();
+                }
+                stageForm.close();
             } catch (Exception ex) {
                 VentanaDialogo.dialogoAdvertencia2();
             }
         });
-
+        
     }
-
     /**
      * Método que permitirá llamar a este Pane desde otra clase
      */

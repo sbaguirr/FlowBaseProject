@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.collections.ObservableList;
@@ -236,45 +237,7 @@ public class Tb_pedido {
             System.out.println("EXCEPCION in llenar Tb_envio: " + ex.getMessage());
         }
     }
-    /*
-    delimiter %
-create procedure ObtenerPedidosPorVendedor(in estado varchar(15),in ci_vendedor varchar(10), in fecP date, in fecE date)
-begin
-if(fecP is not null and fecE is not null) then
-select p.cod_pedido,p.observaciones,p.estado,p.fecha_pedido, p.fecha_entrega, p.hora_entrega, p.ci_trabajador, c.nombres, c.apellidos, d.nombres, d.apellidos
-from tb_pedido p 
-join
-tb_cliente c on p.ci_cliente= c.ci_cliente
-join 
-tb_destinatario d on p.cod_destinatario= d.cod_destinatario
-where 
-p.ci_trabajador=ci_vendedor and p.estado=estado and p.fecha_pedido= fecP and p.fecha_entrega= fecE;
-else if (fecP is not null and fecE is null) then
-select p.cod_pedido,p.observaciones,p.estado,p.fecha_pedido, p.fecha_entrega, p.hora_entrega, p.ci_trabajador, c.nombres, c.apellidos, d.nombres, d.apellidos
-from tb_pedido p 
-join
-tb_cliente c on p.ci_cliente= c.ci_cliente
-join 
-tb_destinatario d on p.cod_destinatario= d.cod_destinatario
-where 
-p.ci_trabajador=ci_vendedor and p.estado=estado and p.fecha_pedido= fecP;
-else if(fecP is null and fecE is not null) then 
-select p.cod_pedido,p.observaciones,p.estado,p.fecha_pedido, p.fecha_entrega, p.hora_entrega, p.ci_trabajador, c.nombres, c.apellidos, d.nombres, d.apellidos
-from tb_pedido p 
-join
-tb_cliente c on p.ci_cliente= c.ci_cliente
-join 
-tb_destinatario d on p.cod_destinatario= d.cod_destinatario
-where 
-p.ci_trabajador=ci_vendedor and p.estado=estado and p.fecha_entrega= fecE;
-end if; 
-end if;
-end if;
-end %
-delimiter ;
-
-    */
-
+    
     public static List<Tb_pedido> callObtenerPedidosPorVendedor(String estado, String fecP, String fecE, String ci_vendedor, Connection c) {
         List<Tb_pedido> pw = new ArrayList<>();
         try {
@@ -304,7 +267,7 @@ delimiter ;
             }
             sp.close();
         } catch (SQLException ex) {
-            System.out.println("EXCEPCION callDescuentoStock: " + ex.getMessage());
+            System.out.println("EXCEPCION callVendedor: " + ex.getMessage());
         }
         return pw;
     }
@@ -337,11 +300,26 @@ delimiter ;
             }
             sp.close();
         } catch (SQLException ex) {
-            System.out.println("EXCEPCION callDescuentoStock: " + ex.getMessage());
+            System.out.println("EXCEPCION callPedidos: " + ex.getMessage());
         }
         return pw;
     }
+    
+     public static int proxPedido(Connection c) {
+        int numero = -2;
+        try {
+            String consulta = "{call obtenerUltimoPedido(?)}";
+            CallableStatement sp = c.prepareCall(consulta);
+            sp.registerOutParameter(1, Types.INTEGER);
+            sp.execute();
+            numero= sp.getInt(1);
+            sp.close();
+        } catch (SQLException ex) {
+            System.out.println("EXCEPCION callProxPedido: " + ex.getMessage());
+        }
+        return numero+1;
 
+    }
     @Override
     public String toString() {
         return cod_pedido + observaciones + mensaje + forma_pago + costo_total + estado + fecha_pedido + hora_pedido + fecha_entrega + hora_entrega + ci_trabajador + ci_cliente + cod_destinatario + clienteNom + destinatarioNom + clienteApe + destinatarioApe;

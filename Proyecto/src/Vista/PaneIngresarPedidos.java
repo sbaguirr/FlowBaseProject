@@ -36,6 +36,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import modelo.Tb_cliente;
+import modelo.Tb_pedido;
 
 /**
  *
@@ -44,10 +45,11 @@ import modelo.Tb_cliente;
 public class PaneIngresarPedidos {
 
     private BorderPane root;
-    private TextField cedula, nombres, dnombres, dapellidos, ddir, rdir, dtlf, cantidad, codigo,
-            horario, estado, sub, tot, color, cobro;
+    public static TextField codigo; 
+    private TextField cedula, nombres, dnombres, dapellidos, ddir, rdir, dtlf, cantidad,
+            horario, estado, sub, tot, cobro;
     private TextArea mensaje, descrip;
-    private Button buscar, realizar, verCliente, agregar, nuevoCliente, verCodigo;
+    private Button buscar, realizar, verCliente, agregar, nuevoCliente, verCodigo, eliminarCodigo;
     private Label fechaActual, numPedido, vendedor;
     private DatePicker fpedido;
     //private ObservableList<String> listaProductos;
@@ -55,10 +57,12 @@ public class PaneIngresarPedidos {
     private TableView tablaPedido;
     private Conexion c ;
     public static Tb_cliente f;
+    public  static  int indicador;
 
     public PaneIngresarPedidos() {
         root = new BorderPane();
         c = new Conexion();
+        indicador=1;
         BackgroundFill fondo = new BackgroundFill(Color.LINEN, new CornerRadii(1),
                 new Insets(0.0, 0.0, 0.0, 0.0));
         root.setBackground(new Background(fondo));
@@ -171,6 +175,7 @@ public class PaneIngresarPedidos {
         buscar.setPrefSize(20, 20);
 
         realizar = new Button("Realizar");
+        eliminarCodigo= new Button("Eliminar");
 
         descrip = new TextArea();
         descrip.setPrefWidth(100);
@@ -184,7 +189,7 @@ public class PaneIngresarPedidos {
         sub.setDisable(true);
         tot = new TextField();
         tot.setDisable(true);
-        color = new TextField();
+        
 
         ToggleGroup grupo = new ToggleGroup();
         efectivo = new RadioButton("Efectivo     ");
@@ -214,27 +219,32 @@ public class PaneIngresarPedidos {
         Date r = new Date();
         HBox hb = new HBox();
         HBox hb2 = new HBox();
+        HBox hb3 = new HBox();
         Label l = new Label("Fecha");
         Label ve = new Label("Vendedor");
+        Label l3 = new Label("N° pedido ");
         hb.setSpacing(5);
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        fechaActual.setText(dateFormat.format(r));///
+        fechaActual.setText(dateFormat.format(r));
         hb.getChildren().addAll(l, fechaActual);
         hb2.getChildren().addAll(ve, vendedor);
         hb2.setSpacing(5);
-        numPedido.setText("N pedido 000N");
+        c.connect();
+        numPedido.setText(String.valueOf(Tb_pedido.proxPedido(c.getC()))); 
+        c.cerrarConexion();
+        hb3.getChildren().addAll(l3, numPedido);
+        hb3.setSpacing(5);
         Label LcodigoProducto = new Label("Código Producto");
         Label Lcantidad = new Label("Cantidad");
-        Label Lcolor = new Label("Color rosas");
         codigo = new TextField();
-        codigo.setDisable(true); /////
+        codigo.setDisable(true); 
         codigo.setPrefWidth(100);
         HBox conjunto = new HBox();
-        conjunto.getChildren().addAll(codigo, verCodigo);//
+        conjunto.getChildren().addAll(codigo, verCodigo);
         agregar = new Button("Agregar");
         cantidad = new TextField();
-        gp.addRow(0, hb, numPedido, hb2);
-        gp.addRow(1, LcodigoProducto, conjunto, Lcantidad, cantidad, Lcolor, color, agregar);
+        gp.addRow(0, hb, hb3, hb2);
+        gp.addRow(1, LcodigoProducto, conjunto, Lcantidad, cantidad,agregar, eliminarCodigo);
         gp.setVgap(10);
         gp.setHgap(10);
         v.getChildren().addAll(gp, tablaArticulo(), seccionCentro());

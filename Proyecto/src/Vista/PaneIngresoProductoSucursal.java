@@ -41,15 +41,18 @@ public class PaneIngresoProductoSucursal {
 
     private BorderPane root;
     private ComboBox<String> sucursal;
-    private TextField cantidad, codigo;
+    public static TextField codigo;
+    private TextField cantidad;
     private Button showMore, agregar, eliminar;
     private Conexion c;
     private ObservableList<Tb_envio_articulo> listaProductos;
     private TableView<Tb_envio_articulo> tablaProductosSucursal;
+     public static  int indicador;
 
     public PaneIngresoProductoSucursal() {
         root = new BorderPane();
         c = new Conexion();
+        indicador=1;
         BackgroundFill fondo = new BackgroundFill(Color.SEASHELL, new CornerRadii(1),
                 new Insets(0.0, 0.0, 0.0, 0.0));
         root.setBackground(new Background(fondo));
