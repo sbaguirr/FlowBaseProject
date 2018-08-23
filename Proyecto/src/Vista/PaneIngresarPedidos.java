@@ -11,6 +11,8 @@ import controlador.VentanaDialogo;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -24,6 +26,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
@@ -35,8 +38,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import modelo.Articulo;
 import modelo.Tb_cliente;
 import modelo.Tb_pedido;
+import static modelo.Tb_pedido.llenarPedidoArticulo;
 
 /**
  *
@@ -52,7 +57,8 @@ public class PaneIngresarPedidos {
     private Button buscar, realizar, verCliente, agregar, nuevoCliente, verCodigo, eliminarCodigo;
     private Label fechaActual, numPedido, vendedor;
     private DatePicker fpedido;
-    //private ObservableList<String> listaProductos;
+    private ObservableList<Articulo> listaProductos;
+    private ObservableList<String> listaCantPedido;
     private RadioButton si, no, efectivo, credito, debito, transferencia, paypal;
     private TableView tablaPedido;
     private Conexion c ;
@@ -63,6 +69,8 @@ public class PaneIngresarPedidos {
         root = new BorderPane();
         c = new Conexion();
         indicador=1;
+        listaProductos = FXCollections.observableArrayList();
+        listaCantPedido = FXCollections.observableArrayList();
         BackgroundFill fondo = new BackgroundFill(Color.LINEN, new CornerRadii(1),
                 new Insets(0.0, 0.0, 0.0, 0.0));
         root.setBackground(new Background(fondo));
@@ -176,12 +184,11 @@ public class PaneIngresarPedidos {
 
         realizar = new Button("Realizar");
         eliminarCodigo= new Button("Eliminar");
-
         descrip = new TextArea();
-        descrip.setPrefWidth(100);
+        descrip.setPrefWidth(500);
         descrip.setPrefHeight(30);
         mensaje = new TextArea();
-        mensaje.setPrefWidth(100);
+        mensaje.setPrefWidth(500);
         mensaje.setPrefHeight(30);
         estado = new TextField();
         // estado.setPrefSize(50, 50);
@@ -256,31 +263,46 @@ public class PaneIngresarPedidos {
     private VBox tablaArticulo() {
         tablaPedido = new TableView();
         VBox vb = new VBox();
+        c.connect();
+        String texto = (cantidad.getText());
+        llenarPedidoArticulo(c.getC(), codigo.getText(), texto, listaProductos);
         TableColumn Tcodigo = new TableColumn<>("Código del producto");
+        TableColumn cant = new TableColumn<>("Cantidad");
+        TableColumn Tname = new TableColumn<>("Nombre");
         TableColumn Tdescripcion = new TableColumn<>("Descripción");
         TableColumn cost = new TableColumn<>("Costo");
-        TableColumn cantidad = new TableColumn<>("Cantidad");
+        TableColumn color = new TableColumn<>("Color");
         Tcodigo.setPrefWidth(180);
-        //Tcodigo.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
+        Tcodigo.setCellValueFactory(new PropertyValueFactory<>("cod_articulo"));
         propertiesTableView(Tcodigo);
+        
+        Tname.setPrefWidth(300);
+        Tname.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+        propertiesTableView(Tname);
+        
         Tdescripcion.setPrefWidth(300);
-        //Tdescripcion.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
+        Tdescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
         propertiesTableView(Tdescripcion);
+        
         cost.setPrefWidth(150);
-        //cost.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
+        cost.setCellValueFactory(new PropertyValueFactory<>("costo"));
         propertiesTableView(cost);
-        cantidad.setPrefWidth(110);
-        //cantidad.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
-        propertiesTableView(cantidad);
-        tablaPedido.getColumns().addAll(Tcodigo, Tdescripcion, cost, cantidad);
-        tablaPedido.setPrefSize(50, 90); //ancho,alto
+        
+        cant.setPrefWidth(110);
+        listaCantPedido.add(cantidad.getText());
+        cant.setCellValueFactory(new PropertyValueFactory<>("cant"));
+        propertiesTableView(cant);
+        tablaPedido.setItems(listaCantPedido);
+        tablaPedido.setItems(listaProductos);
+        tablaPedido.getColumns().addAll(Tcodigo, Tname, Tdescripcion, cost, cant);
+        tablaPedido.setPrefSize(50, 150); //ancho,alto
 
-        vb.setPadding(new Insets(10, 10, 10, 0)); //top, derecha,abajo,izquierda
+        vb.setPadding(new Insets(10, 10, 0, 0)); //top, derecha,abajo,izquierda
         vb.getChildren().addAll(tablaPedido);
+        c.cerrarConexion();
         return vb;
-
     }
-
+        
     /**
      * Método que permite modificar una columna de un TableView
      *
@@ -294,6 +316,9 @@ public class PaneIngresarPedidos {
 
     private VBox seccionCentro() {
         VBox vb = new VBox();
+        HBox descYmsj = new HBox();
+        VBox desc = new VBox();
+        VBox mesj = new VBox();
         Label msj = new Label("Mensaje del Detalle");
         Label descripcion = new Label("Descripción/Observaciones");
         Label stado = new Label("Estado del pedido");
@@ -321,7 +346,13 @@ public class PaneIngresarPedidos {
         gp.setHgap(5);
         vb.setPadding(new Insets(0, 10, 10, 0));
         vb.setSpacing(5);
-        vb.getChildren().addAll(descripcion, descrip, msj, mensaje, gp);
+        desc.setSpacing(5);
+        mesj.setSpacing(5);
+        desc.getChildren().addAll(descripcion, descrip);
+        mesj.getChildren().addAll(msj, mensaje);
+        descYmsj.setSpacing(75);
+        descYmsj.getChildren().addAll(desc, mesj);
+        vb.getChildren().addAll(descYmsj, gp);
         return vb;
     }
 
@@ -332,7 +363,7 @@ public class PaneIngresarPedidos {
         habilitarDestinatario();
         deshabilitarDestinatario();
         Vercodigos();
-        //  agregarProducto();
+        agregarProducto();
         // realizarPedido();
         back();
     }
@@ -483,6 +514,18 @@ public class PaneIngresarPedidos {
         f.getChildren().add(back);
         f.setAlignment(Pos.BOTTOM_LEFT);
         root.setBottom(f);
+    }
+
+    private void agregarProducto() {
+        agregar.setOnAction(e->{
+//            String t = cantidad.getText();
+//            this.listaCantPedido.add(t);
+//            this.tablaPedido.setItems(this.listaCantPedido);
+//            this.tablaPedido.setItems(this.listaProductos);
+            tablaArticulo();
+            cantidad.setText("");
+            
+        });
     }
 
 }

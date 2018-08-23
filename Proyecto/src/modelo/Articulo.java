@@ -10,16 +10,15 @@ import static controlador.VentanaDialogo.Numerico;
 import static controlador.VentanaDialogo.ProductoEliminadoExitosamente;
 import static controlador.VentanaDialogo.ProductoEliminadoFallido;
 import static controlador.VentanaDialogo.ProductoGuardadoExitosamente;
-import static controlador.VentanaDialogo.ProductoGuardadoFallido;
 import static controlador.VentanaDialogo.VentanaRegistroDuplicado;
 import static controlador.VentanaDialogo.VentanaRegistroNoEncontrado;
-import static controlador.VentanaDialogo.noNumerico;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javafx.collections.ObservableList;
+import javafx.scene.control.TextField;
 
 /**
  *
@@ -31,6 +30,7 @@ public class Articulo {
     private String descripcion;
     private float costo;
     private String color;
+    private String cant;
     private static PreparedStatement modifica;
 
     public Articulo() {
@@ -43,6 +43,23 @@ public class Articulo {
         this.descripcion = descripcion;
         this.costo = costo;
         this.color = color;
+    }
+    
+    public Articulo(String cod_articulo, String nombre, String descripcion, float costo, String color, String t) {
+        this.cod_articulo = cod_articulo;
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.costo = costo;
+        this.color = color;
+        this.cant = t;
+    }
+
+    public String getCant() {
+        return cant;
+    }
+
+    public void setCant(String cant) {
+        this.cant = cant;
     }
 
     public String getCod_articulo() {

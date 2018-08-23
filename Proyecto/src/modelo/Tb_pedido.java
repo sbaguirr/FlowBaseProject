@@ -41,6 +41,7 @@ public class Tb_pedido {
     private String destinatarioNom;
     private String clienteApe;
     private String destinatarioApe;
+    private String cant;
 
     public Tb_pedido(int cod_pedido, String observaciones, String mensaje, String forma_pago, double costo_total, String estado, String fecha_pedido, String hora_pedido, String fecha_entrega, String hora_entrega, String ci_trabajador, String ci_cliente, int cod_destinatario) {
         this.cod_pedido = cod_pedido;
@@ -426,6 +427,28 @@ public class Tb_pedido {
             }
         } catch (SQLException ex) {
             System.out.println("EXCEPCION (pedido): " + ex.getMessage());
+        }
+    }
+    
+    public static void llenarPedidoArticulo(Connection c, String code, String cant, ObservableList<Articulo> lista){
+        try {
+            String consulta = "SELECT * FROM db_flowbase.tb_articulo where cod_articulo =?";
+            PreparedStatement buscar = c.prepareStatement(consulta);
+            buscar.setString(1, code);
+            ResultSet resultado = buscar.executeQuery();
+            
+            System.out.println("si");
+            while(resultado.next()){
+                lista.add(
+                        new Articulo(
+                        resultado.getString("cod_articulo"), 
+                        resultado.getString("nombre"), 
+                        resultado.getString("descripcion"), 
+                        Float.parseFloat(resultado.getString("costo")), 
+                        resultado.getString("color"), cant));
+            }
+        } catch (SQLException ex) {
+            System.out.println("EXCEPCION (pedido articulo): " + ex.getMessage());
         }
     }
 }

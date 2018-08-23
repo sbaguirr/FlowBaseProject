@@ -112,7 +112,7 @@ public class PaneAgregarArticulos {
         VBox vb = new VBox();
         HBox hb = new HBox();
         tablaProductos = new TableView();
-        
+        cone.connect();
         llenarArticulos(cone.getC(),listaProductos);
         TableColumn<Articulo, String> codigoProd = new TableColumn<>("Código");
         TableColumn<Articulo, String> nombre = new TableColumn<>("Nombre");
@@ -141,6 +141,7 @@ public class PaneAgregarArticulos {
         vb.setPadding(new Insets(0, 25, 10, 50)); //top, derecha,abajo,izquierda
         vb.getChildren().addAll(tablaProductos, hb);
         root.setCenter(vb);
+        cone.cerrarConexion();
     }
 
     /**
