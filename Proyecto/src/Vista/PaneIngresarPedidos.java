@@ -8,6 +8,7 @@ package Vista;
 import Main.Proyecto;
 import controlador.CONSTANTES;
 import controlador.VentanaDialogo;
+import static controlador.VentanaDialogo.noNumerico;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -40,6 +41,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import modelo.Articulo;
+import static modelo.Articulo.isNumeric;
 import modelo.Tb_cliente;
 import modelo.Tb_pedido;
 import static modelo.Tb_pedido.llenarPedidoArticulo;
@@ -82,6 +84,7 @@ public class PaneIngresarPedidos {
         seccionPedido();
         llamarBotones();
         eliminar();
+        realizar();
     }
 
     public Pane getRoot() {
@@ -314,11 +317,15 @@ public class PaneIngresarPedidos {
         
         agregar.setOnAction(e->{
             c.connect();
-            String texto = (cantidad.getText());
+            if(isNumeric(cantidad.getText())){
+                String texto = (cantidad.getText());
             llenarPedidoArticulo(c.getC(), codigo.getText(), texto, listaProductos);           
             tablaPedido.setItems(listaProductos);
             cantidad.setText("");
             c.cerrarConexion();
+            }else{
+                noNumerico();
+            }            
         });
         tablaPedido.getColumns().addAll(Tcodigo, Tname, Tdescripcion, cost, cant);
         vb.setSpacing(2);
@@ -538,5 +545,11 @@ public class PaneIngresarPedidos {
         f.getChildren().add(back);
         f.setAlignment(Pos.BOTTOM_LEFT);
         root.setBottom(f);
+    }
+    
+    public void realizar(){
+        realizar.setOnAction(e->{
+        
+        });
     }
 }

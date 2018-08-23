@@ -211,7 +211,7 @@ public class PaneAgregarArticulos {
         root.setBottom(f);
     }
     
-    private boolean isNumeric(String cadena) {
+    public static boolean isNumeric(String cadena) {
         boolean resultado;
         try {
             Integer.parseInt(cadena);
