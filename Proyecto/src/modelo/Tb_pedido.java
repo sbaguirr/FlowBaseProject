@@ -7,6 +7,7 @@ package modelo;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -319,6 +320,79 @@ public class Tb_pedido {
         }
         return numero+1;
 
+    }
+   
+    public static List<Tb_pedido> pedidosXClienteCi(String ci, Connection c) {
+        List<Tb_pedido> pw = new ArrayList<>();
+        try {
+            String consulta
+                    = "select p.cod_pedido,p.observaciones,p.estado,p.fecha_pedido, p.fecha_entrega, p.hora_entrega, p.ci_trabajador, c.nombres, c.apellidos, d.nombres, d.apellidos "
+                    + "from tb_pedido p "
+                    + "join "
+                    + "tb_cliente c on p.ci_cliente= c.ci_cliente "
+                    + "join "
+                    + "tb_destinatario d on p.cod_destinatario= d.cod_destinatario "
+                    + "where "
+                    + "c.ci_cliente=?";
+            PreparedStatement ingreso = c.prepareStatement(consulta);
+            ingreso.setString(1, ci);
+            ResultSet resultado = ingreso.executeQuery();
+            while (resultado.next()) {
+                pw.add(
+                        new Tb_pedido(
+                                resultado.getInt("p.cod_pedido"),
+                                resultado.getString("p.observaciones"),
+                                resultado.getString("p.estado"),
+                                resultado.getString("p.fecha_pedido"),
+                                resultado.getString("p.fecha_entrega"),
+                                resultado.getString("p.hora_entrega"),
+                                resultado.getString("p.ci_trabajador"),
+                                resultado.getString("c.nombres"),
+                                resultado.getString("c.apellidos"),
+                                resultado.getString("d.nombres"),
+                                resultado.getString("d.apellidos")));
+            }
+        } catch (SQLException ex) {
+            System.out.println("EXCEPCION ClientexPedido: " + ex.getMessage());
+        }
+        return pw;
+    }
+
+     public static List<Tb_pedido> pedidosXClienteNom(String nom,String ap, Connection c) {
+        List<Tb_pedido> pw = new ArrayList<>();
+        try {
+            String consulta
+                    = "select p.cod_pedido,p.observaciones,p.estado,p.fecha_pedido, p.fecha_entrega, p.hora_entrega, p.ci_trabajador, c.nombres, c.apellidos, d.nombres, d.apellidos "
+                    + "from tb_pedido p "
+                    + "join "
+                    + "tb_cliente c on p.ci_cliente= c.ci_cliente "
+                    + "join "
+                    + "tb_destinatario d on p.cod_destinatario= d.cod_destinatario "
+                    + "where "
+                    + "c.nombres=? and c.apellidos=? " ;
+            PreparedStatement ingreso = c.prepareStatement(consulta);
+            ingreso.setString(1, nom);
+            ingreso.setString(2, ap);
+            ResultSet resultado = ingreso.executeQuery();
+            while (resultado.next()) {
+                pw.add(
+                        new Tb_pedido(
+                                resultado.getInt("p.cod_pedido"),
+                                resultado.getString("p.observaciones"),
+                                resultado.getString("p.estado"),
+                                resultado.getString("p.fecha_pedido"),
+                                resultado.getString("p.fecha_entrega"),
+                                resultado.getString("p.hora_entrega"),
+                                resultado.getString("p.ci_trabajador"),
+                                resultado.getString("c.nombres"),
+                                resultado.getString("c.apellidos"),
+                                resultado.getString("d.nombres"),
+                                resultado.getString("d.apellidos")));
+            }
+        } catch (SQLException ex) {
+            System.out.println("EXCEPCION ClientexPedido: " + ex.getMessage());
+        }
+        return pw;
     }
     @Override
     public String toString() {

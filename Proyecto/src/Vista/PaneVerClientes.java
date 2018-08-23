@@ -36,6 +36,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import modelo.Tb_cliente;
+import modelo.Tb_pedido;
 
 /**
  *
@@ -45,10 +46,11 @@ public class PaneVerClientes {
 
     private BorderPane root;
     private TableView cliente, pedidos;
-    private Button buscar, modificar;
-    private TextField ci, rc, nom, ape;
-    private RadioButton ruc, c, n;
+    private Button buscar;
+    private TextField ci, nom, ape;
+    private RadioButton  c, n;
     private ObservableList<Tb_cliente> listaClientes;
+    private ObservableList<Tb_pedido> listaPedidos;
     private Conexion co;
 
     public PaneVerClientes() {
@@ -69,7 +71,6 @@ public class PaneVerClientes {
         seccionIzquierda();
         seccionCentro();
         habilitarCedula();
-        habilitarRuc();
         habilitarNombre();
         buscar();
         back();
@@ -79,11 +80,8 @@ public class PaneVerClientes {
         cliente = new TableView();
         pedidos = new TableView();
         buscar = new Button("Buscar");
-        modificar = new Button("Modificar");
         ci = new TextField();
         ci.setDisable(true);
-        rc = new TextField();
-        rc.setDisable(true);
         nom = new TextField();
         nom.setPromptText("Nombres");
         nom.setDisable(true);
@@ -91,8 +89,6 @@ public class PaneVerClientes {
         ape.setPromptText("Apellidos");
         ape.setDisable(true);
         ToggleGroup grupo = new ToggleGroup();
-        ruc = new RadioButton("Ruc");
-        ruc.setToggleGroup(grupo);
         c = new RadioButton("Cédula");
         c.setToggleGroup(grupo);
         n = new RadioButton("Nombres");
@@ -113,16 +109,13 @@ public class PaneVerClientes {
     private void seccionIzquierda() {
         GridPane gp = new GridPane();
         VBox vb = new VBox();
-        Label l = new Label("Cédula de cliente");
-        Label no = new Label("Nombres de cliente");
-        Label r = new Label("Ruc empresa");
         VBox x = new VBox();
         x.getChildren().addAll(nom, ape);
-        gp.addRow(0, c, l, ci);
-        gp.addRow(1, ruc, r, rc);
-        gp.addRow(2, n, no, x);
+        gp.addRow(0, c, ci);
+        gp.addRow(1, n, x);
         gp.add(buscar, 4, 0);
         gp.setHgap(10);
+        gp.setVgap(5);
         vb.setPadding(new Insets(0, 0, 10, 50)); //top,derecha,abajo,izquierda
         vb.setSpacing(5);
         vb.getChildren().addAll(encabezado(), gp);
@@ -174,13 +167,16 @@ public class PaneVerClientes {
         List<Tb_cliente> q = new ArrayList<>();
         co.connect();
         Tb_cliente p = Tb_cliente.buscarCliente(ci.getText(), co.getC());
+        List<Tb_pedido> pd= Tb_pedido.pedidosXClienteCi(ci.getText(), co.getC());
         co.cerrarConexion();
         if (p.getCi_cliente()== null) {
             VentanaDialogo.VentanaRegistroNoEncontrado();
         } else {
             q.add(p);
             listaClientes = FXCollections.observableList(q);
+            listaPedidos= FXCollections.observableList(pd);
             cliente.setItems(listaClientes);
+            pedidos.setItems(listaPedidos);
         }
     }
     
@@ -192,11 +188,14 @@ public class PaneVerClientes {
         List<Tb_cliente> q = new ArrayList<>();
         co.connect();
         Tb_cliente p = Tb_cliente.buscarClientePorNombres(nom.getText(), ape.getText(), co.getC());
+        List<Tb_pedido> pd= Tb_pedido.pedidosXClienteNom(nom.getText(),ape.getText() , co.getC());
         co.cerrarConexion();
         if (p.getCi_cliente() != null) {
             q.add(p);
             listaClientes = FXCollections.observableList(q);
+            listaPedidos= FXCollections.observableList(pd);
             cliente.setItems(listaClientes);
+            pedidos.setItems(listaPedidos);
         } else {
             VentanaDialogo.VentanaRegistroNoEncontrado();
         }
@@ -205,60 +204,59 @@ public class PaneVerClientes {
     
     
     /**
-     * FALTA by 17/08/18
+     * 
      * @return 
      */
     private VBox seccionCentro2() {
         VBox vb = new VBox();
-        TableColumn c = new TableColumn<>("Código");
-        TableColumn fe = new TableColumn<>("Fecha");
+        TableColumn c1 = new TableColumn<>("C");
+        TableColumn fe = new TableColumn<>("Fecha Pedido");
         TableColumn obs = new TableColumn<>("Observaciones");
         TableColumn fee = new TableColumn<>("Fecha entrega");
         TableColumn hen = new TableColumn<>("Hora entrega");
-        TableColumn fp = new TableColumn<>("Forma de pago");
-        TableColumn ra = new TableColumn<>("Articulo");
-        TableColumn r = new TableColumn<>("Mensaje");
-        TableColumn rem = new TableColumn<>("Empleado");
-        TableColumn tra = new TableColumn<>("Destinatario");
+        TableColumn cli = new TableColumn<>("Nombres Cliente");
+        TableColumn cli2 = new TableColumn<>("Apellidos Cliente");
+        TableColumn rem = new TableColumn<>("Vendedor");
+        TableColumn tra = new TableColumn<>("Nombres Destinatario");
+        TableColumn tra2 = new TableColumn<>("Apellidos Destinatario");
         TableColumn cant = new TableColumn<>("Estado");
-        fe.setPrefWidth(100);
-        //fe.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
+        fe.setPrefWidth(80);
+        fe.setCellValueFactory(new PropertyValueFactory<>("fecha_pedido"));
         propertiesTableView(fe);
-        obs.setPrefWidth(100);
-        //obs.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
+        obs.setPrefWidth(200);
+        obs.setCellValueFactory(new PropertyValueFactory<>("observaciones"));
         propertiesTableView(obs);
-        fee.setPrefWidth(100);
-        //fee.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
+        fee.setPrefWidth(80);
+        fee.setCellValueFactory(new PropertyValueFactory<>("fecha_entrega"));
         propertiesTableView(fee);
-        hen.setPrefWidth(100);
-        //hen.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
+        hen.setPrefWidth(80);
+        hen.setCellValueFactory(new PropertyValueFactory<>("hora_entrega"));
         propertiesTableView(hen);
-        fp.setPrefWidth(100);
-        //fp.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
-        propertiesTableView(fp);
-
-        ra.setPrefWidth(100);
-        //ra.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
-        propertiesTableView(ra);
-        r.setPrefWidth(100);
-        //r.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
-        propertiesTableView(r);
-        rem.setPrefWidth(100);
-        //rem.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
+        cli.setPrefWidth(100);
+        cli.setCellValueFactory(new PropertyValueFactory<>("clienteNom"));
+        propertiesTableView(cli);
+        cli2.setPrefWidth(100);
+        cli2.setCellValueFactory(new PropertyValueFactory<>("clienteApe"));
+        propertiesTableView(cli2);
+        rem.setPrefWidth(80);
+        rem.setCellValueFactory(new PropertyValueFactory<>("ci_trabajador"));
         propertiesTableView(rem);
 
-        tra.setPrefWidth(100);
-        //tra.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
+        tra.setPrefWidth(130);
+        tra.setCellValueFactory(new PropertyValueFactory<>("destinatarioNom"));
         propertiesTableView(tra);
+        tra2.setPrefWidth(130);
+        tra2.setCellValueFactory(new PropertyValueFactory<>("destinatarioApe"));
+        propertiesTableView(tra2);
 
         cant.setPrefWidth(100);
-        //cant.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
+        cant.setCellValueFactory(new PropertyValueFactory<>("estado"));
         propertiesTableView(cant);
 
-        c.setPrefWidth(100);
-        //c.setCellValueFactory(new PropertyValueFactory<>("ci_pasaporte"));
-        propertiesTableView(c);
-        pedidos.getColumns().addAll(c, fe, obs, fee, fp, hen, ra, r, rem, tra, cant);
+        c1.setPrefWidth(25);
+        c1.setCellValueFactory(new PropertyValueFactory<>("cod_pedido"));
+        propertiesTableView(c1);
+        pedidos.getColumns().addAll(c1, fe, fee, hen, cli, cli2, rem, tra, tra2, cant, obs);
         pedidos.setPrefSize(1000, 250);
         vb.setPadding(new Insets(10, 0, 15, 0)); //top, derecha,abajo,izquierda+
         vb.getChildren().add(pedidos);
@@ -270,8 +268,6 @@ public class PaneVerClientes {
     private void habilitarCedula() {
         c.setOnAction(e -> {
             ci.setDisable(false);
-            rc.setText("");
-            rc.setDisable(true);
             nom.setText("");
             nom.setDisable(true);
             ape.setText("");
@@ -279,26 +275,11 @@ public class PaneVerClientes {
         });
 
     }
-
-    private void habilitarRuc() {
-        ruc.setOnAction(e -> {
-            rc.setDisable(false);
-            ci.setText("");
-            ci.setDisable(true);
-            nom.setText("");
-            nom.setDisable(true);
-            ape.setText("");
-            ape.setDisable(true);
-        });
-
-    }
-
+ 
     private void habilitarNombre() {
         n.setOnAction(e -> {
             nom.setDisable(false);
             ape.setDisable(false);
-            rc.setDisable(true);
-            rc.setText("");
             ci.setDisable(true);
             ci.setText("");
         });
@@ -312,8 +293,6 @@ public class PaneVerClientes {
                 } else {
                     VentanaDialogo.dialogoAdvertencia();
                 }
-            } else if (ruc.isSelected()) {
-                System.out.println("ruc activado");
             } else if (n.isSelected()) {
                 if (!nom.getText().equals("") && !ape.getText().equals("")) {
                     cargarContenidoPorNombres();
