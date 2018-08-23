@@ -176,4 +176,25 @@ public class VentanaDialogo {
         alert.setContentText("Por favor, asegúrese de ingresar un número");
         alert.showAndWait();
     }
+    
+      /**
+     * Método que permitirá mostrar una ventana el usuario cuando no haya stock suficiente
+     */
+    public static void dialogoAdvertencia3() {
+        Alert advertencia = new Alert(Alert.AlertType.WARNING);
+        advertencia.setTitle("Error");
+        advertencia.setContentText("No se pudo ingresar el producto, verifique el stock");
+        advertencia.setHeaderText(null);
+        advertencia.initStyle(StageStyle.UTILITY);
+        advertencia.showAndWait();
+    }
+    
+     public static void dialogoAdvertencia4() {
+        Alert advertencia = new Alert(Alert.AlertType.WARNING);
+        advertencia.setTitle("Error");
+        advertencia.setContentText("Se produjo un error, intente nuevamente");
+        advertencia.setHeaderText(null);
+        advertencia.initStyle(StageStyle.UTILITY);
+        advertencia.showAndWait();
+    }
 }

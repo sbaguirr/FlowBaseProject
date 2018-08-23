@@ -7,6 +7,7 @@ package Vista;
 
 import Main.Proyecto;
 import controlador.CONSTANTES;
+import controlador.VentanaDialogo;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -43,20 +44,19 @@ public class PaneIngresoProductoSucursal {
     private ComboBox<String> sucursal;
     public static TextField codigo;
     private TextField cantidad;
-    private Button showMore, agregar, eliminar;
+    private Button showMore, agregar, eliminar, actualizar;
     private Conexion c;
     private ObservableList<Tb_envio_articulo> listaProductos;
     private TableView<Tb_envio_articulo> tablaProductosSucursal;
-     public static  int indicador;
+    public static int indicador;
 
     public PaneIngresoProductoSucursal() {
         root = new BorderPane();
         c = new Conexion();
-        indicador=1;
+        indicador = 1;
         BackgroundFill fondo = new BackgroundFill(Color.SEASHELL, new CornerRadii(1),
                 new Insets(0.0, 0.0, 0.0, 0.0));
         root.setBackground(new Background(fondo));
-        //   encabezado();
         seccionIzquierda();
         seccionCentro();
         llamarMetodos();
@@ -72,13 +72,15 @@ public class PaneIngresoProductoSucursal {
         h.setPadding(new Insets(10, 10, 25, 10));
         h.getChildren().add(titulo);
         return h;
-        // root.setTop(h);
-
     }
 
     private void llamarMetodos() {
+        cargarCombo();
         Vercodigos();
         cargarContenido();
+        agregar();
+        disminuir();
+        f5();
         back();
     }
 
@@ -93,17 +95,20 @@ public class PaneIngresoProductoSucursal {
         sucursal.setPrefWidth(200);
         cantidad = new TextField();
         codigo = new TextField();
+        actualizar = new Button("Actualizar");
 
         showMore = new Button("Seleccionar");
-        agregar = new Button("Agregar");
-        // agregar.setStyle("-fx-background-color: #FF69B4; -fx-text-fill: white;");
+        agregar = new Button("Agregar al stock");
+        eliminar = new Button("Disminuir al stock");//validar cantidades +
+        HBox g = new HBox();
+        g.getChildren().addAll(agregar, eliminar);
         gp.addColumn(0, Lsucursal, Lproducto, Lcantidad);
-        gp.addColumn(1, sucursal, codigo, cantidad, agregar);
+        gp.addColumn(1, sucursal, codigo, cantidad, g);
         gp.add(showMore, 2, 1);
 
         gp.setVgap(10);
         gp.setHgap(15);
-        vb.setPadding(new Insets(0, 0, 10, 50)); //top,derecha,abajo,izquierda
+        vb.setPadding(new Insets(0, 0, 10, 50));
         vb.setSpacing(5);
         vb.getChildren().addAll(encabezado(), gp);
 
@@ -112,12 +117,11 @@ public class PaneIngresoProductoSucursal {
 
     private void seccionCentro() {
         VBox vb = new VBox();
-        eliminar = new Button("Eliminar");
+
         tablaProductosSucursal = new TableView();
         TableColumn cod = new TableColumn<>("n°");
         TableColumn Tsucursal = new TableColumn<>("Sucursal");
         TableColumn Tcodigo = new TableColumn<>("Codigo del producto");
-        TableColumn Tcantidad = new TableColumn<>("Stock Inicial");
         TableColumn Tfecha = new TableColumn<>("Stock");
 
         cod.setPrefWidth(180);
@@ -132,21 +136,16 @@ public class PaneIngresoProductoSucursal {
         Tcodigo.setCellValueFactory(new PropertyValueFactory<>("cod_articulo"));
         propertiesTableView(Tcodigo);
 
-        Tcantidad.setPrefWidth(200);
-        Tcantidad.setCellValueFactory(new PropertyValueFactory<>("stockInicial"));
-        propertiesTableView(Tcantidad);
-
         Tfecha.setPrefWidth(190);
         Tfecha.setCellValueFactory(new PropertyValueFactory<>("stock"));
         propertiesTableView(Tfecha);
 
-        tablaProductosSucursal.getColumns().addAll(cod, Tsucursal, Tcodigo, Tcantidad, Tfecha);
+        tablaProductosSucursal.getColumns().addAll(cod, Tsucursal, Tcodigo, Tfecha);
         tablaProductosSucursal.setPrefSize(40, 300);
         vb.setPadding(new Insets(0, 25, 10, 50)); //top, derecha,abajo,izquierda
 
-        vb.getChildren().addAll(tablaProductosSucursal, eliminar);
+        vb.getChildren().addAll(tablaProductosSucursal, actualizar);
         root.setCenter(vb);
-
     }
 
     private void cargarContenido() {
@@ -158,6 +157,74 @@ public class PaneIngresoProductoSucursal {
     }
 
     /**
+     * De acuerdo a lo seleccionado en el combo, se aplicarán los filtros
+     */
+    private void cargarCombo() {
+        String se[] = {"Cdla. Kennedy Nueva", "Mall del Sol", "C.C. El Dorado"};
+        sucursal.setItems(FXCollections.observableArrayList(se));
+    }
+
+    /**
+     * Método que al seleccionar un comboBox devuelve un String
+     *
+     * @return g, String
+     */
+    private String seleccion() {
+        return sucursal.getSelectionModel().getSelectedItem();
+    }
+
+    private void agregar() {
+        agregar.setOnAction(e -> {
+            if (validar()) {
+                c.connect();
+                int t = Tb_envio_articulo.callModificarStockSucursal(Integer.valueOf(cantidad.getText()), seleccion(), 0, codigo.getText().toUpperCase(), c.getC());
+                if (t > 0) {
+                    if (!seleccion().equals("Cdla. Kennedy Nueva")) {
+                        int t1 = Tb_envio_articulo.callDescuentoStockMatriz(Integer.valueOf(cantidad.getText()), codigo.getText(), c.getC());
+                        if (t1 < 0) {
+                            VentanaDialogo.dialogoAdvertencia4();
+                        }
+                    }
+                    VentanaDialogo.dialogoAccion();
+                } else {
+                    VentanaDialogo.dialogoAdvertencia3();
+
+                }
+                c.cerrarConexion();
+            } else {
+                VentanaDialogo.dialogoAdvertencia();
+            }
+        });
+    }
+
+    private void f5() {
+        actualizar.setOnAction(e -> {
+            cargarContenido();
+        });
+
+    }
+
+    private void disminuir() {
+        eliminar.setOnAction(e -> {
+            if (validar()) {
+                c.connect();
+                int t = Tb_envio_articulo.callModificarStockSucursal(Integer.valueOf(cantidad.getText()), seleccion(), 1, codigo.getText().toUpperCase(), c.getC());
+                if (t > 0) {
+                    if (!seleccion().equals("Cdla. Kennedy Nueva")) {
+                        Tb_envio_articulo.callRestaurarStockMatriz(Integer.valueOf(cantidad.getText()), codigo.getText(), c.getC());
+                    }
+                    VentanaDialogo.dialogoAccion();
+                } else {
+                    VentanaDialogo.dialogoAdvertencia3();
+                }
+                c.cerrarConexion();
+            } else {
+                VentanaDialogo.dialogoAdvertencia();
+            }
+        });
+    }
+
+    /**
      * Método que permite modificar una columna de un TableView
      *
      * @param c
@@ -166,6 +233,10 @@ public class PaneIngresoProductoSucursal {
         c.setSortable(false);
         c.setResizable(false);
         c.setEditable(false);
+    }
+
+    private boolean validar() {
+        return seleccion() != null && cantidad.getText() != null && codigo.getText() != null && Integer.valueOf(cantidad.getText()) > 0;
     }
 
     public Pane getRoot() {
@@ -197,6 +268,4 @@ public class PaneIngresoProductoSucursal {
         f.setAlignment(Pos.BOTTOM_LEFT);
         root.setBottom(f);
     }
-
-    //validaciones, filtros
 }
