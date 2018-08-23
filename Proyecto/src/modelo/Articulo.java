@@ -6,7 +6,14 @@
 package modelo;
 
 import static Vista.PaneModificarArticulos.*;
+import static controlador.VentanaDialogo.Numerico;
+import static controlador.VentanaDialogo.ProductoEliminadoExitosamente;
+import static controlador.VentanaDialogo.ProductoEliminadoFallido;
+import static controlador.VentanaDialogo.ProductoGuardadoExitosamente;
+import static controlador.VentanaDialogo.ProductoGuardadoFallido;
+import static controlador.VentanaDialogo.VentanaRegistroDuplicado;
 import static controlador.VentanaDialogo.VentanaRegistroNoEncontrado;
+import static controlador.VentanaDialogo.noNumerico;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -100,46 +107,47 @@ public class Articulo {
     
     public static void ingresarArticulo(String id, String nombre,String descripcion, float costo, String color,Connection c){
     try {
+        if(!isNumeric(id) ){
             String consulta= "insert into db_flowbase.tb_articulo values (?,?,?,?,?)";
             PreparedStatement ingreso = c.prepareStatement(consulta);
             ingreso.setString(1, id);
             ingreso.setString(2, nombre.toLowerCase());
             ingreso.setString(3, descripcion.toLowerCase());
-            ingreso.setString(4, String.valueOf(costo));
+            ingreso.setFloat(4, costo);
             ingreso.setString(5, color.toLowerCase());
-            int j= ingreso.executeUpdate();
+            int j = ingreso.executeUpdate();
             if(j > 0){ //BORRAR LUEGO
+                ProductoGuardadoExitosamente();
                 System.out.println("ingreso exitoso ...");
             }
+        }else{
+            Numerico();
+        } 
         } catch (SQLException ex) {
-            System.out.println("EXCEPCION: " + ex.getMessage());
+            VentanaRegistroDuplicado();
+            //System.out.println("EXCEPCION: " + ex.getMessage());
         }
     }
     
     public static String buscarArticuloXCodigo(String code, Connection e) {
+        String art = null;
         try {
             String consulta = "SELECT cod_articulo FROM db_flowbase.tb_articulo "
-                    + "WHERE cod_articulo = ?"+ code;
-            if(consulta == null){
-                return null;
-            }else{
+                    + "WHERE cod_articulo = "+ code;
             Statement in = e.createStatement();
             ResultSet resultado = in.executeQuery(consulta);
-            String art = null;
-            while(resultado.next()) {
+            if(resultado.next()) {
                 art = resultado.getString("cod_articulo");               
-            }
-            return art;  
             }
         } catch (SQLException ex) {
             System.out.println("EXCEPCION: " + ex.getMessage());
         }
-        return null;
+        return art;
     }
     
     public static void buscarArticulo(String code, Connection e) {
         try {
-            String consulta = "SELECT nombre,descripcion,costo,color "
+            String consulta = "SELECT cod_articulo,nombre,descripcion,costo,color "
                     + "FROM db_flowbase.tb_articulo "
                     + "WHERE cod_articulo = ?";
             PreparedStatement buscar = e.prepareStatement(consulta);
@@ -159,7 +167,7 @@ public class Articulo {
                 limpiarCampos();
             }
         } catch (SQLException ex) {
-            System.out.println("EXCEPCION: " + ex.getMessage());
+            System.out.println("EXCEPCION   : " + ex.getMessage());
         }
     }
     
@@ -170,10 +178,12 @@ public class Articulo {
             eliminar.setString(1, code);
             int d = eliminar.executeUpdate();
             if(d > 0){ 
-                 System.out.println("borrado exitoso ...");
+                ProductoEliminadoExitosamente();
+                System.out.println("borrado exitoso ...");
              }
         } catch (SQLException ex) {
-            System.out.println("EXCEPCION: " + ex.getMessage());
+            ProductoEliminadoFallido();
+            System.out.println("EeeXCEPCION: " + ex.getMessage());
         }
     }
     
@@ -196,5 +206,15 @@ public class Articulo {
         }
     }
     
+    public static boolean isNumeric(String cadena) {
+        boolean resultado;
+        try {
+            Integer.parseInt(cadena);
+            resultado = true;
+        } catch (NumberFormatException excepcion) {
+            resultado = false;
+        }
+        return resultado;
+    }
     
 }

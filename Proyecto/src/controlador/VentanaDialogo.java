@@ -161,4 +161,19 @@ public class VentanaDialogo {
         alert.showAndWait();
     }
 
+    public static void Numerico(){
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Artículo");
+        alert.setHeaderText("No se puede ingresar solo números como código");
+        alert.setContentText("Por favor, asegúrese de ingresar un valor no numérico únicamente");
+        alert.showAndWait();
+    }
+    
+    public static void noNumerico() {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Artículo");
+        alert.setHeaderText("No se puede realizar la acción solicitada");
+        alert.setContentText("Por favor, asegúrese de ingresar un número");
+        alert.showAndWait();
+    }
 }

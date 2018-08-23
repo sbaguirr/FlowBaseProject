@@ -7,8 +7,8 @@ package Vista;
 
 import Main.Proyecto;
 import controlador.CONSTANTES;
-import static controlador.VentanaDialogo.ProductoGuardadoExitosamente;
 import static controlador.VentanaDialogo.ProductoGuardadoFallido;
+import static controlador.VentanaDialogo.noNumerico;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -156,7 +156,7 @@ public class PaneAgregarArticulos {
 
     private void guardar() {
         guardar.setOnAction(e->{
-            if(validar()){
+            if(validar() && isNumeric(costo.getText())){
                 cone.connect();
                 String t = buscarArticuloXCodigo(codigo.getText(), cone.getC());
                 if (t == null) {
@@ -164,13 +164,15 @@ public class PaneAgregarArticulos {
                     descripcion.getText(), Float.parseFloat(costo.getText()), 
                     color.getText(), cone.getC());
                     cone.cerrarConexion();
-                    ProductoGuardadoExitosamente();
+                    
                     limpiarCampos();
                 }else{
+                    noNumerico();
                     ProductoGuardadoFallido();
                 }
             }else{
-                ProductoGuardadoFallido(); 
+                ProductoGuardadoFallido();
+                noNumerico();
             }
         });
     }
@@ -207,5 +209,15 @@ public class PaneAgregarArticulos {
         f.setAlignment(Pos.BOTTOM_LEFT);
         root.setBottom(f);
     }
-
+    
+    private boolean isNumeric(String cadena) {
+        boolean resultado;
+        try {
+            Integer.parseInt(cadena);
+            resultado = true;
+        } catch (NumberFormatException excepcion) {
+            resultado = false;
+        }
+        return resultado;
+    }
 }

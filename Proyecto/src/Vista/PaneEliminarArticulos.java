@@ -151,7 +151,6 @@ public class PaneEliminarArticulos {
                 if (t == null) {
                     eliminarArticulo(codigo.getText(), cone.getC());
                     cone.cerrarConexion();
-                    ProductoEliminadoExitosamente();
                     limpiarCampos();
                 }else{
                     ProductoEliminadoFallido();
