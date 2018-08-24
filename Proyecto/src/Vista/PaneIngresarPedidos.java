@@ -84,7 +84,7 @@ public class PaneIngresarPedidos {
         seccionPedido();
         llamarBotones();
         eliminar();
-        realizar();
+        realizarPedido();
     }
 
     public Pane getRoot() {
@@ -238,6 +238,17 @@ public class PaneIngresarPedidos {
                     }
                 }
                 tablaPedido.setItems(listaProductos);
+                
+                Iterator<Articulo> it1 = this.listaProductos.iterator();
+                double valorSubT = 0;
+                while(it1.hasNext()){
+                    Articulo a = it1.next();
+                    valorSubT = valorSubT + a.getCosto()*Integer.valueOf(a.getCant());
+                }
+                sub.setText(String.valueOf(Math.round(valorSubT*100d)/ 100d));
+                double iva = Double.valueOf(sub.getText())*0.12;
+                double subT = Double.valueOf(sub.getText());
+                tot.setText(String.valueOf( Math.round( (iva + subT) * 100d ) / 100d) );
             } catch (Exception ex) {
                 System.out.println("Exception (eliminar)");   
             }
@@ -325,7 +336,17 @@ public class PaneIngresarPedidos {
             c.cerrarConexion();
             }else{
                 noNumerico();
-            }            
+            } 
+            Iterator<Articulo> it = this.listaProductos.iterator();
+            double valorSubT = 0;
+            while(it.hasNext()){
+                Articulo a = it.next();
+                valorSubT = valorSubT + a.getCosto()*Integer.valueOf(a.getCant());
+            }
+            sub.setText(String.valueOf(Math.round(valorSubT*100d)/ 100d));
+            double iva = Double.valueOf(sub.getText())*0.12;
+            double subT = Double.valueOf(sub.getText());
+            tot.setText(String.valueOf( Math.round( (iva + subT) * 100d ) / 100d) );
         });
         tablaPedido.getColumns().addAll(Tcodigo, Tname, Tdescripcion, cost, cant);
         vb.setSpacing(2);
@@ -545,11 +566,5 @@ public class PaneIngresarPedidos {
         f.getChildren().add(back);
         f.setAlignment(Pos.BOTTOM_LEFT);
         root.setBottom(f);
-    }
-    
-    public void realizar(){
-        realizar.setOnAction(e->{
-        
-        });
     }
 }
