@@ -8,9 +8,14 @@ package Vista;
 import Main.Proyecto;
 import controlador.CONSTANTES;
 import controlador.VentanaDialogo;
+import static controlador.VentanaDialogo.PedidoGuardadoFallido;
 import static controlador.VentanaDialogo.noNumerico;
+import java.sql.Connection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Iterator;
 import javafx.collections.FXCollections;
@@ -83,8 +88,6 @@ public class PaneIngresarPedidos {
         seccionClienteDestinatario();
         seccionPedido();
         llamarBotones();
-        eliminar();
-        realizarPedido();
     }
 
     public Pane getRoot() {
@@ -416,7 +419,8 @@ public class PaneIngresarPedidos {
         habilitarDestinatario();
         deshabilitarDestinatario();
         Vercodigos();
-        // realizarPedido();
+        eliminar();
+        realizarPedido();
         back();
     }
 
@@ -528,9 +532,34 @@ public class PaneIngresarPedidos {
      */
     private void realizarPedido() {
         realizar.setOnAction(e -> {
-
+            if(validar()){
+                c.connect();
+                //String t = buscarArticuloXCodigo(codigo.getText(), c.getC());
+                //if (t == null) {
+//                    ingresarPedido(this.descrip.getText(), this.mensaje.getText(), "",
+//                            this.tot.getText(), this.estado.getText(),
+//                            fecha(this.fpedido.getValue()), String.valueOf(LocalTime.now().getHour())
+//                                    +":"+String.valueOf(LocalTime.now().getMinute()),
+//                            "", "", this.vendedor.getText(), this.cedula.getText(),
+//                            "", c);
+//                    c.cerrarConexion();
+//                    
+//                    limpiarCampos();
+//                }else{
+//                    noNumerico();
+//                    ProductoGuardadoFallido();
+//                }
+            }else{
+                PedidoGuardadoFallido();
+                noNumerico();
+            }
         });
     }
+    
+    private String fecha(LocalDate f) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return formatter.format(f);
+    } 
 
     /**
      * Este metodo coloca la ci del vendedor que ha iniciado sesion
@@ -566,5 +595,17 @@ public class PaneIngresarPedidos {
         f.getChildren().add(back);
         f.setAlignment(Pos.BOTTOM_LEFT);
         root.setBottom(f);
+    }
+    
+    private boolean validar() {
+    return !codigo.getText().equals("") && !this.cantidad.getText().equals("")
+            && !this.cedula.getText().equals("") && !this.estado.getText().equals("");
+    }
+    
+    private void limpiarCampos() {
+        codigo.setText("");
+        cantidad.setText("");
+        cedula.setText("");
+        estado.setText("");
     }
 }

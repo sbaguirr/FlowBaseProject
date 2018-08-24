@@ -197,4 +197,12 @@ public class VentanaDialogo {
         advertencia.initStyle(StageStyle.UTILITY);
         advertencia.showAndWait();
     }
+     
+    public static void PedidoGuardadoFallido() {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Agregar nuevo pedido");
+        alert.setHeaderText("El pedido no ha sido guardado exitosamente");
+        alert.setContentText("Por favor, asegúrese de llenar todos los campos");
+        alert.showAndWait();
+    }
 }
