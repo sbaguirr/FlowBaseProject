@@ -280,7 +280,7 @@ public class PaneIngresarPedidos {
         hb2.getChildren().addAll(ve, vendedor);
         hb2.setSpacing(5);
         c.connect();
-        numPedido.setText(String.valueOf(Tb_pedido.buscarLastPedido(c.getC()))); 
+        numPedido.setText(String.valueOf(Tb_pedido.proxPedido((c.getC())))); 
         c.cerrarConexion();
         hb3.getChildren().addAll(l3, numPedido);
         hb3.setSpacing(5);
