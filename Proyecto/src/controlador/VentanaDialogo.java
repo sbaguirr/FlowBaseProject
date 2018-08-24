@@ -198,10 +198,34 @@ public class VentanaDialogo {
         advertencia.showAndWait();
     }
      
+    public static void PedidoGuardadoExitosamente() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Agregar nuevo pedido");
+        alert.setHeaderText(null);
+        alert.setContentText("El pedido ha sido guardado exitosamente");
+        alert.showAndWait();
+    }
+     
     public static void PedidoGuardadoFallido() {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Agregar nuevo pedido");
         alert.setHeaderText("El pedido no ha sido guardado exitosamente");
+        alert.setContentText("Por favor, asegúrese de llenar todos los campos");
+        alert.showAndWait();
+    }
+    
+    public static void DestinatarioGuardadoExitosamente() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Agregar nuevo Destinatario");
+        alert.setHeaderText(null);
+        alert.setContentText("El destinatario ha sido guardado exitosamente");
+        alert.showAndWait();
+    }
+     
+    public static void DestinatarioGuardadoFallido() {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Agregar nuevo Destinatario");
+        alert.setHeaderText("El destinatario no ha sido guardado exitosamente");
         alert.setContentText("Por favor, asegúrese de llenar todos los campos");
         alert.showAndWait();
     }

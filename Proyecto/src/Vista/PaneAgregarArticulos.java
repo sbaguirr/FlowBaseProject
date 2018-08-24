@@ -165,7 +165,6 @@ public class PaneAgregarArticulos {
                     descripcion.getText(), Float.parseFloat(costo.getText()), 
                     color.getText(), cone.getC());
                     cone.cerrarConexion();
-                    
                     limpiarCampos();
                 }else{
                     noNumerico();

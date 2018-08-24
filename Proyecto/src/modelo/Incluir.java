@@ -65,14 +65,14 @@ public class Incluir {
         return "Incluir{" + "id_pedido_articulo=" + id_pedido_articulo + ", cantidad=" + cantidad + ", cod_articulo=" + cod_articulo + ", cod_pedido=" + cod_pedido + '}';
     }
         
-    public static void ingresarIncluye(int idPedidoArticulo, int cantidad, String codArticulo, int codPedido, Connection c){
+    public static void ingresarIncluye(int cantidad, String codArticulo, int codPedido, Connection c){
     try {
-            String consulta = "insert into db_flowbase.tb_incluir values (?,?,?,?)";
+            String consulta = "insert into db_flowbase.tb_incluir(cantidad, cod_articulo, cod_pedido) values (?,?,?)";
             PreparedStatement ingreso = c.prepareStatement(consulta);
-            ingreso.setInt(1, idPedidoArticulo);
-            ingreso.setInt(2, cantidad);
-            ingreso.setString(3, codArticulo);
-            ingreso.setInt(4, codPedido);
+            
+            ingreso.setInt(1, cantidad);
+            ingreso.setString(2, codArticulo);
+            ingreso.setInt(3, codPedido);
             int j = ingreso.executeUpdate();
             if(j > 0){ 
                 System.out.println("ingreso exitoso de incluir pedido...");

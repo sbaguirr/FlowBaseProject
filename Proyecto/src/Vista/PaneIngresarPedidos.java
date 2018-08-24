@@ -8,6 +8,7 @@ package Vista;
 import Main.Proyecto;
 import controlador.CONSTANTES;
 import controlador.VentanaDialogo;
+import static controlador.VentanaDialogo.CampoVacio;
 import static controlador.VentanaDialogo.PedidoGuardadoFallido;
 import static controlador.VentanaDialogo.noNumerico;
 import java.sql.Connection;
@@ -47,10 +48,12 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import modelo.Articulo;
 import static modelo.Articulo.isNumeric;
+import static modelo.Destinatario.buscarLastDest;
+import static modelo.Destinatario.ingresarDestinatario;
+import static modelo.Incluir.ingresarIncluye;
 import modelo.Tb_cliente;
 import modelo.Tb_pedido;
-import static modelo.Tb_pedido.ingPedido;
-import static modelo.Tb_pedido.ingresarN1Pedido;
+import static modelo.Tb_pedido.ingresarPedido;
 import static modelo.Tb_pedido.llenarPedidoArticulo;
 
 /**
@@ -534,24 +537,113 @@ public class PaneIngresarPedidos {
      */
     private void realizarPedido() {
         realizar.setOnAction(e -> {
-//           this.dnombres.getText();
-//           this.dapellidos.getText();
-//           this.ddir.getText();
-//           this.rdir.getText();
-//           this.dtlf.getText();
-//           this.horario.getText();
-//           fecha(this.fpedido.getValue());
-           
-           
-           
+            if(this.validar()){ 
+            c.connect();
+                if(this.no.isSelected()){
+                    if(this.credito.isSelected()){   
+                        Tb_pedido.ingresarNPedido(this.descrip.getText(), this.mensaje.getText(),
+                        this.credito.getText(), Double.parseDouble(tot.getText()), 
+                        this.estado.getText(),
+                        LocalDate.parse(this.fechaActual.getText()), LocalTime.now(),
+                        this.vendedor.getText(), this.cedula.getText(), c.getC());
+                    }else if (this.debito.isSelected()){
+                        Tb_pedido.ingresarNPedido(this.descrip.getText(), this.mensaje.getText(),
+                        this.debito.getText(), Double.parseDouble(tot.getText()), 
+                        this.estado.getText(),
+                        LocalDate.parse(this.fechaActual.getText()), LocalTime.now(),
+                        this.vendedor.getText(), this.cedula.getText(), c.getC());
+                    }else if(this.efectivo.isSelected()){
+                        Tb_pedido.ingresarNPedido(this.descrip.getText(), this.mensaje.getText(),
+                        this.efectivo.getText(), Double.parseDouble(tot.getText()), 
+                        this.estado.getText(),
+                        LocalDate.parse(this.fechaActual.getText()), LocalTime.now(),
+                        this.vendedor.getText(), this.cedula.getText(), c.getC());
+                    }else if(this.paypal.isSelected()){
+                        Tb_pedido.ingresarNPedido(this.descrip.getText(), this.mensaje.getText(),
+                        this.paypal.getText(), Double.parseDouble(tot.getText()), 
+                        this.estado.getText(),
+                        LocalDate.parse(this.fechaActual.getText()), LocalTime.now(),
+                        this.vendedor.getText(), this.cedula.getText(), c.getC());
+                    }else if (this.transferencia.isSelected()){
+                        Tb_pedido.ingresarNPedido(this.descrip.getText(), this.mensaje.getText(),
+                        this.transferencia.getText(), Double.parseDouble(tot.getText()), 
+                        this.estado.getText(),
+                        LocalDate.parse(this.fechaActual.getText()), LocalTime.now(),
+                        this.vendedor.getText(), this.cedula.getText(), c.getC());
+                    }  
+                }else if(this.si.isSelected()){
+                    if(this.validarDestinatario()){
+                        int codDestinatario = buscarLastDest(c.getC());
+                        if(this.credito.isSelected()){  
+                            ingresarDestinatario(codDestinatario,this.dnombres.getText(), this.dapellidos.getText(),
+                            this.ddir.getText(), this.dtlf.getText(), this.rdir.getText(), c.getC());
+
+                            ingresarPedido(this.descrip.getText(), this.mensaje.getText(),
+                            this.credito.getText(), Double.parseDouble(tot.getText()), 
+                            this.estado.getText(),
+                            LocalDate.parse(this.fechaActual.getText()), LocalTime.now(),
+                            this.fpedido.getValue(), LocalTime.parse(this.horario.getText()),
+                            this.vendedor.getText(), this.cedula.getText(), codDestinatario, c.getC());
+
+                        }else if (this.debito.isSelected()){
+                            ingresarDestinatario(codDestinatario,this.dnombres.getText(), this.dapellidos.getText(),
+                            this.ddir.getText(), this.dtlf.getText(), this.rdir.getText(), c.getC());
+
+                            ingresarPedido(this.descrip.getText(), this.mensaje.getText(),
+                            this.debito.getText(), Double.parseDouble(tot.getText()), 
+                            this.estado.getText(),
+                            LocalDate.parse(this.fechaActual.getText()), LocalTime.now(),
+                            this.fpedido.getValue(), LocalTime.parse(this.horario.getText()),
+                            this.vendedor.getText(), this.cedula.getText(),codDestinatario, c.getC());                            
+                        }else if(this.efectivo.isSelected()){
+                            ingresarDestinatario(codDestinatario,this.dnombres.getText(), this.dapellidos.getText(),
+                            this.ddir.getText(), this.dtlf.getText(), this.rdir.getText(), c.getC());
+
+                            ingresarPedido(this.descrip.getText(), this.mensaje.getText(),
+                            this.efectivo.getText(), Double.parseDouble(tot.getText()), 
+                            this.estado.getText(),
+                            LocalDate.parse(this.fechaActual.getText()), LocalTime.now(),
+                            this.fpedido.getValue(), LocalTime.parse(this.horario.getText()),
+                            this.vendedor.getText(), this.cedula.getText(),codDestinatario, c.getC());
+
+                        }else if(this.paypal.isSelected()){
+                            ingresarDestinatario(codDestinatario,this.dnombres.getText(), this.dapellidos.getText(),
+                            this.ddir.getText(), this.dtlf.getText(), this.rdir.getText(), c.getC());
+
+                            ingresarPedido(this.descrip.getText(), this.mensaje.getText(),
+                            this.paypal.getText(), Double.parseDouble(tot.getText()), 
+                            this.estado.getText(),
+                            LocalDate.parse(this.fechaActual.getText()), LocalTime.now(),
+                            this.fpedido.getValue(), LocalTime.parse(this.horario.getText()),
+                            this.vendedor.getText(), this.cedula.getText(), codDestinatario,c.getC());
+
+                        }else if (this.transferencia.isSelected()){
+                            ingresarDestinatario(codDestinatario,this.dnombres.getText(), this.dapellidos.getText(),
+                            this.ddir.getText(), this.dtlf.getText(), this.rdir.getText(), c.getC());
+                           
+                            ingresarPedido(this.descrip.getText(), this.mensaje.getText(),
+                            this.transferencia.getText(), Double.parseDouble(tot.getText()), 
+                            this.estado.getText(),
+                            LocalDate.parse(this.fechaActual.getText()), LocalTime.now(),
+                            this.fpedido.getValue(), LocalTime.parse(this.horario.getText()),
+                            this.vendedor.getText(), this.cedula.getText(),codDestinatario, c.getC());
+                        }
+                    }else{ 
+                        CampoVacio();
+                    }
+                    
+                }
+                for(Articulo a : this.listaProductos){
+                    ingresarIncluye(Integer.valueOf(a.getCant()), a.getCod_articulo(), 
+                    Integer.valueOf(numPedido.getText()), c.getC());
+                }
+            }else{
+                PedidoGuardadoFallido();
+            }
+            c.cerrarConexion();
         });
     }
     
-    private String fecha(LocalDate f) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        return formatter.format(f);
-    } 
-
     /**
      * Este metodo coloca la ci del vendedor que ha iniciado sesion
      */
@@ -589,14 +681,28 @@ public class PaneIngresarPedidos {
     }
     
     private boolean validar() {
-    return !codigo.getText().equals("") 
-            && !this.cedula.getText().equals("") && !this.estado.getText().equals("");
+        return !codigo.getText().equals("") 
+            && !this.cedula.getText().equals("") 
+            && !this.estado.getText().equals("");
     }
+    
+    private boolean validarDestinatario() {
+        return !this.dnombres.getText().equals("") 
+            && !this.dapellidos.getText().equals("") 
+            && !this.ddir.getText().equals("") 
+            && !this.rdir.getText().equals("") 
+            && !this.dtlf.getText().equals("") ;
+    }
+    
+    private String fecha(LocalDate f) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return formatter.format(f);
+    } 
     
     private void limpiarCampos() {
         codigo.setText("");
         cantidad.setText("");
-        cedula.setText("");
+        //cedula.setText("");
         estado.setText("");
     }
 }

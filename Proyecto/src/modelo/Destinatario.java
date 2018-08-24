@@ -5,11 +5,13 @@
  */
 package modelo;
 
+import static controlador.VentanaDialogo.DestinatarioGuardadoExitosamente;
+import static controlador.VentanaDialogo.DestinatarioGuardadoFallido;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.sql.Statement;
 
 /**
  *
@@ -84,15 +86,15 @@ public class Destinatario {
 
     @Override
     public String toString() {
-        return "Destinatario{" + "cod_destinatario=" + cod_destinatario + ", nombres=" + nombres + ", apellidos=" + apellidos + ", direccion=" + direccion + ", telefono=" + telefono + ", ref_dir=" + ref_dir + '}';
+        return cod_destinatario + nombres + apellidos +direccion + telefono + ref_dir;
     }
     
-    public static void ingresarDestinatario(int cod, String nombres, String apellidos,
-            String direccion, String telefono, String ref_dir ,Connection c){
+    public static void ingresarDestinatario(int cod_destinatario, String nombres, 
+            String apellidos, String direccion, String telefono, String ref_dir ,Connection c){
         try {
-            String consulta = "insert into db_flowbase.tb_pedido values (?,?,?,?,?,?)";
+            String consulta = "insert into db_flowbase.tb_destinatario values (?,?,?,?,?,?)";
             PreparedStatement ingreso = c.prepareStatement(consulta);
-            ingreso.setInt(1, cod);
+            ingreso.setInt(1, cod_destinatario);
             ingreso.setString(2, nombres);
             ingreso.setString(3, apellidos);
             ingreso.setString(4, direccion);
@@ -101,10 +103,29 @@ public class Destinatario {
             int p = ingreso.executeUpdate();
             if(p > 0){ 
                 System.out.println("ingreso exitoso de destinatario...");
+                DestinatarioGuardadoExitosamente();
             }
         } catch (SQLException ex) {
             System.out.println("EXCEPCION (destinarario): " + ex.getMessage());
+            DestinatarioGuardadoFallido();
         }
     }
      
+    public static int buscarLastDest(Connection e) {
+        int destinat = 1;
+        try {
+            String consulta = "SELECT cod_destinatario " +
+                                "FROM db_flowbase.tb_destinatario " +
+                                "order by cod_destinatario desc " +
+                                "limit 1;";
+            Statement in = e.createStatement();
+            ResultSet resultado = in.executeQuery(consulta);
+            if(resultado.next()) {
+                destinat = destinat + resultado.getInt("cod_destinatario");
+            }
+        } catch (SQLException ex) {
+            System.out.println("EXCEPCION   : " + ex.getMessage());
+        }
+        return destinat;
+    }
 }

@@ -5,6 +5,8 @@
  */
 package modelo;
 
+import static controlador.VentanaDialogo.PedidoGuardadoExitosamente;
+import static controlador.VentanaDialogo.PedidoGuardadoFallido;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.Date;
@@ -402,34 +404,41 @@ public class Tb_pedido {
     }
     @Override
     public String toString() {
-        return cod_pedido + observaciones + mensaje + forma_pago + costo_total + estado + fecha_pedido + hora_pedido + fecha_entrega + hora_entrega + ci_trabajador + ci_cliente + cod_destinatario + clienteNom + destinatarioNom + clienteApe + destinatarioApe;
+        return cod_pedido + observaciones + mensaje + forma_pago + costo_total + 
+               estado + fecha_pedido + hora_pedido + fecha_entrega + hora_entrega + 
+               ci_trabajador + ci_cliente + cod_destinatario + clienteNom + 
+               destinatarioNom + clienteApe + destinatarioApe;
     }
     
-    public static void ingresarPedido(int cod, String obs, String msj, String formaPago,
+    public static void ingresarPedido(String obs, String msj, String formaPago,
         double costoTot, String estado, LocalDate fechaP, LocalTime horaP, LocalDate fechaE, 
         LocalTime horaE, String ci_trabajador, String ci_cliente, int codDestinat, Connection c){
         try {
-            String consulta = "insert into db_flowbase.tb_pedido values (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            String consulta = "insert into db_flowbase.tb_pedido(observaciones, "
+                    + "mensaje, forma_pago, costo_total, estado, fecha_pedido, "
+                    + "hora_pedido, fecha_entrega, hora_entrega, ci_trabajador, "
+                    + "ci_cliente, cod_destinatario) values (?,?,?,?,?,?,?,?,?,?,?,?)";
             PreparedStatement ingreso = c.prepareStatement(consulta);
-            ingreso.setInt(1, cod);
-            ingreso.setString(2, obs.toLowerCase());
-            ingreso.setString(3, msj.toLowerCase());
-            ingreso.setString(4, formaPago.toLowerCase());
-            ingreso.setDouble(5, costoTot);
-            ingreso.setString(6, estado.toLowerCase());
-            ingreso.setDate(7, java.sql.Date.valueOf(fechaP));
-            ingreso.setTime(8, java.sql.Time.valueOf(horaP));
-            ingreso.setDate(9, java.sql.Date.valueOf(fechaE));
-            ingreso.setTime(10, java.sql.Time.valueOf(horaE));
-            ingreso.setString(11, ci_trabajador);
-            ingreso.setString(12, ci_cliente);
-            ingreso.setInt(13, codDestinat);
+            
+            ingreso.setString(1, obs.toLowerCase());
+            ingreso.setString(2, msj.toLowerCase());
+            ingreso.setString(3, formaPago.toLowerCase());
+            ingreso.setDouble(4, costoTot);
+            ingreso.setString(5, estado.toLowerCase());
+            ingreso.setDate(6, java.sql.Date.valueOf(fechaP));
+            ingreso.setTime(7, java.sql.Time.valueOf(horaP));
+            ingreso.setDate(8, java.sql.Date.valueOf(fechaE));
+            ingreso.setTime(9, java.sql.Time.valueOf(horaE));
+            ingreso.setString(10, ci_trabajador);
+            ingreso.setString(11, ci_cliente);
+            ingreso.setInt(12, codDestinat);
             int p = ingreso.executeUpdate();
             if(p > 0){ 
-                System.out.println("ingreso exitoso de pedido...");
+                System.out.println("ingreso exitoso de pedido con destinatario...");
+                PedidoGuardadoExitosamente();
             }
         } catch (SQLException ex) {
-            System.out.println("EXCEPCION (pedido): " + ex.getMessage());
+            System.out.println("EXCEPCION (pedido destinatario): " + ex.getMessage());
         }
     }
     
@@ -473,19 +482,21 @@ public class Tb_pedido {
         return pedido;
     }
      
-    public static void ingresarN1Pedido(
-        double costoTot, String estado, //LocalDate fechaP, LocalTime horaP, 
+    public static void ingresarNPedido(String obs, String msj, String formaPago,
+        double costoTot, String estado, LocalDate fechaP, LocalTime horaP, 
         String ci_trabajador, String ci_cliente, Connection c){
         try {
-            String consulta = "insert into db_flowbase.tb_pedido values (?,?,?,?)";
+            String consulta = "insert into db_flowbase.tb_pedido(observaciones,mensaje,forma_pago,costo_total, estado, fecha_pedido,hora_pedido,ci_trabajador,ci_cliente)  values (?,?,?,?,?,?,?,?,?)";
             PreparedStatement ingreso = c.prepareStatement(consulta);
-            
-            ingreso.setDouble(1, costoTot);
-            ingreso.setString(2, estado);
-//            ingreso.setDate(3, java.sql.Date.valueOf(fechaP));
-//            ingreso.setTime(4, java.sql.Time.valueOf(horaP));
-            ingreso.setString(3, ci_trabajador);
-            ingreso.setString(4, ci_cliente);
+            ingreso.setString(1, obs);
+            ingreso.setString(2, msj);
+            ingreso.setString(3, formaPago);
+            ingreso.setDouble(4, costoTot);
+            ingreso.setString(5, estado);
+            ingreso.setDate(6, java.sql.Date.valueOf(fechaP));
+            ingreso.setTime(7, java.sql.Time.valueOf(horaP));
+            ingreso.setString(8, ci_trabajador);
+            ingreso.setString(9, ci_cliente);
             int p = ingreso.executeUpdate();
             if(p > 0){ 
                 System.out.println("ingreso exitoso de pedido...");
@@ -495,24 +506,5 @@ public class Tb_pedido {
         }
     }  
     
-    public static void ingPedido(double cod, Connection c){
-        try {
-            String consulta = "insert into db_flowbase.tb_pedido values (?)";
-            PreparedStatement ingreso = c.prepareStatement(consulta);
-            
-            ingreso.setDouble(1, cod);
-//            ingreso.setString(2, estado);
-////            ingreso.setDate(3, java.sql.Date.valueOf(fechaP));
-////            ingreso.setTime(4, java.sql.Time.valueOf(horaP));
-//            ingreso.setString(3, ci_trabajador);
-//            ingreso.setString(4, ci_cliente);
-            int p = ingreso.executeUpdate();
-            if(p > 0){ 
-                System.out.println("ingreso exitoso de pedido...");
-            }
-        } catch (SQLException ex) {
-            System.out.println("EXCEPCION(pedido): " + ex.getMessage());
-        }
-    }  
 }
 
