@@ -67,7 +67,7 @@ public class Incluir {
         
     public static void ingresarIncluye(int idPedidoArticulo, int cantidad, String codArticulo, int codPedido, Connection c){
     try {
-            String consulta = "insert into db_flowbase.tb_pedido values (?,?,?,?)";
+            String consulta = "insert into db_flowbase.tb_incluir values (?,?,?,?)";
             PreparedStatement ingreso = c.prepareStatement(consulta);
             ingreso.setInt(1, idPedidoArticulo);
             ingreso.setInt(2, cantidad);

@@ -452,5 +452,65 @@ public class Tb_pedido {
             System.out.println("EXCEPCION (pedido articulo): " + ex.getMessage());
         }
     }
+    
+     public static int buscarLastPedido(Connection e) {
+        int pedido = 1;
+        try {
+            String consulta = "SELECT cod_pedido " +
+                                "FROM db_flowbase.tb_pedido " +
+                                "order by cod_pedido desc " +
+                                "limit 1;";
+            Statement in = e.createStatement();
+            ResultSet resultado = in.executeQuery(consulta);
+            if(resultado.next()) {
+                pedido = pedido + resultado.getInt("cod_pedido");
+            }
+        } catch (SQLException ex) {
+            System.out.println("EXCEPCION   : " + ex.getMessage());
+        }
+        return pedido;
+    }
+     
+    public static void ingresarN1Pedido(
+        double costoTot, String estado, //LocalDate fechaP, LocalTime horaP, 
+        String ci_trabajador, String ci_cliente, Connection c){
+        try {
+            String consulta = "insert into db_flowbase.tb_pedido values (?,?,?,?)";
+            PreparedStatement ingreso = c.prepareStatement(consulta);
+            
+            ingreso.setDouble(1, costoTot);
+            ingreso.setString(2, estado);
+//            ingreso.setDate(3, java.sql.Date.valueOf(fechaP));
+//            ingreso.setTime(4, java.sql.Time.valueOf(horaP));
+            ingreso.setString(3, ci_trabajador);
+            ingreso.setString(4, ci_cliente);
+            int p = ingreso.executeUpdate();
+            if(p > 0){ 
+                System.out.println("ingreso exitoso de pedido...");
+            }
+        } catch (SQLException ex) {
+            System.out.println("EXCEPCION(pedido): " + ex.getMessage());
+        }
+    }  
+    
+    public static void ingPedido(double cod, Connection c){
+        try {
+            String consulta = "insert into db_flowbase.tb_pedido values (?)";
+            PreparedStatement ingreso = c.prepareStatement(consulta);
+            
+            ingreso.setDouble(1, cod);
+//            ingreso.setString(2, estado);
+////            ingreso.setDate(3, java.sql.Date.valueOf(fechaP));
+////            ingreso.setTime(4, java.sql.Time.valueOf(horaP));
+//            ingreso.setString(3, ci_trabajador);
+//            ingreso.setString(4, ci_cliente);
+            int p = ingreso.executeUpdate();
+            if(p > 0){ 
+                System.out.println("ingreso exitoso de pedido...");
+            }
+        } catch (SQLException ex) {
+            System.out.println("EXCEPCION(pedido): " + ex.getMessage());
+        }
+    }  
 }
 

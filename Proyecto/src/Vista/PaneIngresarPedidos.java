@@ -49,6 +49,8 @@ import modelo.Articulo;
 import static modelo.Articulo.isNumeric;
 import modelo.Tb_cliente;
 import modelo.Tb_pedido;
+import static modelo.Tb_pedido.ingPedido;
+import static modelo.Tb_pedido.ingresarN1Pedido;
 import static modelo.Tb_pedido.llenarPedidoArticulo;
 
 /**
@@ -275,7 +277,7 @@ public class PaneIngresarPedidos {
         hb2.getChildren().addAll(ve, vendedor);
         hb2.setSpacing(5);
         c.connect();
-        numPedido.setText(String.valueOf(Tb_pedido.proxPedido(c.getC()))); 
+        numPedido.setText(String.valueOf(Tb_pedido.buscarLastPedido(c.getC()))); 
         c.cerrarConexion();
         hb3.getChildren().addAll(l3, numPedido);
         hb3.setSpacing(5);
@@ -532,27 +534,7 @@ public class PaneIngresarPedidos {
      */
     private void realizarPedido() {
         realizar.setOnAction(e -> {
-            if(validar()){
-                c.connect();
-                //String t = buscarArticuloXCodigo(codigo.getText(), c.getC());
-                //if (t == null) {
-//                    ingresarPedido(this.descrip.getText(), this.mensaje.getText(), "",
-//                            this.tot.getText(), this.estado.getText(),
-//                            fecha(this.fpedido.getValue()), String.valueOf(LocalTime.now().getHour())
-//                                    +":"+String.valueOf(LocalTime.now().getMinute()),
-//                            "", "", this.vendedor.getText(), this.cedula.getText(),
-//                            "", c);
-//                    c.cerrarConexion();
-//                    
-//                    limpiarCampos();
-//                }else{
-//                    noNumerico();
-//                    ProductoGuardadoFallido();
-//                }
-            }else{
-                PedidoGuardadoFallido();
-                noNumerico();
-            }
+           
         });
     }
     
@@ -598,7 +580,7 @@ public class PaneIngresarPedidos {
     }
     
     private boolean validar() {
-    return !codigo.getText().equals("") && !this.cantidad.getText().equals("")
+    return !codigo.getText().equals("") 
             && !this.cedula.getText().equals("") && !this.estado.getText().equals("");
     }
     
