@@ -124,6 +124,7 @@ public class PaneMenuPrincipalSucursal {
             alert.setHeaderText("¿Está seguro que desea Cerrar Sesión?");
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == ButtonType.OK) {
+                nombreUsuarioSucursal.setText("");
                 PaneLogin p = new PaneLogin();
                 Proyecto.scene.setRoot(p.getRoot1());
             }

@@ -95,33 +95,34 @@ public class Tb_cliente {
     }
    
 
-    public static Tb_cliente buscarCliente(String ci, Connection e) {
+     public static Tb_cliente buscarCliente(String ci, Connection e) {
         try {
-         //   connect();
-            String consulta = "select c.ci_cliente, c.nombres,c.apellidos,c.direccion,c.email,t.telefono from db_flowbase.tb_cliente c join db_flowbase.tb_telefono t on c.ci_cliente= t.ci_cliente where c.ci_cliente=" + ci;
-            Statement in = e.createStatement();
-            ResultSet resultado = in.executeQuery(consulta);
-            ArrayList<String> t= new ArrayList();
-             Tb_cliente tb= new Tb_cliente();
-            while(resultado.next()) {
+            //   connect();
+            String consulta = "select c.ci_cliente, c.nombres,c.apellidos,c.direccion,c.email,t.telefono from db_flowbase.tb_cliente c join db_flowbase.tb_telefono t on c.ci_cliente= t.ci_cliente where c.ci_cliente=?";
+            PreparedStatement ingreso = e.prepareStatement(consulta);
+            ingreso.setString(1, ci);
+            ResultSet resultado = ingreso.executeQuery();
+            ArrayList<String> t = new ArrayList();
+            Tb_cliente tb = new Tb_cliente();
+            while (resultado.next()) {
                 t.add(resultado.getString("t.telefono"));
                 tb.setCi_cliente(resultado.getString("c.ci_cliente"));
                 tb.setNombres(resultado.getString("c.nombres"));
                 tb.setApellidos(resultado.getString("c.apellidos"));
                 tb.setDireccion(resultado.getString("c.direccion"));
-                tb.setEmail(resultado.getString("c.email"));               
+                tb.setEmail(resultado.getString("c.email"));
             }
             if (t.size() > 0) {
                 tb.setTelefono1(t.get(0));
                 if (t.size() > 1) {
                     tb.setTelefono2(t.get(1));
                 }
-            }          
+            }
             return tb;
         } catch (SQLException ex) {
             System.out.println("EXCEPCION: " + ex.getMessage());
         }
-     //   cerrarConexion();
+        //   cerrarConexion();
         return null;
     }
     
@@ -177,22 +178,24 @@ public class Tb_cliente {
         }
     }
     
-      public static void actualizarDatosCliente(String ci,String nombres,String apellidos, String direccion, String email,Connection c){
-    try {
-            String consulta= "update db_flowbase.tb_cliente set nombres=?,apellidos=?,direccion=?,email=? where ci_cliente="+ci;
-             PreparedStatement ingreso = c.prepareStatement(consulta);
-             ingreso.setString(1, nombres.toLowerCase());
-             ingreso.setString(2, apellidos.toLowerCase());
-             ingreso.setString(3, direccion.toLowerCase());
-             ingreso.setString(4, email.toLowerCase());
-             int j= ingreso.executeUpdate();
-             if(j>0){ //BORRAR LUEGO
-                 System.out.println("Actualizacion exitosa cliente...");
-             }
+     public static void actualizarDatosCliente(String ci, String nombres, String apellidos, String direccion, String email, Connection c) {
+        try {
+            String consulta = "update db_flowbase.tb_cliente set nombres=?,apellidos=?,direccion=?,email=? where ci_cliente= ?" ;
+            PreparedStatement ingreso = c.prepareStatement(consulta);
+            ingreso.setString(1, nombres.toLowerCase());
+            ingreso.setString(2, apellidos.toLowerCase());
+            ingreso.setString(3, direccion.toLowerCase());
+            ingreso.setString(4, email.toLowerCase());
+            ingreso.setString(5, ci);
+            int j = ingreso.executeUpdate();
+            if (j > 0) {
+                System.out.println("Actualizacion exitosa cliente...");
+            }
         } catch (SQLException ex) {
             System.out.println("EXCEPCION: " + ex.getMessage());
         }
     }
+     
       public static void ingresarTelefonosCliente(String telefono, String ci, Connection c) {
         try {
             String consulta = "insert into db_flowbase.tb_telefono(telefono,ci_cliente) values (?,?)";
@@ -208,11 +211,13 @@ public class Tb_cliente {
         }
     }
 
-    public static void actualizarTelefonosCliente(String telefonoNuevo, String telefonoAnterior, String ci, Connection c) {
+   public static void actualizarTelefonosCliente(String telefonoNuevo, String telefonoAnterior, String ci, Connection c) {
         try {
-            String consulta = "update db_flowbase.tb_telefono set telefono=? where ci_cliente=" + ci + " and telefono=" + telefonoAnterior;
+            String consulta = "update db_flowbase.tb_telefono set telefono=? where ci_cliente= ? and telefono= ?";
             PreparedStatement ingreso = c.prepareStatement(consulta);
             ingreso.setString(1, telefonoNuevo);
+            ingreso.setString(2, ci);
+            ingreso.setString(3, telefonoAnterior);
             int j = ingreso.executeUpdate();
             if (j > 0) { //BORRAR LUEGO
                 System.out.println("Actualizacion telefono exitosa...");
