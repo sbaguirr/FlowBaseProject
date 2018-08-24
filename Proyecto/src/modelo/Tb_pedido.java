@@ -423,7 +423,7 @@ public class Tb_pedido {
             ingreso.setString(1, obs.toLowerCase());
             ingreso.setString(2, msj.toLowerCase());
             ingreso.setString(3, formaPago.toLowerCase());
-            ingreso.setDouble(4, costoTot);
+            ingreso.setDouble(4, Math.round(costoTot*100d)/ 100d);
             ingreso.setString(5, estado.toLowerCase());
             ingreso.setDate(6, java.sql.Date.valueOf(fechaP));
             ingreso.setTime(7, java.sql.Time.valueOf(horaP));
@@ -491,7 +491,7 @@ public class Tb_pedido {
             ingreso.setString(1, obs);
             ingreso.setString(2, msj);
             ingreso.setString(3, formaPago);
-            ingreso.setDouble(4, costoTot);
+            ingreso.setDouble(4, Math.round(costoTot*100d)/ 100d);
             ingreso.setString(5, estado);
             ingreso.setDate(6, java.sql.Date.valueOf(fechaP));
             ingreso.setTime(7, java.sql.Time.valueOf(horaP));
