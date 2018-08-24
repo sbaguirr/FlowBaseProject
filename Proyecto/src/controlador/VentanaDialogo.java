@@ -229,4 +229,14 @@ public class VentanaDialogo {
         alert.setContentText("Por favor, asegúrese de llenar todos los campos");
         alert.showAndWait();
     }
+    
+    //Método que permitirá mostrar una ventana cuando el usuario deje vacio el campo ci ;v
+     public static void dialogoAdvertenciaPedido1() {
+        Alert advertencia = new Alert(Alert.AlertType.WARNING);
+        advertencia.setTitle("Error");
+        advertencia.setContentText("Debe escribir la cédula de identidad del vendedor");
+        advertencia.setHeaderText(null);
+        advertencia.initStyle(StageStyle.UTILITY);
+        advertencia.showAndWait();
+    }
 }

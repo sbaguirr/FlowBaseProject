@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -24,6 +25,7 @@ public class Tb_cliente {
     private String email;
     private String telefono1;
     private String telefono2;
+     private int cantidad;
 
     public Tb_cliente(String ci_cliente, String nombres, String apellidos, String direccion, String email,String tl1,String tl2) {
         this.ci_cliente = ci_cliente;
@@ -33,6 +35,20 @@ public class Tb_cliente {
         this.email = email;
         this.telefono1 = tl1;
         this.telefono2 = tl2;
+    }
+
+    public Tb_cliente(String nombres, String apellidos, int cantidad) {
+        this.nombres = nombres;
+        this.apellidos = apellidos;
+        this.cantidad = cantidad;
+    }
+
+    public int getCantidad() {
+        return cantidad;
+    }
+
+    public void setCantidad(int cantidad) {
+        this.cantidad = cantidad;
     }
 
     public Tb_cliente() {
@@ -225,6 +241,27 @@ public class Tb_cliente {
         } catch (SQLException ex) {
             System.out.println("EXCEPCION: " + ex.getMessage());
         }
+    }
+   
+   public static List<Tb_cliente> reporteMejoresClientes(Connection c) {
+        List<Tb_cliente> rp = new ArrayList<>();
+        try {
+            Statement in = c.createStatement();
+            ResultSet resultado = in.executeQuery(
+                    "SELECT * FROM db_flowbase.Reporte_Mejor_Cliente");
+            while (resultado.next()) {
+                rp.add(
+                        new Tb_cliente(
+                                resultado.getString("nombres"),
+                                resultado.getString("apellidos"),
+                                resultado.getInt("compras")
+                        )
+                );
+            }
+        } catch (SQLException ex) {
+            System.out.println("EXCEPCION in llenar Tb_ejecutarVista2: " + ex.getMessage());
+        }
+        return rp;
     }
 
 
