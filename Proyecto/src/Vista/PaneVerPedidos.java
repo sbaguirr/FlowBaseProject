@@ -20,8 +20,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -255,7 +253,11 @@ public class PaneVerPedidos {
                 if (seleccion().equals("Todos")) {
                     cargarFiltro2();
                 } else {
-                    cargarFiltro1();
+                    if (!campo.getText().equals("")) { 
+                        cargarFiltro1();
+                    } else {
+                        VentanaDialogo.dialogoAdvertenciaPedido1();
+                    }
                 }
             } else {
                 VentanaDialogo.dialogoAdvertenciaPedido();

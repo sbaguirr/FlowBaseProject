@@ -135,8 +135,8 @@ public class PaneMenuPrincipal {
         reportes.setContentDisplay(ContentDisplay.TOP);
         reportes.setGraphic(w);
         reportes.setOnAction(e -> {
-            MiniPaneReportes r = new MiniPaneReportes();
-            r.showWindow();
+            PaneReporte t = new PaneReporte();
+            Proyecto.scene.setRoot(t.getRoot());
         });
         
         return reportes;
