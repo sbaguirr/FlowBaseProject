@@ -34,7 +34,7 @@ import javafx.scene.text.Font;
 public class PaneMenuPrincipal {
 
     private BorderPane root;
-    private Button productos, pedidos, productoSucursal, verPedidos, cerrarSesion, clientes,reportes;
+    private Button productos, pedidos, productoSucursal, verPedidos, cerrarSesion, clientes;
     public static Label nombreUsuario = new Label();
 
     public PaneMenuPrincipal() {
@@ -62,7 +62,7 @@ public class PaneMenuPrincipal {
     private void menu() {
         VBox j = new VBox();
         HBox h1 = new HBox();
-        h1.getChildren().addAll(botonProductos(), botonProductosSuc(), botonPedidos(),crearReporte());
+        h1.getChildren().addAll(botonProductos(), botonProductosSuc(), botonPedidos());
         h1.setSpacing(14);
         h1.setAlignment(Pos.CENTER);
         HBox h2 = new HBox();
@@ -107,23 +107,6 @@ public class PaneMenuPrincipal {
             Proyecto.scene.setRoot(p.getRoot());
         });
         return pedidos;
-    }
-    
-    private Button crearReporte() {
-        Image imagePlay = new Image(getClass().getResource(CONSTANTES.path_image + "/reporte.png").toExternalForm(),50,50,true,true);
-        ImageView w = new ImageView();
-        w.setImage(imagePlay);
-        reportes = new Button("Reporte");
-        reportes.setPrefSize(50, 50);
-        reportes.setStyle("-fx-font: 12 Verdana; -fx-base: #2EFEF7; -fx-text-fill: white;");
-        reportes.setContentDisplay(ContentDisplay.TOP);
-        reportes.setGraphic(w);
-        reportes.setOnAction(e -> {
-            MiniPaneReportes r = new MiniPaneReportes();
-            r.showWindow();
-        });
-        
-        return reportes;
     }
 
     private Button botonProductosSuc() {
