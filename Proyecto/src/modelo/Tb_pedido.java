@@ -15,6 +15,8 @@ import java.sql.Statement;
 import java.sql.Time;
 import java.sql.Types;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.collections.ObservableList;
@@ -404,8 +406,8 @@ public class Tb_pedido {
     }
     
     public static void ingresarPedido(int cod, String obs, String msj, String formaPago,
-        double costoTot, String estado, Date fechaP, Time horaP, Date fechaE, 
-        Time horaE, String ci_trabajador, String ci_cliente, int codDestinat, Connection c){
+        double costoTot, String estado, LocalDate fechaP, LocalTime horaP, LocalDate fechaE, 
+        LocalTime horaE, String ci_trabajador, String ci_cliente, int codDestinat, Connection c){
         try {
             String consulta = "insert into db_flowbase.tb_pedido values (?,?,?,?,?,?,?,?,?,?,?,?,?)";
             PreparedStatement ingreso = c.prepareStatement(consulta);
@@ -415,10 +417,10 @@ public class Tb_pedido {
             ingreso.setString(4, formaPago.toLowerCase());
             ingreso.setDouble(5, costoTot);
             ingreso.setString(6, estado.toLowerCase());
-            ingreso.setDate(7, fechaP);
-            ingreso.setTime(8, horaP);
-            ingreso.setDate(9, fechaE);
-            ingreso.setTime(10, horaE);
+            ingreso.setDate(7, java.sql.Date.valueOf(fechaP));
+            ingreso.setTime(8, java.sql.Time.valueOf(horaP));
+            ingreso.setDate(9, java.sql.Date.valueOf(fechaE));
+            ingreso.setTime(10, java.sql.Time.valueOf(horaE));
             ingreso.setString(11, ci_trabajador);
             ingreso.setString(12, ci_cliente);
             ingreso.setInt(13, codDestinat);

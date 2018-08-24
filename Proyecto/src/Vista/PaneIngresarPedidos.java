@@ -534,6 +534,15 @@ public class PaneIngresarPedidos {
      */
     private void realizarPedido() {
         realizar.setOnAction(e -> {
+//           this.dnombres.getText();
+//           this.dapellidos.getText();
+//           this.ddir.getText();
+//           this.rdir.getText();
+//           this.dtlf.getText();
+//           this.horario.getText();
+//           fecha(this.fpedido.getValue());
+           
+           
            
         });
     }
