@@ -5,15 +5,21 @@
  */
 package Vista;
 
+import Main.Proyecto;
+import controlador.CONSTANTES;
 import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
@@ -62,6 +68,7 @@ public class PaneReporte {
         cargarTabla1();
         cargarTabla2();
         cargarTabla3();
+        back();
 
     }
 
@@ -71,7 +78,7 @@ public class PaneReporte {
         titulo.setFont(new Font("Verdana", 30));
         titulo.setStyle("-fx-text-fill: #E4C953;");
         h.setAlignment(Pos.CENTER);
-        h.setPadding(new Insets(10, 8, 10, 8));
+        h.setPadding(new Insets(10, 8, 5, 8));
         h.getChildren().add(titulo);
         root.setTop(h);
     }
@@ -82,7 +89,6 @@ public class PaneReporte {
         Label f = new Label("Ventas por vendedor del mes actual");
         f.setFont(new Font("Verdana", 14));
         f.setPadding(new Insets(5, 3, 5, 25));
-        //TableColumn c = new TableColumn<>("Ci");
         TableColumn fe = new TableColumn<>("Nombres");
         TableColumn obs = new TableColumn<>("Apellidos");
         TableColumn fee = new TableColumn<>("Total ventas");
@@ -95,9 +101,6 @@ public class PaneReporte {
         fee.setPrefWidth(80);
         fee.setCellValueFactory(new PropertyValueFactory<>("venta"));
         propertiesTableView(fee);
-        //  c.setPrefWidth(100);
-        //  c.setCellValueFactory(new PropertyValueFactory<>("id"));
-        //  propertiesTableView(c);
         tablaPedidos.getColumns().addAll(fe, obs, fee);
         tablaPedidos.setPrefSize(390, 500);
         vb.setPadding(new Insets(5, 0, 15, 0)); //top, derecha,abajo,izquierda+
@@ -213,7 +216,24 @@ public class PaneReporte {
         c.setResizable(false);
         c.setEditable(false);
     }
-
+private void back() {
+        HBox f = new HBox();
+        Image imagePlay = new Image(getClass().getResource(CONSTANTES.path_image + "/left-arrow.png").toExternalForm());
+        ImageView w = new ImageView();
+        w.setImage(imagePlay);
+        Button back = new Button();
+        back.setBackground(Background.EMPTY);
+        back.setPrefSize(15, 15);
+        back.setContentDisplay(ContentDisplay.TOP);
+        back.setGraphic(w);
+        back.setOnAction(e -> {
+            PaneMenuPrincipal p = new PaneMenuPrincipal();
+            Proyecto.scene.setRoot(p.getRoot());
+        });
+        f.getChildren().add(back);
+        f.setAlignment(Pos.BOTTOM_LEFT);
+        root.setBottom(f);
+    }
 }
 
 
