@@ -110,6 +110,7 @@ public class PaneVerPedidos {
         comboEstado = new ComboBox();
         combo.setPrefWidth(150);
         campo = new TextField();
+        campo.setPromptText("Ci del vendedor");
         campo.setPrefWidth(150);
         filtrar = new Button("Filtrar");
         desde = new DatePicker();

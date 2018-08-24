@@ -20,7 +20,7 @@ public class Conexion {
     private Connection connection ;
     private String url = "jdbc:mysql://localhost:3306/db_flowbase?useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
     private String user = "root";
-    private String pass = "rmpincay";  //rmpincay
+    private String pass = "yukine26";  //rmpincay
    
     public Connection getC() {
         return connection;

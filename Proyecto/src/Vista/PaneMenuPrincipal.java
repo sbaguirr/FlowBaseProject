@@ -34,7 +34,7 @@ import javafx.scene.text.Font;
 public class PaneMenuPrincipal {
 
     private BorderPane root;
-    private Button productos, pedidos, productoSucursal, verPedidos, cerrarSesion, clientes,reportes;
+    private Button productos, pedidos, productoSucursal, verPedidos, cerrarSesion, clientes,reportes,inventario;
     public static Label nombreUsuario = new Label();
 
     public PaneMenuPrincipal() {
@@ -68,7 +68,7 @@ public class PaneMenuPrincipal {
         HBox h2 = new HBox();
         h2.setSpacing(14);
         h2.setAlignment(Pos.CENTER);
-        h2.getChildren().addAll(verPedidos(), clientes(), cerrarSesion());
+        h2.getChildren().addAll(verPedidos(), clientes(), inventarioS(),cerrarSesion());
         j.setSpacing(14);
         j.getChildren().addAll(h1, h2);
         j.setAlignment(Pos.CENTER);
@@ -82,7 +82,7 @@ public class PaneMenuPrincipal {
         ImageView w = new ImageView();
         w.setImage(imagePlay);
         productos = new Button("Productos");
-        productos.setPrefSize(250, 150);
+        productos.setPrefSize(200, 100);
         productos.setStyle("-fx-font: 16 Verdana; -fx-base: #FFC0CB; -fx-text-fill: white;");
         productos.setContentDisplay(ContentDisplay.TOP);
         productos.setGraphic(w);
@@ -98,7 +98,7 @@ public class PaneMenuPrincipal {
         ImageView w = new ImageView();
         w.setImage(imagePlay);
         pedidos = new Button("Agregar Pedidos");
-        pedidos.setPrefSize(250, 150);
+        pedidos.setPrefSize(200, 100);
         pedidos.setStyle("-fx-font: 16 Verdana; -fx-base: #DB7093; -fx-text-fill: white;");
         pedidos.setContentDisplay(ContentDisplay.TOP);
         pedidos.setGraphic(w);
@@ -113,8 +113,8 @@ public class PaneMenuPrincipal {
         Image imagePlay = new Image(getClass().getResource(CONSTANTES.path_image + "/sucursal.png").toExternalForm());
         ImageView w = new ImageView();
         w.setImage(imagePlay);
-        productoSucursal = new Button("Agregar productos en Sucursal");
-        productoSucursal.setPrefSize(250, 150);
+        productoSucursal = new Button("Productos en Sucursal");
+        productoSucursal.setPrefSize(200, 100);
         productoSucursal.setStyle("-fx-font: 14 Verdana; -fx-base: #B0C4DE; -fx-text-fill: white;");
         productoSucursal.setContentDisplay(ContentDisplay.TOP);
         productoSucursal.setGraphic(w);
@@ -130,8 +130,8 @@ public class PaneMenuPrincipal {
         ImageView w = new ImageView();
         w.setImage(imagePlay);
         reportes = new Button("Reporte");
-        reportes.setPrefSize(50, 50);
-        reportes.setStyle("-fx-font: 12 Verdana; -fx-base: #2EFEF7; -fx-text-fill: white;");
+        reportes.setPrefSize(200, 100);
+        reportes.setStyle("-fx-font: 14 Verdana; -fx-base: #2EFEF7; -fx-text-fill: white;");
         reportes.setContentDisplay(ContentDisplay.TOP);
         reportes.setGraphic(w);
         reportes.setOnAction(e -> {
@@ -146,7 +146,7 @@ public class PaneMenuPrincipal {
         ImageView w = new ImageView();
         w.setImage(imagePlay);
         verPedidos = new Button("Ver Pedidos", w);
-        verPedidos.setPrefSize(250, 150);
+        verPedidos.setPrefSize(200, 100);
         verPedidos.setStyle("-fx-font: 16 Verdana; -fx-base: #ADFF2F; -fx-text-fill: white;"); //VERDE
         verPedidos.setContentDisplay(ContentDisplay.TOP);
         verPedidos.setGraphic(w);
@@ -162,7 +162,7 @@ public class PaneMenuPrincipal {
         ImageView w = new ImageView();
         w.setImage(imagePlay);
         cerrarSesion = new Button("Cerrar Sesión", w);
-        cerrarSesion.setPrefSize(250, 150);
+        cerrarSesion.setPrefSize(200, 100);
         cerrarSesion.setStyle("-fx-font: 16 Verdana; -fx-base: #FF69B4; -fx-text-fill: white;");
         cerrarSesion.setContentDisplay(ContentDisplay.TOP);
         cerrarSesion.setGraphic(w);
@@ -185,7 +185,7 @@ public class PaneMenuPrincipal {
         ImageView w = new ImageView();
         w.setImage(imagePlay);
         clientes = new Button("Ver clientes", w);
-        clientes.setPrefSize(250, 150);
+        clientes.setPrefSize(200, 100);
         clientes.setStyle("-fx-font: 16 Verdana; -fx-base: #00CED1; -fx-text-fill: white;");
         clientes.setContentDisplay(ContentDisplay.TOP);
         clientes.setGraphic(w);
@@ -198,6 +198,21 @@ public class PaneMenuPrincipal {
 
     public Pane getRoot() {
         return root;
+    }
+    private Button inventarioS() {
+        Image imagePlay = new Image(getClass().getResource(CONSTANTES.path_image + "/inventario.png").toExternalForm());
+        ImageView w = new ImageView();
+        w.setImage(imagePlay);
+        inventario = new Button("Inventario", w);
+        inventario.setPrefSize(200, 100);
+        inventario.setStyle("-fx-font: 16 Verdana; -fx-base: #DDA0DD; -fx-text-fill: white;");
+        inventario.setContentDisplay(ContentDisplay.TOP);
+        inventario.setGraphic(w);
+        inventario.setOnAction(e -> {
+            InventarioAdm p = new InventarioAdm();
+            Proyecto.scene.setRoot(p.getRoot());
+        });
+        return inventario;
     }
 
     private void label() {
